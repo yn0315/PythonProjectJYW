@@ -208,7 +208,7 @@ print(f"t의 개수: {t}")
 print(f"g의 개수: {g}")
 print(f"c의 개수: {c}")
 
-"======================3번======================="
+print("======================3번=======================")
 
 
 # dict3= {}
@@ -246,9 +246,24 @@ print(f"c의 개수: {c}")
 #
 #    # 0,3,6,9 인덱스번호
 #     dict[str[i:i+3]] = 1
-#
 
-"========================3번======================"
+# 정답
+counter = {}
+for i in range(0, len(dna), 3):
+    # 3글자씩 추출
+    codon = dna[i:i+3]
+    #3글자로 구성되는지 확인
+    if len(codon) == 3:
+        # 딕셔너리에 키가 없을 경우 추가
+        if codon not in counter:
+            counter[codon] = 0
+        # 갯수를 추가
+        counter[codon] += 1
+
+print(counter)
+
+
+print("======================4번=======================")
 
 # array = [1,2,[3,4],5,[6,7],[8,9]]
 # array2 = []
@@ -259,6 +274,21 @@ print(f"c의 개수: {c}")
 #             array2[i] = array[i][j]
 #
 # print(array2)
+
+# 정답
+array = [1,2,[3,4],5,[6,7],[8,9]]
+output = []
+
+for i in array:
+    if type(i) == list:
+        for j in i:
+            output.append(j)
+    else:
+        # 요소가 숫자라면 그냥 추가
+        output.append(i)
+
+print(f"{array}를 평탄화하면")
+print(f"{output}입니다.")
 
 # 함수
 # 파이썬에서 기본적으로 제공하는 내장함수 print 등등

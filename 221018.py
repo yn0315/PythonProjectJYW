@@ -233,12 +233,12 @@ min = 2
 max = 10
 total = 100
 memo = {}
-def sit(stand, sit):
+def sit(stand, seat):
     cnt = 0
-    key = str([stand, sit])
+    key = str([stand, seat])
     # 종료조건
     if key in memo:
-        return
+        return memo[key]
     if stand < 0:
         return 0
     if stand == 0:
@@ -247,14 +247,20 @@ def sit(stand, sit):
 
     # 재귀처리
     #100명을 최소값부터 나누고, 나머지가 1이면 남은 사람들을 하나 많은 수로 나눔 10명까지 반복  나머지가 0이면 cnt 하나씩 올림???
-    key[0] = str(total % sit) # 남아있는 사람
-    key[1] = str(total // sit) # 앉은 사람
-    if key[0] != 0:
+    # key[0] = str(total % sit) # 남아있는 사람
+    # key[1] = str(total // sit) # 앉은 사람
+    # if key[0] != 0:
         # 재귀함수 들어갈 곳......같은데..........
 
-         key[0] = str(sit(stand, sit +1))
-    else:
-        cnt += 1
+         # key[0] = str(sit(stand, seat +1))
+    # else:
+    #     cnt += 1
+
+    for i in range(seat, max + 1):
+        cnt += sit(seat,-i,i)
+
+    # 메모화 처리
+    memo[key] = cnt
 
     # 종료
     return cnt
