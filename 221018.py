@@ -229,21 +229,21 @@ print("변환: ", flatten(example))
 
 "=================재귀함수문제 ===================="
 
-min = 2
-max = 10
-total = 100
-memo = {}
-def sit(stand, seat):
-    cnt = 0
-    key = str([stand, seat])
-    # 종료조건
-    if key in memo:
-        return memo[key]
-    if stand < 0:
-        return 0
-    if stand == 0:
-        cnt += 1
-        return 1
+# min = 2
+# max = 10
+# total = 100
+# memo = {}
+# def sit(stand, seat):
+#     cnt = 0
+#     key = str([stand, seat])
+#     # 종료조건
+#     if key in memo:
+#         return memo[key]
+#     if stand < 0:
+#         return 0
+#     if stand == 0:
+#         cnt += 1
+#         return 1
 
     # 재귀처리
     #100명을 최소값부터 나누고, 나머지가 1이면 남은 사람들을 하나 많은 수로 나눔 10명까지 반복  나머지가 0이면 cnt 하나씩 올림???
@@ -256,13 +256,15 @@ def sit(stand, seat):
     # else:
     #     cnt += 1
 
-    for i in range(seat, max + 1):
-        cnt += sit(seat,-i,i)
-
-    # 메모화 처리
-    memo[key] = cnt
-
-    # 종료
-    return cnt
-
-print(sit(total, min))
+    # 정답
+#
+#     for i in range(seat, max + 1):
+#         cnt += sit(seat,-i,i)
+#
+#     # 메모화 처리
+#     memo[key] = cnt
+#
+#     # 종료
+#     return cnt
+#
+# print(sit(total, min))
