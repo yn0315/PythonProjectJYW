@@ -25,19 +25,24 @@ print(list[::2])
 print("==============6번=================")
 # 리스트 -> 문자열
 
+a = ""
 for i in range(len(list) *2):
+
     if i % 2 == 0:
         list.insert(i,'+')
-list.pop(0)
+    a += str(list[i])
+a.
 
 print(list)
+print(a)
+
 
 
 # 7. 6번의 결과 "1+2+3+...+9를 다시 [1,2,3,4,5,6,7,8,9]로 변경하여 출력(리스트 함수 활용)
 print("================7번===================")
 
-while list.count("+"):
-    list.remove("+")
+# while list.count("+"):
+#     list.remove("+")
 # for i in range(len(list)):
 #     if i % 2 == 0:
 #         list.pop(i)# for 문 돌면서 리스트 줄어드니까 인덱스에러....
