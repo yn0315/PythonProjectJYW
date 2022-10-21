@@ -31,7 +31,7 @@ for i in range(len(list) *2):
     if i % 2 == 0:
         list.insert(i,'+')
     a += str(list[i])
-a.
+
 
 print(list)
 print(a)
