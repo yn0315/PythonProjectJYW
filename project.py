@@ -133,7 +133,8 @@ def start(s):
         n = int(input(">>"))
         clear()
         if n == 0:
-            print(select)
+            for k,v in select.items():
+                print(k,v)
         elif n == 1:
             del select["콜라"]
             select_drinkmenu()
@@ -174,13 +175,15 @@ def select_ingredient():
 # 사이드메뉴 주문함수
 def select_sidemenu():
     print("사이드메뉴를 골라주세요")
+    print()
     for k, v in side.items():
         print(k, v)
     s = input(">>")
     clear()
     if s in side:
         select[s] = side[s]
-    print(select)
+    for k, v in select.items():
+        print(k, v)
 
 # 음료주문 함수
 def select_drinkmenu():
@@ -192,7 +195,8 @@ def select_drinkmenu():
 
     if beverage in drink:
         select[beverage] = drink[beverage]  # 음료 장바구니에 집어넣기
-    print(select)
+    for k, v in select.items():
+        print(k, v)
 
 # 맥런치 타임시 주문
 def mac_lunch():
@@ -226,21 +230,28 @@ def default_print_burger():
     print()
     for k, v in single_burger.items():
         if k == "맥치킨":
-            s = input(" >> 제품명을 입력하세요. 더보기를 원하시면 엔터를 눌러주세요. : ")
-            if s == "":
-                print(" ",k, v)
-            else:
+            s = input(" >> 제품명을 입력하세요. 이전은 0, 주문완료는 1\n    더보기를 원하시면 엔터를 눌러주세요. : ")
+            if s == "0":
+                break
+            elif s == "":
+                print(" ", k, v)
+            elif s == "1":
+                if len(select) < 1:
+                    print("주문내역이 없습니다.")
+                    break
+                else:
+                    for k, v in select.items():
+                        print(k, v)
+            elif not s.isdigit():
                 start(s)
                 break
+
         elif k == "슈비버거":
             s = input(" >> 더보기를 원하시면 엔터를 눌러주세요. : ")
             if s == "":
-                for i in range(7):
-                    print(" ",k, v)
-                    b = input(" >>제품명을 입력하세요. : ")
-                    start(b)
+                print(" ", k, v)
 
-            else:
+            elif not s.isdigit():
                 start(s)
                 break
         else:
@@ -259,15 +270,50 @@ def ismac_lunch_time():
  # 10:30 ~ 2시는 맥런치타임
 
 while True:
-    clear()
+
+    in_out = int(input("매장이면 0 ,포장이면 1을 눌러주세요: "))
+    print()
+    # 맥런치타임
     if ismac_lunch_time():
         mac_lunch()
-
+    # 일반주문시간
     elif not ismac_lunch_time():
-
-        in_out = int(input("매장이면 0 ,포장이면 1을 눌러주세요: "))
         print(" |+버거+| 이전 | 주문완료 |  ")
-        default_print_burger()
+        print()
+
+        # 버거 메뉴 출력
+        for k, v in single_burger.items():
+            default_print_burger()
+            break
+            # if k == "맥치킨":
+            #     s = input(" >> 제품명을 입력하세요. 이전은 0, 주문완료는 1\n    더보기를 원하시면 엔터를 눌러주세요. : ")
+            #     if s == "0":
+            #         break
+            #     elif s == "":
+            #         print(" ", k, v)
+            #     elif s == "1":
+            #         if len(select) < 1:
+            #             print("주문내역이 없습니다.")
+            #             break
+            #         else:
+            #             for k,v in select.items():
+            #                 print(k,v)
+            #     else:
+            #         start(s)
+            #         break
+            #
+            # elif k == "슈비버거":
+            #     s = input(" >> 더보기를 원하시면 엔터를 눌러주세요. : ")
+            #     if s == "":
+            #         print(" ", k, v)
+            #
+            #     else:
+            #         start(s)
+            #         break
+            # else:
+            #     print(" ", k, v)
+
+
         # 1번 프레임 끝
 
         # 기본카테고리 디폴트 페이지 설정해주고
@@ -278,5 +324,3 @@ while True:
         # 처음 3줄 프린트하고 2줄씩 더보기하면? 더보기 완료
 
         # 이전은 바로 전페이지 취소는 완전 처음화면으로 감
-
-    break
