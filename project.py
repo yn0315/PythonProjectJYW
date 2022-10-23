@@ -108,6 +108,17 @@ def start(s):
         clear()
         select["감자튀김"] = 0
         select["콜라"] = 0
+        print("0.완료 1.음료 2.사이드메뉴 \n추가를 원하시면 번호를 누르세요.")
+        n = int(input(">>"))
+        clear()
+        if n == 0:
+            print(select)
+        elif n == 1:
+            del select["콜라"]
+            select_drinkmenu()
+
+        elif n == 2:
+            select_sidemenu()
 
 
 
@@ -118,6 +129,17 @@ def start(s):
         clear()
         select["감자튀김"] = 0
         select["콜라"] = 0
+        print("0.완료 1.음료 2.사이드메뉴 \n추가를 원하시면 번호를 누르세요.")
+        n = int(input(">>"))
+        clear()
+        if n == 0:
+            print(select)
+        elif n == 1:
+            del select["콜라"]
+            select_drinkmenu()
+
+        elif n == 2:
+            select_sidemenu()
 
 
 
