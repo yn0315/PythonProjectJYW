@@ -261,7 +261,7 @@ def default_print_burger():
 def ismac_lunch_time():
     h = datetime.datetime.now().hour
     m = datetime.datetime.now().minute
-    if 10 <= h < 20:
+    if 10 <= h < 14:
         if h == 10:
             if 30 <= m:
                 return True
@@ -276,6 +276,7 @@ while True:
     # 맥런치타임
     if ismac_lunch_time():
         mac_lunch()
+
     # 일반주문시간
     elif not ismac_lunch_time():
         print(" |+버거+| 이전 | 주문완료 |  ")
@@ -285,33 +286,6 @@ while True:
         for k, v in single_burger.items():
             default_print_burger()
             break
-            # if k == "맥치킨":
-            #     s = input(" >> 제품명을 입력하세요. 이전은 0, 주문완료는 1\n    더보기를 원하시면 엔터를 눌러주세요. : ")
-            #     if s == "0":
-            #         break
-            #     elif s == "":
-            #         print(" ", k, v)
-            #     elif s == "1":
-            #         if len(select) < 1:
-            #             print("주문내역이 없습니다.")
-            #             break
-            #         else:
-            #             for k,v in select.items():
-            #                 print(k,v)
-            #     else:
-            #         start(s)
-            #         break
-            #
-            # elif k == "슈비버거":
-            #     s = input(" >> 더보기를 원하시면 엔터를 눌러주세요. : ")
-            #     if s == "":
-            #         print(" ", k, v)
-            #
-            #     else:
-            #         start(s)
-            #         break
-            # else:
-            #     print(" ", k, v)
 
 
         # 1번 프레임 끝
