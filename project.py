@@ -280,13 +280,10 @@ while True:
     # 일반주문시간
     elif not ismac_lunch_time():
         print(" |+버거+| 이전 | 주문완료 |  ")
-        print()
 
-        # 버거 메뉴 출력
-        for k, v in single_burger.items():
-            default_print_burger()
-            break
-
+        # # 버거 메뉴 출력 / 프로그램실행
+        default_print_burger()
+        break
 
         # 1번 프레임 끝
 
