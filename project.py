@@ -18,7 +18,7 @@ set_burger = {"빅맥세트": 4900, "맥스파이시상하이버거세트": 4900
                  "더블불고기버거세트": 4500, "에그불고기버거세트": 3500, "불고기버거세트": 2500,
                  "더블필레오피쉬세트": 5200, "필레오피쉬세트": 3700, "슈슈버거세트": 4700,
                  "슈비버거세트": 5800, "쿼터파운더치즈세트": 5500, "더블쿼터파운더치즈세트": 7400,
-                 "트리플치즈버거세트": 5800, "더블치즈버거세트": 4500, "치즈버거세트": 2500, "햄버거세트" : 2200}
+                 "트리플치즈버거세트": 5800, "더블치즈버거세트": 4500, "치즈버거세트": 2500, "햄버거세트" : 2200} # 변수 싱글버거 하나로 통일할 수 있는 방법...
 
 large_set_burger = {"빅맥라지세트": 4900, "맥스파이시상하이버거라지세트": 4900, "1955버거라지세트": 6000,
                  "베이컨토마토디럭스라지세트": 5800, "맥크리스피디럭스라지세트": 6700,
@@ -56,120 +56,182 @@ service_self = 0
 select = {}  # 장바구니 변수
 
 # 화면 초기화
-def clear():
+def clearscreen():
     for i in range(30):
         print()
 
-# 버거 주문(단품/세트/라지세트) 함수//int로 바꾸고 전부 다 번호로 받아버리면??훨씬 편할듯
+# 버거 주문(단품/세트/라지세트) 함수
 def select_burgermenu(sel):
-    if sel in single_burger:
-        select[sel] = single_burger[sel]
-        select_ingredient()  # 재료고르기
-    elif sel in set_burger:
-        select_ingredient()
-        select[sel] = set_burger[sel]+1800
-    elif sel in large_set_burger:
-        select[sel] = large_set_burger[sel]+2400
-        select_ingredient()
-    print(select)
+    while True:
+        global burger_select_ingredients
+        if sel in single_burger:
+            select[sel] = single_burger[sel]
+            print("1.버거재료 2.사이드재료 3.음료 4.완료")
+            s = int(input("번호를 입력하세요 : "))
+            if s == 1:
+                select_ingredient()  # 재료고르기
+            elif s == 2:
+                s = int(input("1.소금포함 2.취소"))
+                if s == 1:
+                    burger_select_ingredients.append("소금포함")
+            elif s == 3:
+                select_drinkmenu()
+            elif s == 4:
+                for k, v in select.items():
+                    print(k, v)
+                break
+
+
+        elif sel in set_burger:
+            print("1.버거재료 2.사이드재료 3.음료 4.완료")
+            select[sel] = set_burger[sel] + 1800
+            s = int(input("번호를 입력하세요 : "))
+            if s == 1:
+                select_ingredient()  # 재료고르기
+            elif s == 2:
+                s = int(input("1.소금포함 2.취소"))
+                if s == 1:
+                    burger_select_ingredients.append("소금포함")
+            elif s == 3:
+                select_drinkmenu()
+            elif s == 4:
+                for k, v in select.items():
+                    print(k, v)
+                break
+
+            # select[sel] = set_burger[sel]+1800
+        elif sel in large_set_burger:
+            print("1.버거재료 2.사이드재료 3.음료 4.완료")
+            select[sel] = large_set_burger[sel] + 2400
+            s = int(input("번호를 입력하세요 : "))
+            if s == 1:
+                select_ingredient()  # 재료고르기
+            elif s == 2:
+                s = int(input("1.소금포함 2.취소"))
+                if s == 1:
+                    burger_select_ingredients.append("소금포함")
+            elif s == 3:
+                select_drinkmenu()
+            elif s == 4:
+                for k, v in select.items():
+                    print(k, v)
+                break
+            # select[sel] = large_set_burger[sel]+2400
+
+
+        # for k, v in select.items():
+        #     print(k, v)
+        # break
 
 # 버거주문시작
 def start(s):
 
     num = int(input("""
-    0. 취소
-    1. 단품
-    2. 세트
-    3. 라지세트
+    0.취소  1.단품  2.세트  3.라지세트
+    
     번호를 입력해주세요.>>
     """))
-    clear()
+    clearscreen()
     if num == 0:
-        pass
+        return
     elif num == 1:
         select_burgermenu(s)
-        clear()
+        clearscreen()
+
         print("0.완료 1.음료 2.사이드메뉴 \n추가를 원하시면 번호를 누르세요.")
         n = int(input(">>"))
-        clear()
+        clearscreen()
         if n == 0:
-            print(select)
+            for k, v in select.items():
+                print(k, v)
+            m = int(input(">> 0.취소1.메뉴변경 2.수량변경 3.완료"))
+            if m == 0:
+                return
+            elif m == 1:
+                input("변경할 메뉴를 입력해주세요. : ")
+
+                # select_burgermenu()
+                pass
+            elif m == 2:
+                pass
+            elif m == 3:
+                return
+
         elif n == 1:
             select_drinkmenu()
-
+            return
         elif n == 2:
             select_sidemenu()
-
+            return
 
     elif num == 2:
         select_burgermenu(s+"세트")
-        clear()
-        select_sidemenu()
-        clear()
-        select["감자튀김"] = 0
-        select["콜라"] = 0
+        clearscreen()
+
         print("0.완료 1.음료 2.사이드메뉴 \n추가를 원하시면 번호를 누르세요.")
         n = int(input(">>"))
-        clear()
+        clearscreen()
         if n == 0:
-            print(select)
+            for k, v in select.items():
+                print(k, v)
+            m = int(input(">> 0.취소1.메뉴변경 2.수량변경 4.완료"))
         elif n == 1:
-            del select["콜라"]
             select_drinkmenu()
-
+            return
         elif n == 2:
             select_sidemenu()
-
+            return
 
 
     elif num == 3:
         select_burgermenu(s+"라지세트")
-        clear()
-        select_sidemenu()
-        clear()
-        select["감자튀김"] = 0
-        select["콜라"] = 0
+        clearscreen()
         print("0.완료 1.음료 2.사이드메뉴 \n추가를 원하시면 번호를 누르세요.")
         n = int(input(">>"))
-        clear()
+        clearscreen()
         if n == 0:
             for k,v in select.items():
                 print(k,v)
+            m = int(input(">> 0.취소1.메뉴변경 2.수량변경 4.완료"))
+            return
         elif n == 1:
-            del select["콜라"]
+            # del select["콜라"]
             select_drinkmenu()
-
+            return
         elif n == 2:
             select_sidemenu()
-
-
-
+            return
+    return
 
 
 # 재료 고르기 함수
 def select_ingredient():
+
     print("야채를 골라주세요.")
     print()
     for i in range(len(vegitable)):
         print(vegitable[i])
     global burger_select_ingredients
     burger_select_ingredients.append(input(">>"))
-    clear()
+    clearscreen()
+
 
     print("소스를 골라주세요.")
     print()
     for i in range(len(source)):
         print(source[i])
     burger_select_ingredients.append(input(">>"))
-    clear()
+    clearscreen()
+
 
     print("패티를 골라주세요.")
     print()
     for i in range(len(patty)):
         print(patty[i])
     burger_select_ingredients.append(input(">>"))
-    clear()
+    clearscreen()
     print(burger_select_ingredients)
+    return
 
 
 # 사이드메뉴 주문함수
@@ -179,7 +241,7 @@ def select_sidemenu():
     for k, v in side.items():
         print(k, v)
     s = input(">>")
-    clear()
+    clearscreen()
     if s in side:
         select[s] = side[s]
     for k, v in select.items():
@@ -191,7 +253,7 @@ def select_drinkmenu():
     for k, v in drink.items():
         print(k,v)
     beverage = input(">>")
-    clear()
+    clearscreen()
 
     if beverage in drink:
         select[beverage] = drink[beverage]  # 음료 장바구니에 집어넣기
@@ -200,62 +262,68 @@ def select_drinkmenu():
 
 # 맥런치 타임시 주문
 def mac_lunch():
-    print(" |+맥런치+| 버거 | 이전 | 주문완료 |  ")
-    print()
-    for k, v in mac.items():
-        print(" ",k, v)
-    b = input(" >>제품명을 입력하세요. : ")
-    clear()
-    if b =="버거":
-        clear()
-        print(" | 맥런치 |+버거+| 이전 | 주문완료 |  ")
-        default_print_burger()
-        start(b)
+    while True:
+        print(" |+맥런치+| 버거 | 이전 | 주문완료 |  ")
+        print()
+        for k, v in mac.items():
+            print(" ",k, v)
+        b = input(" >>제품명을 입력하세요. : ")
+        clearscreen()
+        if b =="버거":
+            clearscreen()
+            print(" | 맥런치 |+버거+| 이전 | 주문완료 |  ")
+            default_print_burger()
+            start(b)
 
-    elif b in mac:
-        select_ingredient()
-        clear()
-        select[b] = mac[b]
-        select_sidemenu()
-        clear()
-        select["감자튀김"] = 0
-        select["콜라"] = 0
+        elif b in mac:
+            select_ingredient()
+            clearscreen()
+            select[b] = mac[b]
+            select_sidemenu()
+            clearscreen()
+             # 음료변경기능 구현해야함
 
-    for k,v in select.items():
-        print(k,v)
+        for k,v in select.items():
+            print(k,v)
 
 # 버거 정렬 & 출력
 def default_print_burger():
-
-    print()
-    for k, v in single_burger.items():
-        if k == "맥치킨":
-            s = input(" >> 제품명을 입력하세요. 이전은 0, 주문완료는 1\n    더보기를 원하시면 엔터를 눌러주세요. : ")
-            if s == "0":
-                break
-            elif s == "":
-                print(" ", k, v)
-            elif s == "1":
-                if len(select) < 1:
-                    print("주문내역이 없습니다.")
-                    break
-                else:
-                    for k, v in select.items():
-                        print(k, v)
-            elif not s.isdigit():
-                start(s)
-                break
-
-        elif k == "슈비버거":
-            s = input(" >> 더보기를 원하시면 엔터를 눌러주세요. : ")
-            if s == "":
-                print(" ", k, v)
-
-            elif not s.isdigit():
-                start(s)
-                break
-        else:
+    while True:
+        print()
+        for k, v in single_burger.items():
             print(" ", k, v)
+            if k == "맥치킨":
+                s = input(" >> 제품명을 입력하세요. 이전은 0, 주문완료는 1\n    더보기를 원하시면 엔터를 눌러주세요. : ")
+                if s == "0":
+                    return
+                elif s == "":
+                    print(" ", k, v)
+                elif s == "1":
+                    if len(select) < 1:
+                        print("주문내역이 없습니다.")
+                        break
+                    else:
+                        for k, v in select.items():
+                            print(k, v)
+                            break
+                elif not s.isdigit():
+                    start(s)
+                    break
+
+            elif k == "슈비버거":
+                s = input(" >> 더보기를 원하시면 엔터를 눌러주세요. : ")
+                if s == "":
+                    print(" ", k, v) #.....................이쪽에 인풋 쓰면 하나씩 출력..................
+
+                elif not s.isdigit():
+                    start(s)
+                    break
+
+            else:
+            #     print(" ", k, v)
+                s = input(">> 제품명을 입력해주세요.")#.............................계속 뜸..................
+                start(s)
+                break
 
 # 맥런치타임인지 판별하는 함수
 def ismac_lunch_time():
@@ -272,6 +340,10 @@ def ismac_lunch_time():
 while True:
 
     in_out = int(input("매장이면 0 ,포장이면 1을 눌러주세요: "))
+    if in_out == 0:
+        select["식사장소"] = "매장"
+    elif in_out == 1:
+        select["식사장소"] = "포장"
     print()
     # 맥런치타임
     if ismac_lunch_time():
@@ -284,8 +356,6 @@ while True:
         # # 버거 메뉴 출력 / 프로그램실행
         default_print_burger()
         break
-
-        # 1번 프레임 끝
 
         # 기본카테고리 디폴트 페이지 설정해주고
         # 맥런치 시간에는 맥런치를 디폴트로
