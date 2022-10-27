@@ -228,7 +228,12 @@ def bill():
                 return
         elif m == "1":
             select.clear()
-            return
+            dict_table_service.clear()
+            print_inout.clear()
+            total["합계"] = 0
+            print("주문이 취소되었습니다.")
+            w = 0
+            break
         elif m == "2":
             m1 = input("변경할 메뉴를 입력해주세요. : ")
             del select[m1]
@@ -281,7 +286,7 @@ def bill():
 def ismac_lunch_time():
     h = datetime.datetime.now().hour
     m = datetime.datetime.now().minute
-    if 10 <= h < 19:
+    if 5 <= h < 19:
         if h == 10:
             if 30 <= m:
                 return True
@@ -292,7 +297,7 @@ def ismac_lunch_time():
 # 맥런치 타임시 주문
 def mac_lunch():
     global w
-
+    global x
     while True:
         print("|+맥런치+| 버거 | 음료 | 사이드 | 디저트 | 이전 | 주문완료 |  ")
         print()
@@ -317,77 +322,79 @@ def mac_lunch():
                         print(k, v)
                         w == 0
                         break
-            elif s == "버거":
-                print("|+버거+| 음료 | 사이드| 디저트 | 이전 | 주문완료 |  ")
-                print()
-
-            for i in range(7):
-
-                print(menu_key_list[i] + " " + str(menu_values_list[i]))
-                if i == 6:
+                elif s == "버거":
+                    print("|+버거+| 음료 | 사이드| 디저트 | 이전 | 주문완료 |  ")
                     print()
-                    n = input("이전은 0, 주문완료는 1, 다음페이지는 2, \n 주문하시려면 제품명을 입력하세요.")
 
-                    if n == "0":
-                        break
-                    elif n == "1":
-                        if len(select) == 0:
-                            print("주문내역이 없습니다.")
-                            break
-                        else:
-                            for k, v in select.items():
-                                print(k, v)
+                    for i in range(7):
+
+                        print(menu_key_list[i] + " " + str(menu_values_list[i]))
+                        if i == 6:
+                            print()
+                            n = input("이전은 0, 주문완료는 1, 다음페이지는 2, \n 주문하시려면 제품명을 입력하세요.")
+
+                            if n == "0":
                                 break
-                    elif n == "2":
-                        clearscreen()
-                        print("|+버거+| 음료 | 사이드| 디저트 | 이전 | 주문완료 |  ")
-                        print()
-                        for i in range(7, 14, 1):
-
-                            print(menu_key_list[i] + " " + str(menu_values_list[i]))
-                            if i == 13:
-                                print()
-                                n = input("이전은 0, 주문완료는 1, 다음페이지는 2, \n 주문하시려면 제품명을 입력하세요.")
-
-                                if n == "0":
+                            elif n == "1":
+                                if len(select) == 0:
+                                    print("주문내역이 없습니다.")
                                     break
-                                elif n == "1":
-                                    if len(select) == 0:
-                                        print("주문내역이 없습니다.")
+                                else:
+                                    for k, v in select.items():
+                                        print(k, v)
                                         break
-                                    else:
-                                        for k, v in select.items():
-                                            print(k, v)
+                            elif n == "2":
+                                clearscreen()
+                                print("|+버거+| 음료 | 사이드| 디저트 | 이전 | 주문완료 |  ")
+                                print()
+                                for i in range(7, 14, 1):
+
+                                    print(menu_key_list[i] + " " + str(menu_values_list[i]))
+                                    if i == 13:
+                                        print()
+                                        n = input("이전은 0, 주문완료는 1, 다음페이지는 2, \n 주문하시려면 제품명을 입력하세요.")
+
+                                        if n == "0":
                                             break
-
-
-                                elif n == "2":
-                                    clearscreen()
-                                    print("|+버거+| 음료 | 사이드| 디저트 | 이전 | 주문완료 |  ")
-                                    print()
-                                    for i in range(14, 21, 1):
-                                        print(menu_key_list[i] + " " + str(menu_values_list[i]))
-                                        if i == 20:
-                                            print()
-                                            n = input("이전은 0, 주문완료는 1 \n 주문하시려면 제품명을 입력하세요.")
-
-                                            if n == "0":
+                                        elif n == "1":
+                                            if len(select) == 0:
+                                                print("주문내역이 없습니다.")
                                                 break
-                                            elif n == "1":
-                                                if len(select) == 0:
-                                                    print("주문내역이 없습니다.")
+                                            else:
+                                                for k, v in select.items():
+                                                    print(k, v)
                                                     break
-                                                else:
-                                                    for k, v in select.items():
-                                                        print(k, v)
+                                        elif n == "2":
+                                            clearscreen()
+                                            print("|+버거+| 음료 | 사이드| 디저트 | 이전 | 주문완료 |  ")
+                                            print()
+                                            for i in range(14, 21, 1):
+                                                print(menu_key_list[i] + " " + str(menu_values_list[i]))
+                                                if i == 20:
+                                                    print()
+                                                    n = input("이전은 0, 주문완료는 1 \n 주문하시려면 제품명을 입력하세요.")
+
+                                                    if n == "0":
                                                         break
-                                            elif not n.isdigit() and n in single_burger:
-                                                start(n)
-                                elif not n.isdigit() and n in single_burger:
-                                    start(n)
-                    elif not n.isdigit() and n in single_burger:
-                        start(n)
+                                                    elif n == "1":
+                                                        if len(select) == 0:
+                                                            print("주문내역이 없습니다.")
+                                                            break
+                                                        else:
+                                                            for k, v in select.items():
+                                                                print(k, v)
+                                                                break
+                                                    elif not n.isdigit() and n in single_burger:
+                                                        start(n)
+                                                        x = 0
+                                        elif not n.isdigit() and n in single_burger:
+                                            start(n)
+                                            x = 0
+                            elif not n.isdigit() and n in single_burger:
+                                start(n)
+                                x = 0
                         break
+                    break
 
                 elif s == "음료":
                     select_drinkmenu()
