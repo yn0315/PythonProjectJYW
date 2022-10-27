@@ -75,29 +75,42 @@ def clearscreen():
 
 # 시작
 def start(s):
+    while True:
+        # global complete
+        # if complete == True:
+        #     return
+        num = input("""
+        0.취소  1.단품  2.세트  3.라지세트
 
-    # global complete
-    # if complete == True:
-    #     return
-    num = int(input("""
-    0.취소  1.단품  2.세트  3.라지세트
+        번호를 입력해주세요.>>
+        """)
+        clearscreen()
+        if num == "0":
+            select.clear()  ######################################취소되면 첫페이지로 안감
+            x = 0
+            y = 0
+            w = 0
+            z = 0
+            break
 
-    번호를 입력해주세요.>>
-    """))
-    clearscreen()
-    if num == 0:
-        return
-    elif num == 1:
-        select_burgermenu(s)
-        burger_process()
-    elif num == 2:
-        select_burgermenu(s+ "세트")
-        burger_process()
+        elif num == "1":
+            select_burgermenu(s)
+            burger_process()
+        elif num == "2":
+            select_burgermenu(s + "세트")
+            burger_process()
 
-    elif num == 3:
-        select_burgermenu(s + "라지세트")
-        burger_process()
-    return
+        elif num == "3":
+            select_burgermenu(s + "라지세트")
+            burger_process()
+        elif not num.isdigit():
+            print("잘못 입력하셨습니다. 다시 입력해주세요.")
+            continue
+        else:
+            print("잘못 입력하셨습니다. 다시 입력해주세요.")
+            continue
+        break
+
 
 # 햄버거 주문과정 함수
 def burger_process():
@@ -196,10 +209,7 @@ def bill():
                     print("잘못입력하셨습니다. 다시 입력해주세요.")
                     continue
 
-                elif not money.isdigit():
-                    print("잘못입력하셨습니다. 다시 입력해주세요.")
-                    continue
-                if pay == 1:
+                if pay == "1":
                     select.clear()
                     dict_table_service.clear()
                     print_inout.clear()
