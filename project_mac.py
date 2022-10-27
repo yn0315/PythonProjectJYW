@@ -63,6 +63,8 @@ global w
 w= 1
 global x
 x= 1
+global y
+y = 1
 global z
 z = 1
 # global complete
@@ -76,14 +78,8 @@ def clearscreen():
 # 시작
 def start(s):
     while True:
-        # global complete
-        # if complete == True:
-        #     return
-        num = input("""
-        0.취소  1.단품  2.세트  3.라지세트
-
-        번호를 입력해주세요.>>
-        """)
+        clearscreen()
+        num = input("0.취소  1.단품  2.세트  3.라지세트 \n번호를 입력해주세요.>>")
         clearscreen()
         if num == "0":
             select.clear()  ######################################취소되면 첫페이지로 안감
@@ -91,6 +87,11 @@ def start(s):
             y = 0
             w = 0
             z = 0
+            select.clear()
+            dict_table_service.clear()
+            print_inout.clear()
+            total["합계"] = 0
+            print("주문이 취소되었습니다.")
             break
 
         elif num == "1":
@@ -110,7 +111,7 @@ def start(s):
             print("잘못 입력하셨습니다. 다시 입력해주세요.")
             continue
         break
-
+    return
 
 # 햄버거 주문과정 함수
 def burger_process():
@@ -213,7 +214,7 @@ def bill():
                     select.clear()
                     dict_table_service.clear()
                     print_inout.clear()
-                    total.clear()
+                    total["합계"] = 0
                     print("주문이 취소되었습니다.")
                     return
                 return
@@ -272,7 +273,7 @@ def bill():
 def ismac_lunch_time():
     h = datetime.datetime.now().hour
     m = datetime.datetime.now().minute
-    if 10 <= h < 14:
+    if 10 <= h < 11:
         if h == 10:
             if 30 <= m:
                 return True
@@ -405,10 +406,6 @@ def mac_lunch():
             elif not s1.isdigit() and s1 in single_burger:
                 start(s1)
                 break
-
-
-
-                # 변수에 없는 글자를 입력하면 거절해야함
 
 
 # 버거 주문(단품/세트/라지세트) 함수
@@ -585,6 +582,7 @@ while True:
 
 
 
+
     # # 버거 메뉴 출력 / 프로그램실행
     while True:
 
@@ -595,10 +593,13 @@ while True:
 
         if w == 1:
             # 일반주문시간
+
             if not ismac_lunch_time():
                 print("|+버거+| 음료 | 사이드| 디저트 | 이전 | 주문완료 |  ")
                 print()
+
             for k, v in single_burger.items():
+
                 if x == 1:
                     print(" ", k, v)
                     if k =="맥치킨":
@@ -638,7 +639,7 @@ while True:
                             break
                         else:
                             print("다시 입력해주세요.")
-                            continue
+                            break
                     elif k =="슈비버거":
                         print("이전은 0, 주문완료는 1번을 눌러주세요.")
                         s1= input("카테고리 or 제품명을 입력하세요. : ")
@@ -672,49 +673,50 @@ while True:
                             break
                         else:
                             print("다시 입력해주세요.")
-                            continue
                             break
-            if x == 1:
-                if w == 1:
+                        break
+
+
+            if y == 1:
+                category()
+                break
+                clearscreen()
+                print(" |+버거+| 음료 | 사이드| 디저트 | 이전 | 주문완료 |  ")
+                print("이전은 0, 주문완료는 1번을 눌러주세요.")
+                s = input("카테고리 or 제품명을 입력하세요. : ")
+                if s == "0":
+                    break
+                elif s == "1":
+                    if len(select) == 0:
+                        print("주문내역이 없습니다.")
+                    for k, v in select.items():
+                        print(k, v)
+                        x = 0
+                        w = 0
+                        break
+                elif s == "음료":
+                    select_drinkmenu()
+                    burger_process()
+                    break
+                elif s == "사이드":
+                    select_sidemenu()
+                    burger_process()
+                    break
+                elif s == "디저트":
+                    select_dessertmenu()
+                    burger_process()
+                    break
+                elif not s.isdigit() and s in single_burger:
+                    start(s)
+                    break
+                elif s in single_burger:
+                    z == 0
                     category()
                     break
+                else:
                     clearscreen()
-                    print(" |+버거+| 음료 | 사이드| 디저트 | 이전 | 주문완료 |  ")
-                    print("이전은 0, 주문완료는 1번을 눌러주세요.")
-                    s = input("카테고리 or 제품명을 입력하세요. : ")
-                    if s == "0":
-                        break
-                    elif s == "1":
-                        if len(select) == 0:
-                            print("주문내역이 없습니다.")
-                        for k, v in select.items():
-                            print(k, v)
-                            x = 0
-                            w = 0
-                            break
-                    elif s == "음료":
-                        select_drinkmenu()
-                        burger_process()
-                        break
-                    elif s == "사이드":
-                        select_sidemenu()
-                        burger_process()
-                        break
-                    elif s == "디저트":
-                        select_dessertmenu()
-                        burger_process()
-                        break
-                    elif not s.isdigit() and s in single_burger:
-                        start(s)
-                        break
-                    elif s in single_burger:
-                        z == 0
-                        category()
-                        break
-                    else:
-                        clearscreen()
-                        print("다시 입력해주세요.")
-                        continue
+                    print("다시 입력해주세요.")
+                    break
 
 
         break
