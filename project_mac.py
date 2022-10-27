@@ -85,8 +85,8 @@ def start(s):
             select.clear()  ######################################취소되면 첫페이지로 안감
             x = 0
             y = 0
-            w = 0
             z = 0
+            w = 0
             select.clear()
             dict_table_service.clear()
             print_inout.clear()
@@ -273,7 +273,7 @@ def bill():
 def ismac_lunch_time():
     h = datetime.datetime.now().hour
     m = datetime.datetime.now().minute
-    if 10 <= h < 11:
+    if 10 <= h < 14:
         if h == 10:
             if 30 <= m:
                 return True
@@ -717,8 +717,6 @@ while True:
                     clearscreen()
                     print("다시 입력해주세요.")
                     break
-
-
         break
         # 기본카테고리 디폴트 페이지 설정해주고
         # 맥런치 시간에는 맥런치를 디폴트로
