@@ -402,10 +402,9 @@ def mac_lunch():
                 select_dessertmenu()
                 burger_process()
                 break
-                ################################################################################
-            elif not s in single_burger or s in set_burger or s in large_set_burger:
-                print("다시입력해주세요.")
-                ################################################################################
+            elif not s1.isdigit() and s1 in single_burger:
+                start(s1)
+                break
 
 
 
@@ -637,9 +636,9 @@ while True:
                         elif not s1.isdigit() and s1 in single_burger:
                             start(s1)
                             break
-                        elif not s1 == "0" or not s1 == "1":
+                        else:
                             print("다시 입력해주세요.")
-                            break
+                            continue
                     elif k =="슈비버거":
                         print("이전은 0, 주문완료는 1번을 눌러주세요.")
                         s1= input("카테고리 or 제품명을 입력하세요. : ")
@@ -671,8 +670,9 @@ while True:
                         elif not s1.isdigit() and s1 in single_burger:
                             start(s1)
                             break
-                        elif not s1 == "0" or not s1 == "1":
+                        else:
                             print("다시 입력해주세요.")
+                            continue
                             break
             if x == 1:
                 if w == 1:
@@ -707,13 +707,15 @@ while True:
                     elif not s.isdigit() and s in single_burger:
                         start(s)
                         break
-                    elif not s == "0" or not s == "1":
-                        clearscreen()
-                        print("다시 입력해주세요.")
                     elif s in single_burger:
                         z == 0
                         category()
                         break
+                    else:
+                        clearscreen()
+                        print("다시 입력해주세요.")
+                        continue
+
 
         break
         # 기본카테고리 디폴트 페이지 설정해주고
