@@ -124,7 +124,7 @@ def burger_process():
                 bill()
                 w = 0
                 return
-            elif not n == "0" or n =="1" or n == "2":
+            else:
                 print("다시입력해주세요.")
                 continue
 
@@ -134,8 +134,8 @@ def bill():
     global x
     global table_number
     while w == 1:
-        m = int(input(">> 0.완료 1.취소 2.메뉴변경 3.수량변경"))
-        if m == 0:  # 완료시
+        m = input(">> 0.완료 1.취소 2.메뉴변경 3.수량변경")
+        if m == "0":  # 완료시
             clearscreen()
 
             # 테이블 서비스
@@ -207,10 +207,10 @@ def bill():
                     print("주문이 취소되었습니다.")
                     return
                 return
-        elif m == 1:
+        elif m == "1":
             select.clear()
             return
-        elif m == 2:
+        elif m == "2":
             m1 = input("변경할 메뉴를 입력해주세요. : ")
             del select[m1]
             print(" |+버거+| 음료 | 사이드| 디저트 | 이전 | 주문완료 |  ")
@@ -243,7 +243,7 @@ def bill():
                     else:
                         start(s)
                         return
-        elif m == 3:
+        elif m == "3":
             m1 = input("변경할 메뉴를 입력해주세요.")
             amount = int(input("수량을 입력해주세요."))
             if m1 in select:
@@ -253,7 +253,10 @@ def bill():
                 for a,b in select.items():
                     print(a,b)
                     continue
-
+        else:
+            clearscreen()
+            print("잘못 입력하셨습니다. 다시 입력해주세요.")
+            continue
 
 # 맥런치타임인지 판별하는 함수
 def ismac_lunch_time():
@@ -551,7 +554,7 @@ def category():
         return
     elif not s2 == "0" or not s2 == "1":
         print("다시 입력해주세요.")
-        
+
 
 # 키오스크 시작=========================================================================================================
 
