@@ -1,17 +1,3 @@
-import sys
-# 근로소득 간이세액표
-
-# ex 연봉 2400
-# 월 200
-# 국민연금 200의 4.5프로
-# 건강보험 200의 3.495프로
-# 요양보험은 건강보험료 결과의  12.27프로
-# 고용보험은 200의 0.9프로
-# 근로소득세는 세액표 : 33,570원
-# 지방소득세는 근로소득세의 10프로 : 3,350원
-# 모든 금액 계산 결과에서 10원 아래 1자리 수는 절삭
-
-sys.setrecursionlimit(1000) # 재귀함수 깊이 늘리기
 
 earned_income_tax = [] # 근로소득세 변수
 error_list=[] # 찢겨져 있는 행 담아놓는 변수
@@ -26,17 +12,7 @@ def remove_none():
         if "" in earned_income_tax[i]:  # 빈문자열 없앰
             earned_income_tax[i].remove("")
 
-# 찢어진 행 이어붙이기 함수 안됨 너무 많이 돌아가......
-# def plus_row(n):
-#     for i in range(1, len(error_list)):  # error_list만큼 반복해서
-#         earned_income_tax[error_list[n]] += earned_income_tax[error_list[i]]  # 찢어진 행의 첫번째 행에 다음 행들을 이어 붙여라
-#         earned_income_tax[error_list[i]].clear()  # 이어 붙인 행은 내용물을 삭제하라
-#         if earned_income_tax[i] == MAX:  # 이어붙이다 13이 되면 멈춰라
-#             return
-#         else:
-#             plus_row(i + 1)
-#             return
-#     return
+# ================================================파일 불러오기==================================================
 
 f = open("근로소득간이세액표.txt", 'r', encoding = 'UTF-8')
 with open("근로소득간이세액표.txt",'r', encoding='UTF-8') as file:
@@ -44,25 +20,28 @@ with open("근로소득간이세액표.txt",'r', encoding='UTF-8') as file:
         earned_income_tax.append(line.strip().split("\n"))  # 근로소득세 변수생성 "\n"으로 나눔
         remove_none() # 공백 없애는 함수
 
-# 쉼표없애고 \t로 구분해서 원래 변수에 다시 꽂기
+# ====================================쉼표없애고 \t로 구분해서 원래 변수에 다시 꽂기==================================
+
 for i in range(len(earned_income_tax)):
     for j in range(len(earned_income_tax[i])):
-        earned_income_tax[i][j] = earned_income_tax[i][j].replace(",","") # 쉼표 없앰                     #2
-        earned_income_tax[i] = earned_income_tax[i][j].split("\t") # \t으로 구분해서 집어넣음                 #3
+        earned_income_tax[i][j] = earned_income_tax[i][j].replace(",","") # 쉼표 없앰
+        earned_income_tax[i] = earned_income_tax[i][j].split("\t") # \t으로 구분해서 집어넣음
 
-# 잘못 입력된 특수문자들 삭제하기
+# ==========================================잘못 입력된 특수문자들 삭제하기=========================================
+
 for k in range(len(mark)):
     find_list = mark[k]
     print(find_list)
     for i in range(len(earned_income_tax)):
         for j in range(len(earned_income_tax[i])):
-            earned_income_tax[i][j] = earned_income_tax[i][j].replace(find_list,"") # 특수문자 없앰              #4
+            earned_income_tax[i][j] = earned_income_tax[i][j].replace(find_list,"") # 특수문자 없앰
             # print(i, " = ", earned_income_tax[4:]) # 행번호 출력 earned_incmome_tax[i][j] 는 str
 
 # 위에 글자만 나오는 행 빼고 넣음
 earned_income_tax = earned_income_tax[4:]
 
-# 찢겨져 있는 행 붙이기
+# ================================================찢겨져 있는 행 붙이기===========================================
+
 for i in range(len(earned_income_tax)):
     # print(i, " = " , earned_income_tax[i]) # 행번호 출력
     if len(earned_income_tax[i]) < MAX : # 행의 길이가 13보다 작으면
@@ -84,18 +63,54 @@ for i in range(len(error_list)):
 
         remove_none() # 내용물이 삭제된 행을 지워라
 
-# None에 값 집어넣기
+# ===============================================None에 값 집어넣기==============================================
+
+none_list = [] # None값 들어있는 리스트를 옮겨담을 리스트
+none_list_num = 0 # None값이 들어간 리스트의 행번호를 담는 변수
+a = 0 # None값이 들어가있는 인덱스의 이전요소들 중 None이 아닌 첫번째 요소
+b = 0 # None값이 들어가있는 인덱스의 이전요소들 중 None이 아닌 두번째 요소
+result = 0
 for i in range(len(earned_income_tax)):
-    if "None" in earned_income_tax[i]:
-        print(earned_income_tax[i])
+    if "None" in earned_income_tax[i]: # None을 찾으면
+        none_list = earned_income_tax[i] # none_list에 집어넣어라
+        none_list_num = i
+print(none_list)
 
+for i in range(2, len(none_list)):
+    if none_list[i] != "None": # i가 None이 아니면
+        a = none_list[i] # a에 집어넣어라
+        print("a = ", a)
+        for j in range(i - 1,len(none_list)): #j를 i + 1 부분부터 시작하게 해서 끝까지 돌려라
+            if not "None" in none_list[i + j]: # i + j가 None이 포함되지 않았으면
+                b = none_list[i + j] # b 안에 집어넣어라
+                print("b = ", b)
+                break
+            else :
+                for j in range(i - 1, len(none_list)):  # j를 i + 1 부분부터 시작하게 해서 끝까지 돌려라
+                    if none_list[i + j] == "None":  # i + j가 None이면
+                        continue # 계속해라
 
+                    else: # i + j 가 None이 아니면
+                        b = none_list[i + j]  # b 안에 집어넣어라
+                        print("b = ", b)
+                        break
 
-# for i in range(len(earned_income_tax)):
-#     print(i, " ==>" , earned_income_tax[i])
+    else: # i가 None이면
+        continue # 계속해라
+    break
 
+if a > b : # a가 b보다 크면
+    result = int(a) - int(b) # a - b를 해서 result에 넣어라
+    print(result)
+elif b > a : # b가 a보다 크면
+    result = int(b) - int(a) # b - a를 해서 result에 넣어라
+    print(result)
 
+for i in range(MAX): # 길이는 13으로 맞춰져 있으니 MAX만큼 돌려서
+    if earned_income_tax[none_list_num][i] == "None": # 인덱스에 None이 포함돼있으면 
+        earned_income_tax[none_list_num][i] = (int(none_list[i - 1]) - int(result *0.8)) # 이전 인덱스의 값에서 result의 0.8을 곱한 값을 빼서 넣어라
 
+print(earned_income_tax[none_list_num])
 
 
 
@@ -105,9 +120,21 @@ for i in range(len(earned_income_tax)):
 
 
 # 계산기 시작
-# def main():
-#     print("연봉을 입력하세요.")
-#     annual_income= input(">>")
+
+# 근로소득 간이세액표
+
+# ex 연봉 2400
+# 월 200
+# 국민연금 200의 4.5프로
+# 건강보험 200의 3.495프로
+# 요양보험은 건강보험료 결과의  12.27프로
+# 고용보험은 200의 0.9프로
+# 근로소득세는 세액표 : 33,570원
+# 지방소득세는 근로소득세의 10프로 : 3,350원
+# 모든 금액 계산 결과에서 10원 아래 1자리 수는 절삭
+def main():
+    print("연봉을 입력하세요.")
+    annual_income= input(">>")
 
 
 
@@ -117,4 +144,4 @@ for i in range(len(earned_income_tax)):
     # 결과창
     # print(f"실수령액은 {}입니다.")
 
-# main()
+main()
