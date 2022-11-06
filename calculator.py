@@ -1,3 +1,4 @@
+import math
 
 earned_income_tax = [] # 근로소득세 변수
 error_list=[] # 찢겨져 있는 행 담아놓는 변수
@@ -112,13 +113,6 @@ for i in range(MAX): # 길이는 13으로 맞춰져 있으니 MAX만큼 돌려�
 
 print(earned_income_tax[none_list_num])
 
-
-
-
-
-
-
-
 # 계산기 시작
 
 # 근로소득 간이세액표
@@ -132,9 +126,49 @@ print(earned_income_tax[none_list_num])
 # 근로소득세는 세액표 : 33,570원
 # 지방소득세는 근로소득세의 10프로 : 3,350원
 # 모든 금액 계산 결과에서 10원 아래 1자리 수는 절삭
+
+annual_income = 0 # 연봉
+month_income = 0 # 월급
+national_pension = 0 # 국민연금
+health_insurance = 0 # 건강보험
+care_insurance = 0 # 요양보험
+employmone_insurance = 0 # 고용보험
+tax_on_earned_income = 0 # 근로소득세
+local_income_tax = 0 # 지방소득세
+real_anuual_income = 0 # 연 실수령액
+# 근로소득세 계산하기
+def tax(annual_income):
+    for i in range(len(earned_income_tax)):
+
+        if annual_income > int(earned_income_tax[i][0]):
+            continue
+        elif annual_income <int(earned_income_tax[i][0]):
+            return int(earned_income_tax[i - 1][2])
+
+
 def main():
-    print("연봉을 입력하세요.")
-    annual_income= input(">>")
+    print("연봉을 입력하세요.(단위 : 만 원)")
+    annual_income= int(input(">>"))
+    month_income = int(annual_income/12)
+    national_pension = int((month_income * 0.045)*10000)
+    health_insurance = int((month_income * 0.03495) *10000)
+    # health_insurance = math.floor(health_insurance/10) * 10
+    care_insurance = int(math.floor(int(health_insurance * 0.1227))/10)*10
+    employmone_insurance = int((month_income * 0.09)* 10000)
+    earned_income = tax(annual_income)
+    local_income_tax = int(math.floor(int(earned_income * 0.1))/10) *10
+    real_anuual_income = (annual_income * 10000) - national_pension - health_insurance - care_insurance - employmone_insurance - earned_income - local_income_tax
+    real_month_income = int(real_anuual_income / 12)
+
+    print("국민연금 = ",format(national_pension, ','),
+          "\n건강보험 = ", format(health_insurance,','),
+          "\n요양보험 = ", format(care_insurance,','),
+          "\n고용보험 = ", format(employmone_insurance,','),
+          "\n근로소득세 = ", format(earned_income,','),
+          "\n지방소득세 = ", format(local_income_tax,','),
+          "\n=================================",
+          "\n년 예상 실수령액 = ", format(real_anuual_income,','),
+          "\n월 환산금액 = ", format(real_month_income,','))
 
 
 
