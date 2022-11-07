@@ -20,21 +20,21 @@ single_burger = {"빅맥": 4900, "맥스파이시상하이버거": 4900, "1955�
                  "슈비버거": 5800, "쿼터파운더치즈": 5500, "더블쿼터파운더치즈": 7400,
                  "트리플치즈버거": 5800, "더블치즈버거": 4500, "치즈버거": 2500, "햄버거": 2200}  # 단품 햄버거 변수
 
-set_burger = {"빅맥세트": 4900, "맥스파이시상하이버거세트": 4900, "1955버거세트": 6000,
-              "베이컨토마토디럭스세트": 5800, "맥크리스피디럭스세트": 6700,
-              "맥크리스피클래식세트": 5900, "맥치킨모짜렐라세트": 5000, "맥치킨세트": 5000,
-              "더블불고기버거세트": 4500, "에그불고기버거세트": 3500, "불고기버거세트": 2500,
-              "더블필레오피쉬세트": 5200, "필레오피쉬세트": 3700, "슈슈버거세트": 4700,
-              "슈비버거세트": 5800, "쿼터파운더치즈세트": 5500, "더블쿼터파운더치즈세트": 7400,
-              "트리플치즈버거세트": 5800, "더블치즈버거세트": 4500, "치즈버거세트": 2500, "햄버거세트": 2200}  # 변수 싱글버거 하나로 통일할 수 있는 방법...
+set_burger = {"빅맥세트": 6700, "맥스파이시상하이버거세트": 6700, "1955버거세트": 7800,
+              "베이컨토마토디럭스세트": 7600, "맥크리스피디럭스세트": 8500,
+              "맥크리스피클래식세트": 7700, "맥치킨모짜렐라세트": 6800, "맥치킨세트": 6800,
+              "더블불고기버거세트": 6300, "에그불고기버거세트": 5300, "불고기버거세트": 4300,
+              "더블필레오피쉬세트": 7000, "필레오피쉬세트": 5500, "슈슈버거세트": 6500,
+              "슈비버거세트": 7600, "쿼터파운더치즈세트": 7300, "더블쿼터파운더치즈세트": 9200,
+              "트리플치즈버거세트": 7600, "더블치즈버거세트": 6300, "치즈버거세트": 4300, "햄버거세트": 4000}  # 변수 싱글버거 하나로 통일할 수 있는 방법...
 
-large_set_burger = {"빅맥라지세트": 4900, "맥스파이시상하이버거라지세트": 4900, "1955버거라지세트": 6000,
-                    "베이컨토마토디럭스라지세트": 5800, "맥크리스피디럭스라지세트": 6700,
-                    "맥크리스피클래식라지세트": 5900, "맥치킨모짜렐라라지세트": 5000, "맥치킨라지세트": 5000,
-                    "더블불고기버거라지세트": 4500, "에그불고기버거라지세트": 3500, "불고기버거라지세트": 2500,
-                    "더블필레오피쉬라지세트": 5200, "필레오피쉬라지세트": 3700, "슈슈버거라지세트": 4700,
-                    "슈비버거라지세트": 5800, "쿼터파운더치즈라지세트": 5500, "더블쿼터파운더치즈라지세트": 7400,
-                    "트리플치즈버거라지세트": 5800, "더블치즈버거라지세트": 4500, "치즈버거라지세트": 2500, "햄버거라지세트": 2200}  # 세트햄버거 변수
+large_set_burger = {"빅맥라지세트": 7300, "맥스파이시상하이버거라지세트": 7300, "1955버거라지세트": 8400,
+                    "베이컨토마토디럭스라지세트": 8200, "맥크리스피디럭스라지세트": 9100,
+                    "맥크리스피클래식라지세트": 8300, "맥치킨모짜렐라라지세트": 7400, "맥치킨라지세트": 7400,
+                    "더블불고기버거라지세트": 6900, "에그불고기버거라지세트": 5900, "불고기버거라지세트": 4900,
+                    "더블필레오피쉬라지세트": 7600, "필레오피쉬라지세트": 6100, "슈슈버거라지세트": 7100,
+                    "슈비버거라지세트": 8200, "쿼터파운더치즈라지세트": 7900, "더블쿼터파운더치즈라지세트": 9800,
+                    "트리플치즈버거라지세트": 8200, "더블치즈버거라지세트": 6900, "치즈버거라지세트": 4900, "햄버거라지세트": 4600}  # 세트햄버거 변수
 
 mac = {"빅맥세트": 5200, "상하이버거세트": 5200, "1955버거세트": 6200, "베이컨토마토디럭스세트": 6000}    # 맥런치 변수
 
@@ -72,15 +72,6 @@ print_inout = {}  # 식사장소 영수증에서 프린트할 변수
 select = {}  # 장바구니 변수
 global total
 total = {"합계": 0}  # 합계변수
-global w
-w = 1                 # while문 열고닫는 변수들
-global x
-x = 1
-global y
-y = 1
-global z
-z = 1
-
 
 # global complete
 # complete= False # 주문완료시 True 아직 아니면 False
@@ -90,6 +81,17 @@ def clearscreen():
     for i in range(30):     # 화면 넘어갈 때 다음 실행문만 보이도록 이전 실행문 위로 올리는 변수
         print()
 
+
+# 맥런치타임인지 판별하는 함수
+def ismac_lunch_time():
+    h = datetime.datetime.now().hour
+    m = datetime.datetime.now().minute
+    if 10 <= h < 14:
+        if h == 10:
+            if 30 <= m:
+                return True
+        else:
+            return True
 
 # 시작
 def start(s):      # 버거이름 입력 후 실행하는 함수
@@ -129,233 +131,6 @@ def start(s):      # 버거이름 입력 후 실행하는 함수
         break
     return
 
-
-# 햄버거 주문과정 함수
-def burger_process():
-    global w   # while문을 열고닫는 변수
-    while True:
-        if w == 1:   # w 가 1이면 실행하라
-            clearscreen()
-
-            print("0.완료 1.음료 2.사이드메뉴 \n추가를 원하시면 번호를 누르세요.")
-            n = (input(">>"))
-            clearscreen()
-            if n == "0":                       # 완료시 장바구니를 출력하고 결제페이지로 넘어가는 조건문
-                for e, f in select.items():
-                    print(e, f)
-                bill()              # 결제페이지 함수
-                w = 0              # 조건변수를 0으로 초기화하여 닫음
-            elif n == "1":         # 음료주문함수 실행 후 결제페이지로 이동하는 조건문
-                select_drinkmenu()
-                bill()
-                w = 0
-                return
-            elif n == "2":
-                select_sidemenu()   # 사이드주문함수로 실행 후 결제페이지로 이동하는 조건문
-                bill()
-                w = 0
-                return
-            else:
-                print("다시입력해주세요.")
-                continue
-
-
-# 결제 과정 함수
-def bill():
-    global w
-    global x
-    global table_number
-    while w == 1:
-        m = input(">> 0.완료 1.취소 2.메뉴변경 3.수량변경")
-        if m == "0":  # 완료시
-            clearscreen()
-
-            # 테이블 서비스
-            print("테이블 서비스를 받으시려면 1을, 아니면 0을 눌러주세요.")
-            service_self = int(input(">>"))
-            if service_self == 1:                                    # 테이블서비스 선택시 테이블서비스변수에 테이블서비스 입력후
-                dict_table_service["서비스"] = "테이블서비스"           # 테이블 번호를 받는 과정을 나타내는 조건문
-                print("테이블 번호를 입력해주세요.")
-                table_number = int(input(">>"))
-                # 영수증
-                print("테이블 번호 " + str(table_number))
-            elif service_self == 0:                                 # 셀프서비스 선택시 테이블서비스변수에 셀프서비스를 입력하는 조건문
-                dict_table_service["서비스"] = "셀프서비스"
-
-            # 영수증
-            for i, j in print_inout.items():                        # 매장인지 포장인지 여부를 출력하는 for문
-                print(i, j)
-            for l, m in dict_table_service.items():                  # 테이블서비스 여부를 출력하는 for문
-                print(l, m)
-            for g, h in select.items():                               # 장바구니의 가격부분만을 합산하여 total변수에 대입하는, 합계를 계산하는 for문
-                total["합계"] += h
-            for x, y in select.items():                              # 장바구니변수를 하나씩 출력하는 for문
-                print(x, y)
-            for q, r in total.items():                               # 합계를 출력하는 for문
-                print(q, r)
-
-            # 결제페이지
-
-            print("결제를 진행하시려면 0을, 취소는 1을 눌러주세요.")
-            pay = input(">>")
-            while True:
-                if pay == "0":
-                    money = input("현금 입력: ")
-                    if money.isdigit() and total["합계"] > int(money):              # 숫자로 인식되며, 입력한 돈이 더 부족할 시 실행되는 조건문
-                        print("금액이 부족합니다.")
-                        continue
-
-                    elif money.isdigit() and int(money) >= total["합계"]:          # 숫자로 인식되며, 돈이 충분할 시 결제페이지로 넘어가는 조건문
-
-                        w = 0
-                        payback = int(money) - total["합계"]                   # 입력한 돈에서 합계를 차감
-                        # 영수증출력
-                        print("테이블 번호 " + str(table_number))               # 테이블번호 출력하는 문장
-                        for m, n in print_inout.items():
-                            print(m, n)
-                        for u, t in dict_table_service.items():
-                            print(u, t)
-                        for key, val in select.items():
-                            print(key, val)
-                        for e, h in total.items():
-                            print(e, h)
-                        print("거스름 돈: ", str(payback) + "원")
-                        w = 0
-                        x = 0
-                        return
-
-                elif not money.isdigit():
-                    print("잘못입력하셨습니다. 다시 입력해주세요.")   # 입력한 값이 숫자로 인식되지 않을 경우 출력하는 조건문
-                    continue
-
-                if pay == "1":                                # 취소 시 변수를 비우는 조건문
-                    select.clear()
-                    dict_table_service.clear()
-                    print_inout.clear()
-                    total["합계"] = 0
-                    print("주문이 취소되었습니다.")
-                    return
-                return
-        elif m == "1":
-            select.clear()
-            dict_table_service.clear()
-            print_inout.clear()
-            total["합계"] = 0
-            print("주문이 취소되었습니다.")
-            w = 0
-            break
-        elif m == "2":                                      # 메뉴변경
-            m1 = input("변경할 메뉴를 입력해주세요. : ")
-            del select[m1]
-            print(" |+버거+| 음료 | 사이드| 디저트 | 이전 | 주문완료 |  ")
-            for k, v in single_burger.items():
-                print(" ", k, v)
-
-            if x == 1:
-                if w == 1:
-                    print("이전은 0, 주문완료는 1번을 눌러주세요.")
-                    s = input("카테고리 or 제품명을 입력하세요. : ")
-                    if s == "0":
-                        return
-                    elif s == "1":
-                        for ky, va in select.items():
-                            print(ky, va)
-                            return
-                    elif s == "음료":
-                        select_drinkmenu()
-                        burger_process()
-                        return
-                    elif s == "사이드":
-                        select_sidemenu()
-                        burger_process()
-                        return
-                    elif s == "디저트":
-                        select_dessertmenu()
-                        burger_process()
-                        return
-                    else:
-                        start(s)
-                        return
-        elif m == "3":                                        # 수량변경
-            m1 = input("변경할 메뉴를 입력해주세요.")
-            amount = int(input("수량을 입력해주세요."))
-            if m1 in select:
-
-                select[m1] *= amount
-                select[m1 + " " + str(amount) + "개"] = select.pop(m1)     # 키값변경 후 계산
-                for a, b in select.items():
-                    print(a, b)
-                    continue
-        else:
-            clearscreen()
-            print("잘못 입력하셨습니다. 다시 입력해주세요.")
-            continue
-
-
-# 맥런치타임인지 판별하는 함수
-def ismac_lunch_time():
-    h = datetime.datetime.now().hour
-    m = datetime.datetime.now().minute
-    if 10 <= h < 14:
-        if h == 10:
-            if 30 <= m:
-                return True
-        else:
-            return True
-
-
-# 맥런치 타임시 주문
-def mac_lunch():
-    global w
-    global x
-    while w == 1:
-        print("|+맥런치+| 버거 | 음료 | 사이드 | 디저트 | 이전 | 주문완료 |  ")
-        print()
-        for c, d in mac.items():
-            print(" ", c, d)
-        if w == 1:
-            if x == 1:
-                print("이전은 0, 주문완료는 1번을 눌러주세요.")
-                s = input("카테고리 or 제품명을 입력하세요. : ")
-
-                if s in mac:
-                    select[s] = mac[s]                  # 입력한 값이 mac변수에 있을 시 장바구니에 담고
-                    burger_process()                   # 버거 주문과정함수 실행
-                    ingredient_process()               # 재료주문과정함수 실행
-                    w = 0
-                    break
-                elif s == "0":                        # 이전
-                    break
-                elif s == "1":
-                    print("주문이 취소되었습니다.")          # 주문취소
-                    for k, v in select.items():
-                        print(k, v)
-                        w == 0
-                        break
-                elif s == "버거":                # 버거입력시 아래과정이 실행되는 조건문
-                    print("|+버거+| 음료 | 사이드| 디저트 | 이전 | 주문완료 |  ")
-                    print()
-                    page()              # 카테고리 페이지 나누는 함수 및 주문과정으로 들어가는 함수
-                    break
-                elif s == "음료":
-                    select_drinkmenu()
-                    burger_process()
-                    break
-                elif s == "사이드":
-                    select_sidemenu()
-                    burger_process()
-                    break
-                elif s == "디저트":
-                    select_dessertmenu()
-                    burger_process()
-                    break
-                elif not s.isdigit() and s in single_burger:
-                    start(s)
-                    break
-        break
-    return
-
-
 # 버거 주문(단품/세트/라지세트) 함수
 def select_burgermenu(sel):
     while True:
@@ -367,20 +142,20 @@ def select_burgermenu(sel):
             return
 
         elif sel in set_burger:                    # 세트
-            select[sel] = set_burger[sel] + 1800
+            select[sel] = set_burger[sel]
             ingredient_process()
             return
 
         elif sel in large_set_burger:                  # 라지세트
-            select[sel] = large_set_burger[sel] + 2400
+            select[sel] = large_set_burger[sel]
             ingredient_process()
             return
 
 
+
 # 음료주문 함수
 def select_drinkmenu():
-    global x
-    while x == 1:
+    while True:
         clearscreen()
         print("| 버거 |+음료+| 사이드 | 디저트 | 이전 | 주문완료 |  ")
         print()
@@ -403,7 +178,7 @@ def select_drinkmenu():
 
 # 사이드메뉴 주문함수
 def select_sidemenu():
-    while x == 1:
+    while True:
         clearscreen()
         print("| 버거 | 음료 |+사이드+| 디저트 | 이전 | 주문완료 |  ")
         print()
@@ -424,7 +199,7 @@ def select_sidemenu():
 
 # 디저트메뉴 주문함수
 def select_dessertmenu():
-    while x == 1:
+    while True:
         clearscreen()
         print("| 버거 | 음료 | 사이드 |+디저트+| 이전 | 주문완료 |  ")
         print()
@@ -442,27 +217,101 @@ def select_dessertmenu():
             print(" ", k, v)
             return
 
+# 맥런치 타임시 주문
+def mac_lunch():
+    while True:
+        print("|+맥런치+| 버거 | 음료 | 사이드 | 디저트 | 이전 | 주문완료 |  ")
+        print()
+        for c, d in mac.items():
+            print(" ", c, d)
+
+        print("이전은 0, 주문완료는 1번을 눌러주세요.")
+        s = input("카테고리 or 제품명을 입력하세요. : ")
+
+        if s in mac:
+            select[s] = mac[s]                  # 입력한 값이 mac변수에 있을 시 장바구니에 담고
+            burger_process()                   # 버거 주문과정함수 실행
+            ingredient_process()               # 재료주문과정함수 실행
+            w = 0
+            break
+        elif s == "0":                        # 이전
+            break
+        elif s == "1":
+            print("주문이 취소되었습니다.")          # 주문취소
+            for k, v in select.items():
+                print(k, v)
+                w == 0
+                break
+        elif s == "버거":                # 버거입력시 아래과정이 실행되는 조건문
+            print("|+버거+| 음료 | 사이드| 디저트 | 이전 | 주문완료 |  ")
+            print()
+            page()              # 카테고리 페이지 나누는 함수 및 주문과정으로 들어가는 함수
+            break
+        elif s == "음료":
+            select_drinkmenu()
+            burger_process()
+            break
+        elif s == "사이드":
+            select_sidemenu()
+            burger_process()
+            break
+        elif s == "디저트":
+            select_dessertmenu()
+            burger_process()
+            break
+        elif not s.isdigit() and s in single_burger:
+            start(s)
+            break
+        break
+    return
+
+
+# 햄버거 주문과정 함수
+def burger_process():
+    while True:
+        clearscreen()
+        print("0.완료 1.음료 2.사이드메뉴 \n추가를 원하시면 번호를 누르세요.")
+        n = (input(">>"))
+        clearscreen()
+        if n == "0":                       # 완료시 장바구니를 출력하고 결제페이지로 넘어가는 조건문
+            for e, f in select.items():
+                print(e, f)
+            bill()              # 결제페이지 함수
+            return
+
+        elif n == "1":         # 음료주문함수 실행 후 결제페이지로 이동하는 조건문
+            select_drinkmenu()
+            bill()
+            return
+        elif n == "2":
+            select_sidemenu()   # 사이드주문함수로 실행 후 결제페이지로 이동하는 조건문
+            bill()
+            return
+        else:
+            print("다시입력해주세요.")
+            continue
 
 # 재료 주문과정
 def ingredient_process():
-    while w == 1:
-        print("0.완료 1.버거재료 2.사이드재료 3.음료")
+
+    print("0.완료 1.버거재료 2.사이드재료 3.음료")
+    s = input("번호를 입력하세요 : ")
+    if s == "0":
+        for k, v in select.items():
+            print(k, v)
+        return
+    elif s == "1":
+        select_ingredient()  # 재료고르기함수
+        return
+    elif s == "2":
+        print("1.소금포함 2.취소")
         s = input("번호를 입력하세요 : ")
-        if s == "0":
-            for k, v in select.items():
-                print(k, v)
-            break
-        elif s == "1":
-            select_ingredient()  # 재료고르기함수
-
-        elif s == "2":
-            print("1.소금포함 2.취소")
-            s = input("번호를 입력하세요 : ")
-            if s == "1":
-                burger_select_ingredients.append("소금포함")
-        elif s == "3":
-            select_drinkmenu()
-
+        if s == "1":
+            burger_select_ingredients.append("소금포함")
+            return
+    elif s == "3":
+        select_drinkmenu()
+        return
 
 # 재료 고르기 함수
 def select_ingredient():
@@ -512,7 +361,7 @@ def category():                            # 처음 카테고리 화면에서 �
     elif not s2 == "0" or not s2 == "1":
         print("다시 입력해주세요.")
 
-# 시작화면 일반버거 페이지
+#시작화면 일반버거 페이지
 def page():                          # 페이지 나눔 및 버거주문과정으로 넘어가는 함수
     for i in range(7):          # 메뉴판을 7개씩만 출력하기 위한 for문
 
@@ -581,36 +430,172 @@ def page():                          # 페이지 나눔 및 버거주문과정�
             elif not n.isdigit() and n in single_burger:
                 start(n)
 
+
+# 결제 과정 함수
+def bill():
+    global table_number
+    while True:
+        m = input(">> 0.완료 1.취소 2.메뉴변경 3.수량변경")
+        if m == "0":  # 완료시
+            clearscreen()
+
+            # 테이블 서비스
+            print("테이블 서비스를 받으시려면 1을, 아니면 0을 눌러주세요.")
+            service_self = int(input(">>"))
+            if service_self == 1:                                    # 테이블서비스 선택시 테이블서비스변수에 테이블서비스 입력후
+                dict_table_service["서비스"] = "테이블서비스"           # 테이블 번호를 받는 과정을 나타내는 조건문
+                print("테이블 번호를 입력해주세요.")
+                table_number = int(input(">>"))
+                # 영수증
+                print("테이블 번호 " + str(table_number))
+            elif service_self == 0:                                 # 셀프서비스 선택시 테이블서비스변수에 셀프서비스를 입력하는 조건문
+                dict_table_service["서비스"] = "셀프서비스"
+
+            # 영수증
+            for i, j in print_inout.items():                        # 매장인지 포장인지 여부를 출력하는 for문
+                print(i, j)
+            for l, m in dict_table_service.items():                  # 테이블서비스 여부를 출력하는 for문
+                print(l, m)
+            for g, h in select.items():                               # 장바구니의 가격부분만을 합산하여 total변수에 대입하는, 합계를 계산하는 for문
+                total["합계"] += h
+            for x, y in select.items():                              # 장바구니변수를 하나씩 출력하는 for문
+                print(x, y)
+            for q, r in total.items():                               # 합계를 출력하는 for문
+                print(q, r)
+
+            # 결제페이지
+
+            print("결제를 진행하시려면 0을, 취소는 1을 눌러주세요.")
+            pay = input(">>")
+            while True:
+                if pay == "0":
+                    money = input("현금 입력: ")
+                    if money.isdigit() and total["합계"] > int(money):              # 숫자로 인식되며, 입력한 돈이 더 부족할 시 실행되는 조건문
+                        print("금액이 부족합니다.")
+                        continue
+
+                    elif money.isdigit() and int(money) >= total["합계"]:          # 숫자로 인식되며, 돈이 충분할 시 결제페이지로 넘어가는 조건문
+
+                        w = 0
+                        payback = int(money) - total["합계"]                   # 입력한 돈에서 합계를 차감
+                        # 영수증출력
+                        print("테이블 번호 " + str(table_number))               # 테이블번호 출력하는 문장
+                        for m, n in print_inout.items():
+                            print(m, n)
+                        for u, t in dict_table_service.items():
+                            print(u, t)
+                        for key, val in select.items():
+                            print(key, val)
+                        for e, h in total.items():
+                            print(e, h)
+                        print("거스름 돈: ", str(payback) + "원")
+                        select.clear()
+                        dict_table_service.clear()
+                        print_inout.clear()
+                        total["합계"] = 0
+                        main()
+
+
+                elif not money.isdigit():
+                    print("잘못입력하셨습니다. 다시 입력해주세요.")   # 입력한 값이 숫자로 인식되지 않을 경우 출력하는 조건문
+                    continue
+
+                if pay == "1":                                # 취소 시 변수를 비우는 조건문
+                    select.clear()
+                    dict_table_service.clear()
+                    print_inout.clear()
+                    total["합계"] = 0
+                    print("주문이 취소되었습니다.")
+                    return
+                return
+        elif m == "1":
+            select.clear()
+            dict_table_service.clear()
+            print_inout.clear()
+            total["합계"] = 0
+            print("주문이 취소되었습니다.")
+            w = 0
+            break
+        elif m == "2":                                      # 메뉴변경
+            m1 = input("변경할 메뉴를 입력해주세요. : ")
+            del select[m1]
+            print(" |+버거+| 음료 | 사이드| 디저트 | 이전 | 주문완료 |  ")
+            for k, v in single_burger.items():
+                print(" ", k, v)
+
+
+            print("이전은 0, 주문완료는 1번을 눌러주세요.")
+            s = input("카테고리 or 제품명을 입력하세요. : ")
+            if s == "0":
+                return
+            elif s == "1":
+                for ky, va in select.items():
+                    print(ky, va)
+                    return
+            elif s == "음료":
+                select_drinkmenu()
+                burger_process()
+                return
+            elif s == "사이드":
+                select_sidemenu()
+                burger_process()
+                return
+            elif s == "디저트":
+                select_dessertmenu()
+                burger_process()
+                return
+            else:
+                start(s)
+                return
+        elif m == "3":                                        # 수량변경
+            m1 = input("변경할 메뉴를 입력해주세요.")
+            amount = int(input("수량을 입력해주세요."))
+            if m1 in select:
+
+                select[m1] *= amount
+                select[m1 + " " + str(amount) + "개"] = select.pop(m1)     # 키값변경 후 계산
+                for a, b in select.items():
+                    print(a, b)
+                    continue
+        else:
+            clearscreen()
+            print("잘못 입력하셨습니다. 다시 입력해주세요.")
+            continue
+
+
 # 키오스크 시작=========================================================================================================
 
-while True:
+def main():
+    while True:
 
-    in_out = (input("매장이면 0 ,포장이면 1을 눌러주세요: "))   # 식사를 매장에서 할것인지, 포장해서 가져갈 것인지 결정하는 조건문
+        in_out = (input("매장이면 0 ,포장이면 1을 눌러주세요: "))   # 식사를 매장에서 할것인지, 포장해서 가져갈 것인지 결정하는 조건문
 
-    if in_out == "0":
-        print_inout["식사장소"] = "매장"
-    elif in_out == "1":
-        print_inout["식사장소"] = "포장"
-    elif not in_out.isdigit():
-        print("다시 입력해주세요.")
-        continue
-    elif not in_out == "0" or in_out == "1":
-        print("다시 입력해주세요.")
-        continue
-    print()
+        if in_out == "0":
+            print_inout["식사장소"] = "매장"
+        elif in_out == "1":
+            print_inout["식사장소"] = "포장"
+        elif not in_out.isdigit():
+            print("다시 입력해주세요.")
+            continue
+        elif not in_out == "0" or in_out == "1":
+            print("다시 입력해주세요.")
+            continue
+        print()
 
-    # # 버거 메뉴 출력 / 프로그램실행
-    while w == 1:
+        # # 버거 메뉴 출력 / 프로그램실행
+        while True:
 
-        if ismac_lunch_time():  # 맥런치타임시 mac_lunch()함수 실행하는 조건문
-            mac_lunch()
-            # break
-        # 일반주문시간
+            if ismac_lunch_time():  # 맥런치타임시 mac_lunch()함수 실행하는 조건문
+                mac_lunch()
+                # break
+            # 일반주문시간
 
-        if not ismac_lunch_time():   # 맥런치타임이 아닐시 실행하는 조건문
-            print("|+버거+| 음료 | 사이드| 디저트 | 이전 | 주문완료 |  ")
-            print()
-        page()
-        break
-    # break
+            if not ismac_lunch_time():   # 맥런치타임이 아닐시 실행하는 조건문
+                print("|+버거+| 음료 | 사이드| 디저트 | 이전 | 주문완료 |  ")
+                print()
+            page()
+            break
+        # break
 
+
+main()
