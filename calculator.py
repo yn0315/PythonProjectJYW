@@ -14,8 +14,6 @@ def remove_none():
             earned_income_tax[i].remove("")
 
 # ================================================파일 불러오기==================================================
-
-f = open("근로소득간이세액표.txt", 'r', encoding = 'UTF-8')
 with open("근로소득간이세액표.txt",'r', encoding='UTF-8') as file:
     for line in file:
         earned_income_tax.append(line.strip().split("\n"))  # 근로소득세 변수생성 "\n"으로 나눔
@@ -50,19 +48,28 @@ for i in range(len(earned_income_tax)):
 print(error_list)
 
 sum_list = 0 # error_list안에 들어있는 행들의 길이 합에 이용되는 변수
+final_index = 0
 for i in range(len(error_list)): 
     sum_list += len(earned_income_tax[error_list[i]]) # error_list에 포함된 행들의 길이를 합해서 변수에 넣어라
     if sum_list == MAX: # 길이가 13이면
 
         for j in range(1,len(error_list)): # error_list만큼 반복해서
             earned_income_tax[error_list[0]] += earned_income_tax[error_list[j]] # 찢어진 행의 첫번째 행에 다음 행들을 이어 붙여라
-            earned_income_tax[error_list[j]].clear() # 이어 붙인 행은 내용물을 삭제하라
+            earned_income_tax[error_list[j]].clear() # 이어 붙인 행은 내용물을 삭제하라 이때 쓰인 에러리스트의 행번호들도 삭제하면 문제가 안됨, j를 변수에 담아서 j까지 돌려서 없애기 이 for문 밖에다가
+            final_index = j
+
             if earned_income_tax[j] == MAX: # 이어붙이다 13이 되면 멈춰라
                 break
             else:       # 13이 안됐으면 계속해라
                 continue
 
+        for i in range(final_index + 1):
+            error_list[i] = ""
+
+        error_list = list(filter(None, error_list))
         remove_none() # 내용물이 삭제된 행을 지워라
+print("error_list = >", error_list)
+
 
 # ===============================================None에 값 집어넣기==============================================
 
@@ -179,3 +186,4 @@ def main():
     # print(f"실수령액은 {}입니다.")
 
 main()
+file.close()
