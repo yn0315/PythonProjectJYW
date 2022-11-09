@@ -54,24 +54,28 @@ print("sum_list =>", sum_list)
 print("distroyed_list", distroyed_list)
 
 i = 1
-while True:
-    # if len(earned_income_tax[error_list[0]]) == MAX:
-    #     for j in range(final_index):
-    #         del error_list[j]
-    #         del earned_income_tax[error_list[j]]
-    #         print("삭제 후 ->", error_list)
+while len(distroyed_list[0]) != MAX:
 
-        # earned_income_tax[error_list[0]] += (earned_income_tax[error_list[i]])
-        distroyed_list[0] += distroyed_list[i]
-        i += 1
+    distroyed_list[0] += distroyed_list[i]
+
+    if len(distroyed_list[0]) == MAX:
+        earned_income_tax[error_list[0]] = distroyed_list[0]
 
         print(earned_income_tax[error_list[0]])
         print("distroyed_list 합친거 ", distroyed_list[0])
 
-
         final_index = i
-        print(earned_income_tax[error_list[0]])
-        break
+        for j in range(0, i + 1):
+            distroyed_list[j].clear()
+        distroyed_list = list(filter(None, distroyed_list))
+        print(distroyed_list)
+        # print(earned_income_tax[error_list[0]])
+
+        i += 1
+        continue
+    else:
+        continue
+
 
 for i in range(final_index + 1):
     error_list[i] = ""
@@ -81,8 +85,8 @@ remove_none()  # 내용물이 삭제된 행을 지워라
 
 for i in range(len(earned_income_tax)):
     print(i ,"=> " ,earned_income_tax[i])
-    # error_list = list(filter(None, error_list))
-    # remove_none()  # 내용물이 삭제된 행을 지워라
+    error_list = list(filter(None, error_list))
+    remove_none()  # 내용물이 삭제된 행을 지워라
 
 print(error_list)
 
