@@ -5,103 +5,80 @@ earned_income_tax = [] # 근로소득세 변수
 error_list=[] # 찢겨져 있는 행 담아놓는 변수
 mark = ["/","!","~","@","#","$","%","^","&","*","_","+","=","|","<",">","?"] # 특수기호 없애기 위한 변수
 MAX = 13 # 행 크기 상수
+final_index = 0 # 행 붙이기의 마지막 인덱스 변수
 
 # 빈문자열만 들어있는 리스트 삭제하는 함수
 def remove_none():
-    global earned_income_tax
-    earned_income_tax = list(filter(None, earned_income_tax))
-    for i in range(len(earned_income_tax)):  # 위 아래 다른 코드인데 하나라도 지우면 안됨, 다 있어야 됨....왜지????#1
-        if "" in earned_income_tax[i]:  # 빈문자열 없앰
-            earned_income_tax[i].remove("")
+    try:
+        global earned_income_tax
+        earned_income_tax = list(filter(None, earned_income_tax))
+        for i in range(len(earned_income_tax)):  # 위 아래 다른 코드인데 하나라도 지우면 안됨, 다 있어야 됨....왜지????#1
+            if "" in earned_income_tax[i]:  # 빈문자열 없앰
+                earned_income_tax[i].remove("")
+    except Exception as e:
+        print("remove_none =>", type(e), e)
+
 
 # 찢겨진 행 붙이는 함수
-def distroyed_recovery(distroyed_list):
+def distroyed_recovery(error_list):
     try:
-        i = 1
-        global earned_income_tax
-        global error_list
-
-        while len(distroyed_list) != 0:
-            print("3333333333333333333333333333333333333333333333333333333333333333333333333333333333333")
-            distroyed_list[0] += distroyed_list[i]  # 찢겨진 첫번째 행에 다음 행들을 붙여라
-            if len(distroyed_list[0]) == MAX:  # 만약 찢겨진 첫번째 행의 길이가 MAX가 된다면
-                earned_income_tax[error_list[0]] = distroyed_list[0]  # 원래 변수 자리에 완성된 첫번째 행을 집어넣어라.
-
-                print(earned_income_tax[error_list[0]])
-                print("distroyed_list 합친거 ", distroyed_list[0])
-
-                final_index = i  # 마지막으로 붙인 인덱스를 저장해라
-                # 붙인 행 리스트 삭제하기
-                for j in range(0, final_index + 1):  # 0부터 마지막으로 붙인 인덱스의 +1 까지 반복하라.
-                    distroyed_list[j].clear()  # 해당 행들을 지워라
-                distroyed_list = list(filter(None, distroyed_list))  # 필터함수를 사용하여 빈문자열이 포함돼있는 (clear)한 행들을 삭제해라
-                print(distroyed_list)
-                for j in range(final_index + 1):
-                    error_list[j] = ""
-
-                error_list = list(filter(None, error_list))
-                remove_none()  # 내용물이 삭제된 행을 지워라
-                print("error_list", error_list)
-                # print(earned_income_tax[error_list[0]])
-
-                for k in range(len(earned_income_tax)):
-                    # print(k, "=> ", earned_income_tax[k])
-                    remove_none()  # 내용물이 삭제된 행을 지워라
-                    # print(k, "=> ", earned_income_tax[k])
-                i += 1
-                print(distroyed_list)
-                distroyed_recovery(distroyed_list)
-
+        pass
 
     except Exception as e:
-        print(type(e), e)
+        print("distroyed_recovery()", type(e), e)
 
 
 # ================================================파일 불러오기==================================================
-with open("근로소득간이세액표_error.txt",'r', encoding='UTF-8') as file:
-    for line in file:
-        earned_income_tax.append(line.strip().split("\n"))  # 근로소득세 변수생성 "\n"으로 나눔
-        remove_none() # 공백 없애는 함수
+try:
+    with open("근로소득간이세액표_error.txt",'r', encoding='UTF-8') as file:
+        for line in file:
+            earned_income_tax.append(line.strip().split("\n"))  # 근로소득세 변수생성 "\n"으로 나눔
+            remove_none() # 공백 없애는 함수
+except Exception as e:
+    print("파일불러오기",type(e),e)
 
 # ====================================쉼표없애고 \t로 구분해서 원래 변수에 다시 꽂기==================================
+try:
 
-for i in range(len(earned_income_tax)):
-    for j in range(len(earned_income_tax[i])):
-        earned_income_tax[i][j] = earned_income_tax[i][j].replace(",","") # 쉼표 없앰
-        earned_income_tax[i] = earned_income_tax[i][j].split("\t") # \t으로 구분해서 집어넣음
-
-# ==========================================잘못 입력된 특수문자들 삭제하기=========================================
-
-for k in range(len(mark)):
-    find_list = mark[k]
     for i in range(len(earned_income_tax)):
         for j in range(len(earned_income_tax[i])):
-            earned_income_tax[i][j] = earned_income_tax[i][j].replace(find_list,"") # 특수문자 없앰
-            # print(i, " = ", earned_income_tax[4:]) # 행번호 출력 earned_incmome_tax[i][j] 는 str
+            earned_income_tax[i][j] = earned_income_tax[i][j].replace(",","") # 쉼표 없앰
+            earned_income_tax[i] = earned_income_tax[i][j].split("\t") # \t으로 구분해서 집어넣음
+except Exception as e:
+    print("쉼표, split",type(e), e)
 
-# 위에 글자만 나오는 행 빼고 넣음
-earned_income_tax = earned_income_tax[4:]
-# for i in range(len(earned_income_tax)):
-#     print(i, " => ", earned_income_tax[i])
+# ==========================================잘못 입력된 특수문자들 삭제하기=========================================
+try:
+    for k in range(len(mark)):
+        find_list = mark[k]
+        for i in range(len(earned_income_tax)):
+            for j in range(len(earned_income_tax[i])):
+                earned_income_tax[i][j] = earned_income_tax[i][j].replace(find_list,"") # 특수문자 없앰
+                # print(i, " = ", earned_income_tax[4:]) # 행번호 출력 earned_incmome_tax[i][j] 는 str
+
+    # 위에 글자만 나오는 행 빼고 넣음
+    earned_income_tax = earned_income_tax[4:]
+    # for i in range(len(earned_income_tax)):
+    #     print(i, " => ", earned_income_tax[i])
+except Exception as e:
+    print("노이즈삭제",type(e), e)
 # ================================================찢겨져 있는 행 붙이기===========================================
 try:
-    sum_list = 0 # 찢겨진 행의 길이를 합한 변수
-    final_index = 0 # 행 붙이기의 마지막 인덱스 변수
-    distroyed_list = [] # 찢겨진 행 모아두는 변수
     for i in range(len(earned_income_tax)):
         # print(i, " = " , earned_income_tax[i]) # 행번호 출력
         if len(earned_income_tax[i]) < MAX : # 행의 길이가 13보다 작으면
             error_list.append(i) # error_list에 행번호 집어넣어라
-            distroyed_list.append(earned_income_tax[i]) # distroyed_list에 찢겨진 행을 집어넣어라
-            sum_list += len(earned_income_tax[i]) # 찢겨진 행의 길이를 sum_list에 담아라
-    print("error_list => ", error_list)
-    print("sum_list =>", sum_list)
-    print("distroyed_list", distroyed_list)
 
-    distroyed_recovery(distroyed_list)
+    print("error_list => ", error_list)
+
+
+
+    distroyed_recovery(error_list)
+    # for i in range(len(earned_income_tax)):
+    #     print(i , "=>", earned_income_tax[i])
 
 except Exception as e:
-    print(type(e), e)
+    print("찢겨진 행 이어붙이기",type(e), e)
 
 # ===============================================None에 값 집어넣기==============================================
 #
@@ -179,38 +156,42 @@ local_income_tax = 0 # 지방소득세
 real_anuual_income = 0 # 연 실수령액
 # 근로소득세 계산하기
 def tax(annual_income):
-    for i in range(len(earned_income_tax)):
+    try:
+        for i in range(len(earned_income_tax)):
 
-        if annual_income > int(earned_income_tax[i][0]):
-            continue
-        elif annual_income <int(earned_income_tax[i][0]):
-            return int(earned_income_tax[i - 1][2])
-
+            if annual_income > int(earned_income_tax[i][0]):
+                continue
+            elif annual_income <int(earned_income_tax[i][0]):
+                return int(earned_income_tax[i - 1][2])
+    except Exception as e:
+        print("근로소득세 계산하기",type(e), e)
 
 def main():
-    print("연봉을 입력하세요.(단위 : 만 원)")
-    annual_income= int(input(">>"))
-    month_income = int(annual_income/12)
-    national_pension = int((month_income * 0.045)*10000)
-    health_insurance = int((month_income * 0.03495) *10000)
-    # health_insurance = math.floor(health_insurance/10) * 10
-    care_insurance = int(math.floor(int(health_insurance * 0.1227))/10)*10
-    employmone_insurance = int((month_income * 0.09)* 10000)
-    earned_income = tax(annual_income)
-    local_income_tax = int(math.floor(int(earned_income * 0.1))/10) *10
-    real_anuual_income = (annual_income * 10000) - national_pension - health_insurance - care_insurance - employmone_insurance - earned_income - local_income_tax
-    real_month_income = int(real_anuual_income / 12)
+    try:
+        print("연봉을 입력하세요.(단위 : 만 원)")
+        annual_income= int(input(">>"))
+        month_income = int(annual_income/12)
+        national_pension = int((month_income * 0.045)*10000)
+        health_insurance = int((month_income * 0.03495) *10000)
+        care_insurance = int(math.floor(int(health_insurance * 0.1227))/10)*10
+        employmone_insurance = int((month_income * 0.09)* 10000)
+        earned_income = tax(annual_income)
+        local_income_tax = int(math.floor(int(earned_income * 0.1))/10) *10
+        real_anuual_income = (annual_income * 10000) - national_pension - health_insurance - care_insurance - employmone_insurance - earned_income - local_income_tax
+        real_month_income = int(real_anuual_income / 12)
 
-    print("국민연금 = ",format(national_pension, ','),
-          "\n건강보험 = ", format(health_insurance,','),
-          "\n요양보험 = ", format(care_insurance,','),
-          "\n고용보험 = ", format(employmone_insurance,','),
-          "\n근로소득세 = ", format(earned_income,','),
-          "\n지방소득세 = ", format(local_income_tax,','),
-          "\n=================================",
-          "\n년 예상 실수령액 = ", format(real_anuual_income,','),
-          "\n월 환산금액 = ", format(real_month_income,','))
+        print("국민연금 = ",format(national_pension, ','),
+              "\n건강보험 = ", format(health_insurance,','),
+              "\n요양보험 = ", format(care_insurance,','),
+              "\n고용보험 = ", format(employmone_insurance,','),
+              "\n근로소득세 = ", format(earned_income,','),
+              "\n지방소득세 = ", format(local_income_tax,','),
+              "\n=================================",
+              "\n년 예상 실수령액 = ", format(real_anuual_income,','),
+              "\n월 환산금액 = ", format(real_month_income,','))
 
+    except Exception as e:
+        print("메인함수",type(e),e)
 
 
 

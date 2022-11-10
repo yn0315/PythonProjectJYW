@@ -115,23 +115,88 @@ print("---정상적으로 종료되었습니다.")
 #
 
 # 389
-list_number = [52,273,32,72,100]
-
-try:
-    number_input = int(input("정수 입력 : "))
-    print(" - {}번째 요소.".format(number_input, list_number[number_input]))
-    print()
-    예외.발생()
-except ValueError as a:
-    print("정수를 입력해주세요.")
-    print(type(a), a)
-except IndexError as b :
-    print("리스트의 인덱스를 벗어났어요!")
-    print(type(b), b)
-except Exception as c:
-    print("미리 파악하지 못한 예외 발생")
-    print(type(c), c)
-    
+# list_number = [52,273,32,72,100]
+#
+# try:
+#     number_input = int(input("정수 입력 : "))
+#     print(" - {}번째 요소.".format(number_input, list_number[number_input]))
+#     print()
+#     예외.발생()
+# except ValueError as a:
+#     print("정수를 입력해주세요.")
+#     print(type(a), a)
+# except IndexError as b :
+#     print("리스트의 인덱스를 벗어났어요!")
+#     print(type(b), b)
+# except Exception as c:
+#     print("미리 파악하지 못한 예외 발생")
+#     print(type(c), c)
+#
     
 # raise
 # 내가 만든 예외를 발생시키는 것
+
+# 복사
+
+x = 50
+def pow(v):
+    temp=v
+    v = v**2
+    print(temp)
+    print(v)
+
+pow(x)
+import copy
+a = [1,2,3,4]
+b = [0]
+
+def change(l):
+    temp2 = l
+    # l.append(9) # 이건 관련함수, 객체에 관련된거, 원본을 건드린다.
+    l= l+[9]# 연산, 9를 더한 객체를 만들어라
+    print(temp2)
+    print(l)
+
+change(a)
+
+# 얕은 복사
+# 슬라이싱, 카피함수 쓰는 거
+
+# 깊은 복사
+# copy모듈의 deepcopy(복사하려는 대상)함수를 쓰는 것
+
+# lista = ["123",'456']
+# listb = lista
+# listb.append("789")
+# print(lista)
+# print(listb)
+
+lista = ["123",'456']
+listb = lista.copy()
+print(id(listb))
+print(id(lista))
+print(id(lista[0])) # 같은 주소나옴
+print(id(listb[0])) # 같은 주소나옴
+listb.append("789")
+# listb = listb + [999]  여기서는 위 설명과 다르다...
+print(lista)
+print(listb)
+
+# 카피를 하면 b리스트 수정해도 a에 반영x
+# 얕은 복사는 안에 요소를 공유하기 때문에 같은 결과나옴
+# list_a = ["123",["456", "789"]]
+# list_b = list_a.copy()
+#
+# list_b[1][0]="555"
+# print(list_a)
+# print(list_b)
+
+list_a = ["123",["456", "789"]]
+list_b = copy.deepcopy(list_a)
+
+list_b[1][0]="555"
+print(list_a)
+print(list_b)
+print(id(list_a[1]))
+print(id(list_b[1]))
+
