@@ -1,11 +1,14 @@
 import math
 import sys
+import pandas as pd
 sys.setrecursionlimit(1000)
 earned_income_tax = [] # 근로소득세 변수
-error_list=[] # 찢겨져 있는 행 담아놓는 변수
+sum_list = 0
 mark = ["/","!","~","@","#","$","%","^","&","*","_","+","=","|","<",">","?"] # 특수기호 없애기 위한 변수
 MAX = 13 # 행 크기 상수
 final_index = 0 # 행 붙이기의 마지막 인덱스 변수
+error_list=[] # 찢겨져 있는 행 담아놓는 변수
+
 
 # 빈문자열만 들어있는 리스트 삭제하는 함수
 def remove_none():
@@ -18,14 +21,51 @@ def remove_none():
     except Exception as e:
         print("remove_none =>", type(e), e)
 
+# 찢어진 행 합치는 함수
+def distroyed_recovery():
+    global error_list
+    global sum_list
+    global final_index
+    if len(error_list) == 0:
+        search_row() # 찢어진 행 찾는 함수실행
+    print("===> ", error_list)
+    for j in range(1, len(error_list)): # 에러리스트 길이만큼 반복하여 행 합치기
+        print("earned_income_tax[error_list[0]] -> ",earned_income_tax[error_list[0]])
+        sum_list = len(earned_income_tax[error_list[0]])
 
-# 찢겨진 행 붙이는 함수
-def distroyed_recovery(error_list):
-    try:
-        pass
+        if sum_list != MAX:
+            earned_income_tax[error_list[0]] += earned_income_tax[error_list[j]] # 첫번째 나온 행번호에 다음 행들을 합친다.
+            earned_income_tax[error_list[j]].clear()
 
-    except Exception as e:
-        print("distroyed_recovery()", type(e), e)
+        if len(earned_income_tax[error_list[0]]) ==MAX: # 만약 에러리스트 첫번째 요소에 해당하는 행의 길이가 MAX와 같다면
+            # del earned_income_tax[error_list[j]] # 뒤에 이어붙인 원본을 제거하라
+            # remove_none()
+            earned_income_tax[error_list[j]] = "" # 나중에 삭제하기 위해 빈문자열로 처리...
+            error_list[0] = ""
+            error_list[j] = ""
+            error_list = list(filter(None, error_list))
+            # final_index = j # 마지막 행번호를 저장
+            print("error_list=>", error_list)
+            distroyed_recovery()
+            break
+    remove_none()
+
+
+    # 행 프린트
+    for j in range(len(earned_income_tax)):
+        print(j, "-->", earned_income_tax[j])
+    print("error_list->", error_list)
+
+
+
+# 찢어진 행 찾는 함수
+def search_row():
+    for i in range(len(earned_income_tax)): 
+        sum_list = len(earned_income_tax[i])
+        if sum_list != MAX:
+            error_list.append(i)
+
+
 
 
 # ================================================파일 불러오기==================================================
@@ -63,22 +103,21 @@ try:
 except Exception as e:
     print("노이즈삭제",type(e), e)
 # ================================================찢겨져 있는 행 붙이기===========================================
-try:
-    for i in range(len(earned_income_tax)):
-        # print(i, " = " , earned_income_tax[i]) # 행번호 출력
-        if len(earned_income_tax[i]) < MAX : # 행의 길이가 13보다 작으면
-            error_list.append(i) # error_list에 행번호 집어넣어라
-
-    print("error_list => ", error_list)
 
 
+#try:
 
-    distroyed_recovery(error_list)
-    # for i in range(len(earned_income_tax)):
-    #     print(i , "=>", earned_income_tax[i])
 
-except Exception as e:
-    print("찢겨진 행 이어붙이기",type(e), e)
+distroyed_recovery()
+
+
+
+#
+# for i in range(len(earned_income_tax)):
+#     print(i , "=>", earned_income_tax[i])
+
+# except Exception as e:
+#     print("찢겨진 행 이어붙이기",type(e), e)
 
 # ===============================================None에 값 집어넣기==============================================
 #
@@ -177,9 +216,9 @@ def main():
         employmone_insurance = int((month_income * 0.09)* 10000)
         earned_income = tax(annual_income)
         local_income_tax = int(math.floor(int(earned_income * 0.1))/10) *10
-        real_anuual_income = (annual_income * 10000) - national_pension - health_insurance - care_insurance - employmone_insurance - earned_income - local_income_tax
-        real_month_income = int(real_anuual_income / 12)
 
+        real_month_income = int(((annual_income * 10000) / 12)- national_pension - health_insurance - care_insurance - employmone_insurance - earned_income - local_income_tax)
+        real_anuual_income = int(int(real_month_income * 10000)/12)
         print("국민연금 = ",format(national_pension, ','),
               "\n건강보험 = ", format(health_insurance,','),
               "\n요양보험 = ", format(care_insurance,','),
