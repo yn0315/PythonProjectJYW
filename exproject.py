@@ -23,48 +23,54 @@ def remove_none():
 
 # 찢어진 행 합치는 함수
 def distroyed_recovery():
-    global error_list
-    global sum_list
-    global final_index
-    if len(error_list) == 0:
-        search_row() # 찢어진 행 찾는 함수실행
-    print("===> ", error_list)
-    for j in range(1, len(error_list)): # 에러리스트 길이만큼 반복하여 행 합치기
-        print("earned_income_tax[error_list[0]] -> ",earned_income_tax[error_list[0]])
-        sum_list = len(earned_income_tax[error_list[0]])
+    try:
+        global error_list
+        global sum_list
+        global final_index
+        if len(error_list) == 0:
+            search_row() # 찢어진 행 찾는 함수실행
+        print("===> ", error_list)
+        for j in range(1, len(error_list)): # 에러리스트 길이만큼 반복하여 행 합치기
+            print("earned_income_tax[error_list[0]] -> ",earned_income_tax[error_list[0]])
+            sum_list = len(earned_income_tax[error_list[0]])
 
-        if sum_list != MAX:
-            earned_income_tax[error_list[0]] += earned_income_tax[error_list[j]] # 첫번째 나온 행번호에 다음 행들을 합친다.
-            earned_income_tax[error_list[j]].clear()
+            if sum_list != MAX:
+                earned_income_tax[error_list[0]] += earned_income_tax[error_list[j]] # 첫번째 나온 행번호에 다음 행들을 합친다.
+                earned_income_tax[error_list[j]].clear()
 
-        if len(earned_income_tax[error_list[0]]) ==MAX: # 만약 에러리스트 첫번째 요소에 해당하는 행의 길이가 MAX와 같다면
-            # del earned_income_tax[error_list[j]] # 뒤에 이어붙인 원본을 제거하라
-            # remove_none()
-            earned_income_tax[error_list[j]] = "" # 나중에 삭제하기 위해 빈문자열로 처리...
-            error_list[0] = ""
-            error_list[j] = ""
-            error_list = list(filter(None, error_list))
-            # final_index = j # 마지막 행번호를 저장
-            print("error_list=>", error_list)
-            distroyed_recovery()
-            break
-    remove_none()
+                if len(earned_income_tax[error_list[0]]) ==MAX: # 만약 에러리스트 첫번째 요소에 해당하는 행의 길이가 MAX와 같다면
+                    # del earned_income_tax[error_list[j]] # 뒤에 이어붙인 원본을 제거하라
+                    # remove_none()
+                    earned_income_tax[error_list[j]] = "" # 나중에 삭제하기 위해 빈문자열로 처리...
+                    error_list[0] = ""
+                    error_list[j] = ""
+                    error_list = list(filter(None, error_list))
+                    # final_index = j # 마지막 행번호를 저장
+                    print("error_list=>", error_list)
+
+                    distroyed_recovery()
+
+        remove_none()
 
 
-    # 행 프린트
-    for j in range(len(earned_income_tax)):
-        print(j, "-->", earned_income_tax[j])
-    print("error_list->", error_list)
+        # 행 프린트
+        for j in range(len(earned_income_tax)):
+            print(j, "-->", earned_income_tax[j])
 
+
+    except Exception as e:
+        print("distroyed_recovery", type(e), e)
 
 
 # 찢어진 행 찾는 함수
 def search_row():
-    for i in range(len(earned_income_tax)): 
-        sum_list = len(earned_income_tax[i])
-        if sum_list != MAX:
-            error_list.append(i)
-
+    try:
+        for i in range(len(earned_income_tax)):
+            sum_list = len(earned_income_tax[i])
+            if sum_list != MAX:
+                error_list.append(i)
+    except Exception as e:
+        print("search_row", type(e), e)
 
 
 
@@ -105,55 +111,47 @@ except Exception as e:
 # ================================================찢겨져 있는 행 붙이기===========================================
 
 
-#try:
+try:
+
+    distroyed_recovery()
 
 
-distroyed_recovery()
-
-
-
-#
-# for i in range(len(earned_income_tax)):
-#     print(i , "=>", earned_income_tax[i])
-
-# except Exception as e:
-#     print("찢겨진 행 이어붙이기",type(e), e)
+except Exception as e:
+    print("찢겨진 행 이어붙이기",type(e), e)
 
 # ===============================================None에 값 집어넣기==============================================
-#
-# none_list = [] # None값 들어있는 리스트를 옮겨담을 리스트
-# none_list_num_list= [] # None값이 들어간 리스트의 행번호를 담는 변수
-# a = 0 # None값이 들어가있는 인덱스의 이전요소들 중 None이 아닌 첫번째 요소
-# b = 0 # None값이 들어가있는 인덱스의 이전요소들 중 None이 아닌 두번째 요소
-# result = 0
-# fre_i_list = [] # earned_income_tax[i - 1]
-# sur_i_list = [] # earned_income_tax[i + 1]
-# fre_j = 0 # earned_income_tax[i][j-1]
-# sur_j = 0 # earned_income_tax[i][j + 1]
-# j = 1
-# for i in range(len(earned_income_tax)):
-#     if "None" in earned_income_tax[i]: # None을 찾으면
-#         none_list = earned_income_tax[i] # none_list에 집어넣어라
-#         none_list_num_list.append(i) # none이 들어있는 행번호를 넣어라
-#         fre_i_list = earned_income_tax[i - 1] # 이전 행을 fre_i_list에 넣어라
-#         while earned_income_tax[i + j] != "None":
-#             if not "None" in earned_income_tax[i + j]:
-#                 sur_i_list = earned_income_tax[i + j]
-#                 print("none_list =>", none_list)
-#                 print("fre_i_list => ", fre_i_list)
-#                 print("sur_i_list => ", sur_i_list)
-#                 j += 1
-#                 break
-#
-#             else:
-#                 continue
-#         break
-#     else: # i가 None이면
-#         continue # 계속해라
-#     break
-# for i in range(len(earned_income_tax)):
-#     print(earned_income_tax[i])
-#
+try:
+    none_list = [] # None값 들어있는 리스트를 옮겨담을 리스트
+    none_list_num_list= [] # None값이 들어간 리스트의 행번호를 담는 변수
+    a = 0 # None값이 들어가있는 인덱스의 이전요소들 중 None이 아닌 첫번째 요소
+    b = 0 # None값이 들어가있는 인덱스의 이전요소들 중 None이 아닌 두번째 요소
+    result = 0
+    fre_i_list = [] # earned_income_tax[i - 1]
+    sur_i_list = [] # earned_income_tax[i + 1]
+    fre_j = 0 # earned_income_tax[i][j-1]
+    sur_j = 0 # earned_income_tax[i][j + 1]
+    j = 1
+    try:
+        print("None!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+        for i in range(len(earned_income_tax)):
+            if "None" in earned_income_tax[i]: # None을 찾으면
+                none_list = earned_income_tax[i] # none_list에 집어넣어라
+                none_list_num_list.append(i) # none이 들어있는 행번호를 넣어라
+                print(none_list)
+                fre_i_list = earned_income_tax[i - 1] # 이전 행을 fre_i_list에 넣어라
+                sur_i_list = earned_income_tax[i + 1]
+                print("fre => ",fre_i_list)
+                print("sur => ",sur_i_list)
+                
+            else: # i가 None이면
+                continue # 계속해라
+            break
+    except Exception as e:
+        print("None값 for문", type(e),e)
+    # for i in range(len(earned_income_tax)):
+    #     print(earned_income_tax[i])
+except Exception as e:
+    print("None값", type(e), e)
 
 
 
