@@ -110,12 +110,8 @@ except Exception as e:
     print("노이즈삭제",type(e), e)
 # ================================================찢겨져 있는 행 붙이기===========================================
 
-
 try:
-
     distroyed_recovery()
-
-
 except Exception as e:
     print("찢겨진 행 이어붙이기",type(e), e)
 
@@ -142,7 +138,7 @@ try:
                 sur_i_list = earned_income_tax[i + 1]
                 print("fre => ",fre_i_list)
                 print("sur => ",sur_i_list)
-                
+
             else: # i가 None이면
                 continue # 계속해라
             break
@@ -210,10 +206,10 @@ def main():
         month_income = int(annual_income/12)
         national_pension = int((month_income * 0.045)*10000)
         health_insurance = int((month_income * 0.03495) *10000)
-        care_insurance = int(math.floor(int(health_insurance * 0.1227))/10)*10
+        care_insurance = int(math.floor(health_insurance * 0.1227)/10)*10
         employmone_insurance = int((month_income * 0.09)* 10000)
         earned_income = tax(annual_income)
-        local_income_tax = int(math.floor(int(earned_income * 0.1))/10) *10
+        local_income_tax = int(math.floor(earned_income * 0.1)/10) *10
 
         real_month_income = int(((annual_income * 10000) / 12)- national_pension - health_insurance - care_insurance - employmone_insurance - earned_income - local_income_tax)
         real_anuual_income = int(int(real_month_income * 10000)/12)
