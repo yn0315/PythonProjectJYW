@@ -22,7 +22,7 @@ def remove_none():
         print("remove_none =>", type(e), e)
 
 # 찢어진 행 합치는 함수
-def distroyed_recovery():
+def distroyed_recovery(): #............. 잘못만듦, 오면 안될 것이 달라붙음, 반복조건문 다시 수정해야함
     try:
         global error_list
         global sum_list
@@ -135,10 +135,20 @@ try:
                 none_list_num_list.append(i) # none이 들어있는 행번호를 넣어라
                 print(none_list)
                 fre_i_list = earned_income_tax[i - 1] # 이전 행을 fre_i_list에 넣어라
-                sur_i_list = earned_income_tax[i + 1]
+                sur_i_list = earned_income_tax[i + 1] # 다음 행을 sur_i_list에 넣어라
                 print("fre => ",fre_i_list)
                 print("sur => ",sur_i_list)
+                for j in range(len(none_list)): # none_list 길이만큼 반복하여
+                    if none_list[j] == "None": # none_list[j]에 None이 들어있으면
+                        if fre_i_list[j] == "-":
+                            none_list[j] = "-"
+                            print("None_list!!! ->", none_list)
+                        else: # None이 들어있거나 숫자인경우
+                            if fre_i_list[j] != "None":
+                                print("fre_i_list=>", fre_i_list)
 
+
+                            
             else: # i가 None이면
                 continue # 계속해라
             break
@@ -148,19 +158,6 @@ try:
     #     print(earned_income_tax[i])
 except Exception as e:
     print("None값", type(e), e)
-
-
-
-# if a > b : # a가 b보다 크면
-#     result = int(a) - int(b) # a - b를 해서 result에 넣어라
-#     print(result)
-# elif b > a : # b가 a보다 크면
-#     result = int(b) - int(a) # b - a를 해서 result에 넣어라
-#     print(result)
-#
-# for i in range(MAX): # 길이는 13으로 맞춰져 있으니 MAX만큼 돌려서
-#     if earned_income_tax[none_list_num][i] == "None": # 인덱스에 None이 포함돼있으면
-#         earned_income_tax[none_list_num][i] = (int(none_list[i - 1]) - int(result *0.8)) # 이전 인덱스의 값에서 result의 0.8을 곱한 값을 빼서 넣어라
 
 
 
