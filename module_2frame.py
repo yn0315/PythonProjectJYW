@@ -2,6 +2,7 @@
 
 # 깜빡이(방향지시등) 함수
 def winker():
+
     try:
         # on/off기능 좌 우 기능
         print("a. 좌측 방향지시등 ON s. 좌측 방향지시등 OFF d. 우측 방향지시등 ON w. 우측 방향지시등 OFF")
@@ -286,19 +287,21 @@ def hit():
         print("hit", type(e), e)
 
 
+# 라디오 함수
+def fm():
+    channel_FM = [89.1, 91.9, 93.1, 93.9, 94.5, 95.9, 96.7, 99.1, 101.9, 104.5]
+    current_channel = channel_FM[0]
+    print("")
+
+
 
 # 	라디오(채널 조절버튼2개)
 def radio():
     # 라디오 채널 리스트
-    channel_FM = [89.1, 91.9, 93.1, 93.9, 94.5, 95.9, 96.7, 99.1, 101.9, 104.5]
+    # 디폴드값 FM 89.1
+
     channel_AM = [603, 711, 792, 837, 900, 1134]
-    print("a. AM f. FM")
-    a = input()
-    if a == "a":
-        print("AM")
-        
-    elif a == "f":
-        print("FM")
+    fm()
 
 # 	음량조절버튼
 def volume():
