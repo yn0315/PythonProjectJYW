@@ -209,8 +209,7 @@ def main():
         earned_income = tax(annual_income)
         local_income_tax = int(math.floor(earned_income * 0.1) / 10) * 10
 
-        real_month_income = int(((
-                                             annual_income * 10000) / 12) - national_pension - health_insurance - care_insurance - employmone_insurance - earned_income - local_income_tax)
+        real_month_income = int(((annual_income * 10000) / 12) - national_pension - health_insurance - care_insurance - employmone_insurance - earned_income - local_income_tax)
         real_anuual_income = int(int(real_month_income * 10000) / 12)
         print("국민연금 = ", format(national_pension, ','),
               "\n건강보험 = ", format(health_insurance, ','),
