@@ -1,24 +1,34 @@
+import mod_winker
+import mod_wiper
+import mod_handle
+page = 1
+
+def fw():
+
+    if page == 1:
+        mod_handle.handle()  # 페이지가 1이면 핸들 연결
+
+def fs():
+    if page == 1:
+        button() # 페이지가 1이면 내부버튼 연결
+
+    elif page == 2:
+        klaxon() # 페이지가 2이면 클랙슨 연결
+
+def fa():
+    if page == 2:
+        light() # 페이지가 2이면 light 연결
+
+def fd():
+    if page == 2:
+        mod_wiper.wiper()
+
+def f1():
+    if page == 2:
+        mod_winker.winker()
 
 
-# 깜빡이(방향지시등) 함수
-def winker():
-
-    try:
-        # on/off기능 좌 우 기능
-        print("a. 좌측 방향지시등 ON s. 좌측 방향지시등 OFF d. 우측 방향지시등 ON w. 우측 방향지시등 OFF")
-        alpa = input(">>")
-
-        if alpa == "a":
-            return 1 # 좌측 방향지시등 ON
-        elif alpa == "s":
-            return 2 # 좌측 방향지시등 OFF
-        elif alpa == "d":
-            return 3 # 우측 방향지시등 ON
-        elif alpa == "w":
-            return 4 # 우측 방향지시등 OFF
-    except Exception as e:
-        print("winker", type(e), e)
-
+#######################################################################################################################
 # 임시 라이트 함수
 def light():
     pass
@@ -26,72 +36,38 @@ def light():
 # 클락션 함수
 def klaxon():
     print("빵")
-
-# 와이퍼 함수
-def wiper():
-    try:
-        speed = 0
-        wiper_o_or_c = 0
-        print("a. 속도1 s. 속도2 d. 속도3 w. 워셔액 k. 와이퍼 가동중단" )
-        alpa = input(">>") + "\n"
-        if alpa == "a":
-            speed = 1
-            wiper_o_or_c = 1 # 와이퍼 가동
-            print("와이퍼 가동 : 속도 {}".format(speed))
-            return speed
-        elif alpa == "s":
-            speed = 2
-            print("와이퍼 가동 : 속도 {}".format(speed))
-            return speed
-        elif alpa == "d":
-            speed = 3
-            print("와이퍼 가동: 속도 {}".format(speed))
-            return speed
-        elif alpa == "w":
-            print("워셔액 분사")
-        elif alpa == "k":
-            wiper_o_or_c = 0 # 와이퍼 가동 중단
-            print("와이퍼 가동중단")
-    except Exception as e:
-        print("wiper", type(e), e)
-
+#######################################################################################################################
 
 # 임시 엔진함수
 def engine():
     return 1
 
-def handle():
-    try:
-        # 엔진이 돌아가지 않은 상황에서 돌리게 되면 락걸림
-        e = engine() # 여기서 함수호출이 아니라 임포트로 가져와야 함
-        # 돌발상황일 때 에어백 터지는 기능
+#######################################################################################################################
 
-        # 엔진이 꺼져있을 때
-        if e == 0: # off
-            return
-        # 엔진이 켜져있을 때
-        elif e == 1: # on
-            print("a. 방향지시등 s.라이트 d. 클락션 w. 와이퍼")
-            alpa = input(">>")
-            if alpa == "a":
-                winker() # 방향지시등
-            elif alpa == "s":
-                light() # 라이트
-            elif alpa == "d":
-                klaxon() # 클락션
-            elif alpa == "w":
-                wiper() # 와이퍼
-    except Exception as e:
-        print("handle", type(e), e)
 #
 # 7. 내부버튼 button
 
 def button():
-
+    print("a.에어컨/히터 s.비상깜빡이 d.열선시트 w.핸들열선 j.라디오 k.음량조절")
     air_conditioner()
 
 # 	비상깜빡이
 # 	에어컨, 히터, 온도조절버튼, 내,외부순환버튼, 에어컨 방향, 바람세기조절버튼
+
+# 에어컨 on/off함수
+
+# 에어컨 바람세기함수
+
+# 에어컨 풍향함수
+
+# 히터 on/off함수
+
+# 히터 바람세기함수
+
+# 히터 풍향함수
+
+
+
 def air_conditioner():
     try:
         temperature = 18  # 현재온도
@@ -233,7 +209,7 @@ def hit():
     try:
         print("a. 핸들열선 s. 시트열선 d. 통풍시트")
         a = input(">>")
-        if a == "a": # 핸들열선
+        if a == "a": # 핸들열선 on/off만
             handle_hit = 1
             print("a. 저온 s. 중온 d. 고온 ")
             b = input(">>")
@@ -306,7 +282,5 @@ def radio():
 # 	음량조절버튼
 def volume():
     pass
-handle()
-button()
-
+fw()
 
