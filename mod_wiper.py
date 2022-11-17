@@ -18,7 +18,7 @@ def wiper():
     try:
         speed = 1
 
-        print("a. 와이퍼 가동 s. 속도1 d. 속도2 w. 워셔액 k. 와이퍼 가동중단")
+        print("a. 와이퍼 가동 s. 속도1 d. 속도2 w. 워셔액 1.와이퍼 가동중단")
         print()
 
     except Exception as e:

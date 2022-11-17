@@ -1,30 +1,37 @@
 # 깜빡이(방향지시등)2세대 함수
-
+winker_on_or_off = 0
 # 좌측 방향지시등 ON
 def left_winker_on():
-    return 1
+    global winker_on_or_off
+    winker_on_or_off = 1
+    return winker_on_or_off
 
 
 # 좌측 방향지시등 OFF
 def left_winker_off():
-    return 2
+    global winker_on_or_off
+    winker_on_or_off = 2
+    return winker_on_or_off
 
 
 # 우측 방향지시등 ON
 def right_winker_on():
-    return 3
+    global winker_on_or_off
+    winker_on_or_off = 3
+    return winker_on_or_off
 
 
 # 우측 방향지시등 OFF
 def right_winker_off():
-    return 4
+    global winker_on_or_off
+    winker_on_or_off = 4
+    return winker_on_or_off
 
 
 #######################################################################################################################
 # 깜빡이(방향지시등) 함수
 def winker():
-    global page
-    page = 3
+
     try:
 
         # on/off기능 좌 우 기능
