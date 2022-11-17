@@ -2,15 +2,15 @@ current_temperature = 18 # 현재온도변수
 select_temperature = 18 # 선택온도변수
 aircon_on_or_off = 0 # 에어컨 켰는지 여부 변수
 heater_on_or_off = 0 # 히터 켰는지 여부 변수
-wind_strength = "" # 에어컨 바람세기 변수
-heater_wind_strength = "" # 히터 바람세기 변수
+wind_strength = "약" # 에어컨 바람세기 변수
+heater_wind_strength = "약" # 히터 바람세기 변수
 
 # 에어컨 on함수
 def aircon_on():
     global aircon_on_or_off
     aircon_on_or_off = 1
     print("a. 온도조절 s. 바람세기 d. 풍향조절")
-
+    air_strength()
 # 에어컨 off함수
 def aircon_off():
     global aircon_on_or_off
@@ -63,27 +63,41 @@ def air_temperature():
 #######################################################################################################################
 
 # 에어컨 바람세기 (약) 함수
-def aircon_wind_strength_1():
-    wind_strength = "약"
-    print("바람세기 : {}".format(wind_strength))
+def aircon_wind_strength_123():
+    global wind_strength
+    if wind_strength == "약":
+        wind_strength = "중"
+        print("바람세기 : {}".format(wind_strength))
+    elif wind_strength == "중":
+        wind_strength = "강"
+        print("바람세기 : {}".format(wind_strength))
+    elif wind_strength == "강":
+        wind_strength = "꺼짐"
+        print("바람세기 : {}".format(wind_strength))
+    elif wind_strength == "꺼짐":
+        wind_strength = "약"
+        print("바람세기 : {}".format(wind_strength))
     return wind_strength
 
-# 에어컨 바람세기 (중) 함수
-def aircon_wind_strength_2():
-    wind_strength = "중"
-    print("바람세기 : {}".format(wind_strength))
-    return wind_strength
-
-# 에어컨 바람세기 (강) 함수
-def aircon_wind_strength_3():
-    wind_strength = "강"
-    print("바람세기 : {}".format(wind_strength))
-    return wind_strength
+# # 에어컨 바람세기 (중) 함수
+# def aircon_wind_strength_2():
+#     wind_strength = "중"
+#     print("바람세기 : {}".format(wind_strength))
+#     return wind_strength
+#
+# # 에어컨 바람세기 (강) 함수
+# def aircon_wind_strength_3():
+#     wind_strength = "강"
+#     print("바람세기 : {}".format(wind_strength))
+#     return wind_strength
 
 # 에어컨 바람세기함수
 def air_strength():
-    print("a. 바람세기 약 s. 바람세기 중 d. 바람세기 강")
-
+    print("a. 바람세기 증가")
+    aircon_wind_strength_123()
+    aircon_wind_strength_123()
+    aircon_wind_strength_123()
+    aircon_wind_strength_123()
 
 #######################################################################################################################
 # 에어컨 풍향 위쪽 함수
@@ -131,7 +145,6 @@ def heater_temperature_go_up():
         print("선택온도 : {}".format(select_temperature))
         aircon_select_complete()
 
-
     else:
         select_temperature += 1  # 선택온도를 올려준다
         print("선택온도 : {}".format(select_temperature))
@@ -170,27 +183,38 @@ def heater_temperature():
 # 히터 바람세기 (약) 함수
 def heater_wind_strength_1():
     global heater_wind_strength
-    heater_wind_strength = "약"
-    print("바람세기 : {}".format(wind_strength))
-    return wind_strength
+    if heater_wind_strength == "약":
+        heater_wind_strength = "중"
+        print("바람세기 : {}".format(heater_wind_strength))
+    elif heater_wind_strength == "중":
+        heater_wind_strength = "강"
+        print("바람세기 : {}".format(heater_wind_strength))
+    elif heater_wind_strength == "강":
+        heater_wind_strength = "꺼짐"
+        print("바람세기 : {}".format(heater_wind_strength))
+    elif heater_wind_strength == "꺼짐":
+        heater_wind_strength = "약"
+        print("바람세기 : {}".format(heater_wind_strength))
+    return heater_wind_strength
 
-# 히터 바람세기 (중) 함수
-def heater_wind_strength_2():
-    global heater_wind_strength
-    heater_wind_strength = "중"
-    print("바람세기 : {}".format(wind_strength))
-    return wind_strength
-
-# 히터 바람세기 (강) 함수
-def heater_wind_strength_3():
-    global heater_wind_strength
-    heater_wind_strength = "강"
-    print("바람세기 : {}".format(wind_strength))
-    return wind_strength
+#
+# # 히터 바람세기 (중) 함수
+# def heater_wind_strength_2():
+#     global heater_wind_strength
+#     heater_wind_strength = "중"
+#     print("바람세기 : {}".format(wind_strength))
+#     return wind_strength
+#
+# # 히터 바람세기 (강) 함수
+# def heater_wind_strength_3():
+#     global heater_wind_strength
+#     heater_wind_strength = "강"
+#     print("바람세기 : {}".format(wind_strength))
+#     return wind_strength
 
 # 히터 바람세기함수
 def heater_strength():
-    print("a. 바람세기 약 s. 바람세기 중 d. 바람세기 강")
+    print("a. 바람세기 증가")
 
 #######################################################################################################################
 # 히터 풍향 위쪽 함수
@@ -217,8 +241,9 @@ def air_conditioner_heater():
     try:
         print("현재 온도: {}".format(current_temperature))
         print("a. 에어컨 가동 s. 히터가동 ")
-
+        aircon_on()
 
     except Exception as e:
         print("air_conditioner", type(e), e)
 
+air_conditioner_heater()
