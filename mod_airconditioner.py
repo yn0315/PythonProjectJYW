@@ -1,21 +1,10 @@
 current_temperature = 18 # 현재온도변수
 select_temperature = 18 # 선택온도변수
-aircon_on_or_off = 0 # 에어컨 켰는지 여부 변수
-heater_on_or_off = 0 # 히터 켰는지 여부 변수
-wind_strength = "약" # 에어컨 바람세기 변수
-heater_wind_strength = "약" # 히터 바람세기 변수
+aircon_on_or_off = 0 # 에어컨 켰는지 여부 변수 0 꺼짐 1 에어컨 2 히터
+wind_strength = 1 # 에어컨 바람세기 변수 0 꺼짐 1 약 2 중 3 강
+heater_wind_strength = 1 # 히터 바람세기 변수
+wind_direction = 0 # 바람 방향 변수 0 위 1 아래
 
-# 에어컨 on함수
-def aircon_on():
-    global aircon_on_or_off
-    aircon_on_or_off = 1
-    print("a. 온도조절 s. 바람세기 d. 풍향조절")
-    air_strength()
-# 에어컨 off함수
-def aircon_off():
-    global aircon_on_or_off
-    aircon_on_or_off = 0
-    return aircon_on_or_off
 
 #######################################################################################################################
 
@@ -25,225 +14,85 @@ def aircon_select_complete():
 
 # 에어컨 온도상승함수
 def aircon_temperature_go_up():
-    while True:
-        global select_temperature
-        select_temperature += 1  # 선택온도를 올려준다
+
+    global select_temperature
+    select_temperature += 1  # 선택온도를 올려준다
+    print("선택온도 : {}".format(select_temperature))
+    if select_temperature == 30:
+        select_temperature = 30
         print("선택온도 : {}".format(select_temperature))
-        if select_temperature == 30:
-            select_temperature = 30
-            print("선택온도 : {}".format(select_temperature))
-            aircon_select_complete()
-            break
+        aircon_select_complete()
+        return select_temperature
 
 # 에어컨 온도하락함수
 def aircon_temperature_go_down():
-    while True:
-        global select_temperature
-        select_temperature -= 1  # 선택온도를 내려준다
+
+    global select_temperature
+    select_temperature -= 1  # 선택온도를 내려준다
+    print("선택온도 : {}".format(select_temperature))
+    if select_temperature == 16:
+        select_temperature = 16
         print("선택온도 : {}".format(select_temperature))
-        if select_temperature == 16:
-            select_temperature = 16
-            print("선택온도 : {}".format(select_temperature))
-            aircon_select_complete()
-            break
-
-# 에어컨 온도조절함수
-def air_temperature():
-    try:
-        global current_temperature
-        current_temperature = 18
-        print("현재온도 : {}".format(current_temperature))
-        while True:
-            print("a. 온도상승 s. 온도하락 d. 완료")
-            break
-
-    except Exception as e:
-        print("에어컨 온도조절", type(e), e)
+        aircon_select_complete()
+        return select_temperature
 
 #######################################################################################################################
 
-# 에어컨 바람세기 (약) 함수
+# 에어컨 바람세기 함수
 def aircon_wind_strength_123():
     global wind_strength
-    if wind_strength == "약":
-        wind_strength = "중"
+    if wind_strength == 1: # 약
+        wind_strength = 2 # 중
         print("바람세기 : {}".format(wind_strength))
-    elif wind_strength == "중":
-        wind_strength = "강"
+    elif wind_strength == 2: # 중
+        wind_strength = 3 # 강
         print("바람세기 : {}".format(wind_strength))
-    elif wind_strength == "강":
-        wind_strength = "꺼짐"
+    elif wind_strength == 3: #강
+        wind_strength = 0 # 꺼짐
         print("바람세기 : {}".format(wind_strength))
-    elif wind_strength == "꺼짐":
-        wind_strength = "약"
+    elif wind_strength == 0: #꺼짐
+        wind_strength = 1 # 약
         print("바람세기 : {}".format(wind_strength))
+
     return wind_strength
 
-# # 에어컨 바람세기 (중) 함수
-# def aircon_wind_strength_2():
-#     wind_strength = "중"
-#     print("바람세기 : {}".format(wind_strength))
-#     return wind_strength
-#
-# # 에어컨 바람세기 (강) 함수
-# def aircon_wind_strength_3():
-#     wind_strength = "강"
-#     print("바람세기 : {}".format(wind_strength))
-#     return wind_strength
-
-# 에어컨 바람세기함수
-def air_strength():
-    print("a. 바람세기 증가")
-    aircon_wind_strength_123()
-    aircon_wind_strength_123()
-    aircon_wind_strength_123()
-    aircon_wind_strength_123()
 
 #######################################################################################################################
 # 에어컨 풍향 위쪽 함수
-def aircon_direction_go_up():
-    wind_direction = "위"
+def aircon_direction_go_up_down():
+    global wind_direction
+    if wind_direction == 0: # 위쪽
+        wind_direction = 1 # 아래쪽
+    elif wind_direction == 1: # 아래쪽
+        wind_direction = 0 # 위쪽
     print("바람이 {}쪽으로 나옵니다.".format(wind_direction))
     return wind_direction
 
-# 에어컨 풍향 아래쪽 함수
-def aircon_direction_go_down():
-    wind_direction = "아래"
-    print("바람이 {}쪽으로 나옵니다.".format(wind_direction))
-    return wind_direction
-
-# 에어컨 풍향함수
-def air_direction():
-    print("w. 위 s. 아래")
-
 #######################################################################################################################
 #######################################################################################################################
 
-# 히터 on함수
-def heater_on():
-    global heater_on_or_off
-    heater_on_or_off = 1
-    print("a. 온도조절 s. 바람세기 d. 풍향조절")
-
-# 히터 off함수
-def heater_off():
-    global heater_on_or_off
-    heater_on_or_off = 0
-    return heater_on_or_off
-
-#######################################################################################################################
-
-# 히터 온도선택완료함수
-def heater_select_complete():
-    return select_temperature
-
-# 히터 온도상승함수
-def heater_temperature_go_up():
-    global select_temperature
-    if select_temperature == 35:
-        select_temperature = 35
-        print("선택온도 : {}".format(select_temperature))
-        aircon_select_complete()
-
-    else:
-        select_temperature += 1  # 선택온도를 올려준다
-        print("선택온도 : {}".format(select_temperature))
-
-
-
-# 히터 온도하락함수
-def heater_temperature_go_down():
-    while True:
-        global select_temperature
-        if select_temperature == 18:
-            select_temperature = 18
-            print("선택온도 : {}".format(select_temperature))
-            aircon_select_complete()
-            break
-        else:
-            select_temperature -= 1  # 선택온도를 내려준다
-            print("선택온도 : {}".format(select_temperature))
-
-
-# 히터 온도조절함수
-def heater_temperature():
-    try:
-        global current_temperature
-        current_temperature = 18
-        print("현재온도 : {}".format(current_temperature))
-        while True:
-            print("a. 온도상승 s. 온도하락 d. 완료")
-            break
-
-    except Exception as e:
-        print("에어컨 온도조절", type(e), e)
-
-#######################################################################################################################
-
-# 히터 바람세기 (약) 함수
-def heater_wind_strength_1():
-    global heater_wind_strength
-    if heater_wind_strength == "약":
-        heater_wind_strength = "중"
-        print("바람세기 : {}".format(heater_wind_strength))
-    elif heater_wind_strength == "중":
-        heater_wind_strength = "강"
-        print("바람세기 : {}".format(heater_wind_strength))
-    elif heater_wind_strength == "강":
-        heater_wind_strength = "꺼짐"
-        print("바람세기 : {}".format(heater_wind_strength))
-    elif heater_wind_strength == "꺼짐":
-        heater_wind_strength = "약"
-        print("바람세기 : {}".format(heater_wind_strength))
-    return heater_wind_strength
-
-#
-# # 히터 바람세기 (중) 함수
-# def heater_wind_strength_2():
-#     global heater_wind_strength
-#     heater_wind_strength = "중"
-#     print("바람세기 : {}".format(wind_strength))
-#     return wind_strength
-#
-# # 히터 바람세기 (강) 함수
-# def heater_wind_strength_3():
-#     global heater_wind_strength
-#     heater_wind_strength = "강"
-#     print("바람세기 : {}".format(wind_strength))
-#     return wind_strength
-
-# 히터 바람세기함수
-def heater_strength():
-    print("a. 바람세기 증가")
-
-#######################################################################################################################
-# 히터 풍향 위쪽 함수
-def heater_direction_go_up():
-    wind_direction = "위"
-    print("바람이 {}쪽으로 나옵니다.".format(wind_direction))
-    return wind_direction
-
-# 히터 풍향 아래쪽 함수
-def heater_direction_go_down():
-    wind_direction = "아래"
-    print("바람이 {}쪽으로 나옵니다.".format(wind_direction))
-    return wind_direction
-
-# 히터 풍향함수
-def heater_direction():
-    print("w. 위 s. 아래")
-
-
-
-#######################################################################################################################
-
+# 에어컨 히터 메인함수 0 꺼짐 1 에어컨 2히터
 def air_conditioner_heater():
     try:
         print("현재 온도: {}".format(current_temperature))
-        print("a. 에어컨 가동 s. 히터가동 ")
-        aircon_on()
+        global aircon_on_or_off
+        if aircon_on_or_off == 0:  # 꺼짐
+            aircon_on_or_off = 1  # 에어컨
+
+        elif aircon_on_or_off == 1:  # 에어컨
+            aircon_on_or_off = 2 # 히터
+
+        elif aircon_on_or_off == 2: # 히터
+            aircon_on_or_off = 0 # 꺼짐
+        return aircon_on_or_off
 
     except Exception as e:
         print("air_conditioner", type(e), e)
 
 air_conditioner_heater()
+aircon_temperature_go_up()
+aircon_temperature_go_up()
+aircon_temperature_go_up()
+aircon_temperature_go_up()
+aircon_temperature_go_up()
+
