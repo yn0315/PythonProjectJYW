@@ -12,8 +12,8 @@ def mod_volume_up():
         else:
             volume_step
             return volume_step
-    except:
-        pass
+    except Exception as e:
+        print("volume, mod_volume_up", type(e), e)
 
 def mod_volume_down():
     global volume_step
@@ -26,5 +26,5 @@ def mod_volume_down():
                 return volume_step
         else:
             pass
-    except:
-        pass
+    except Exception as e:
+        print("volume, mod_volume_down", type(e), e)
