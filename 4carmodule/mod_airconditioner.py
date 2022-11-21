@@ -4,14 +4,39 @@ aircon_on_or_off = 0 # 에어컨 켰는지 여부 변수 0 꺼짐 1 에어컨 2 
 wind_strength = 1 # 에어컨 바람세기 변수 0 꺼짐 1 약 2 중 3 강
 heater_wind_strength = 1 # 히터 바람세기 변수
 wind_direction = 0 # 바람 방향 변수 0 위 1 아래
+aircon_heater = '꺼짐상태'
 
+
+#######################################################################################################################
+
+def heater_aircon():
+    try:
+        global aircon_heater
+        if aircon_on_or_off == 1:
+            aircon_heater = '에어컨'
+        elif aircon_on_or_off == 2:
+            aircon_heater = '  히터'
+        elif aircon_on_or_off == 0:
+            aircon_heater = '꺼짐상태'
+        return aircon_heater
+    except Exception as e:
+        print("airconditioner, heater_aircon", type(e), e)
+
+def aircon_off():
+    try:
+        global aircon_heater
+        if aircon_heater != 0:
+            aircon_heater = 0
+            return
+    except Exception as e:
+        print("aiconditioner, aircon_off",type(e), e)
 
 # 에어컨 온도선택완료함수
 def aircon_select_complete():
     try:
         return select_temperature
     except Exception as e:
-        print("airconditioner, aircon_select_complete", type(e),e)
+        print("airconditioner, aircon_select_complete" ,type(e), e)
 
 # 에어컨 온도상승함수
 def aircon_temperature_go_up():
@@ -19,7 +44,7 @@ def aircon_temperature_go_up():
         global select_temperature
         select_temperature += 1  # 선택온도를 올려준다
 
-        if select_temperature == 30:
+        if select_temperature > 30:
             select_temperature = 30
 
             aircon_select_complete()
@@ -33,13 +58,13 @@ def aircon_temperature_go_down():
         global select_temperature
         select_temperature -= 1  # 선택온도를 내려준다
 
-        if select_temperature == 16:
+        if select_temperature < 16:
             select_temperature = 16
 
             aircon_select_complete()
             return select_temperature
     except Exception as e:
-        print("airconditioner, aircon_temperature_go_down", type(e),e)
+        print("airconditioner, aircon_temperature_go_down", type(e), e)
 
 #######################################################################################################################
 
@@ -49,19 +74,22 @@ def aircon_wind_strength_123():
         global wind_strength
         if wind_strength == 1: # 약
             wind_strength = 2 # 중
-
+            return
         elif wind_strength == 2: # 중
             wind_strength = 3 # 강
-
+            return
         elif wind_strength == 3: #강
-            wind_strength = 0 # 꺼짐
-
-        elif wind_strength == 0: #꺼짐
-            wind_strength = 1 # 약
+            wind_strength = 1
+            return
+        if aircon_on_or_off == 0:
+            wind_strength = 1
+        else:
+            pass
 
         return wind_strength
     except Exception as e:
         print("airconditioner, aircon_wind_strength_123", type(e), e)
+
 
 #######################################################################################################################
 # 에어컨 풍향 위쪽 함수
@@ -72,10 +100,12 @@ def aircon_direction_go_up_down():
             wind_direction = 1 # 아래쪽
         elif wind_direction == 1: # 아래쪽
             wind_direction = 0 # 위쪽
+
         return wind_direction
     except Exception as e:
         print("airconditioner, aircon_direction_go_up_down", type(e),e)
 
+#######################################################################################################################
 #######################################################################################################################
 
 # 에어컨 히터 메인함수 0 꺼짐 1 에어컨 2히터
@@ -95,9 +125,3 @@ def air_conditioner_heater():
     except Exception as e:
         print("air_conditioner, air_conditioner_heater", type(e), e)
 
-aircon_temperature_go_up()
-aircon_temperature_go_up()
-aircon_temperature_go_up()
-aircon_temperature_go_up()
-aircon_temperature_go_up()
-print(select_temperature)
