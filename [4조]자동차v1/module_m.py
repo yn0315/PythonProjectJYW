@@ -18,23 +18,43 @@ import mod_radio
 import os
 # os.system('cls')
 
-mainList =[0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
+mainList =[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
 p = 0
-bang1point = 1
+bang1point = 0
 bang2point = 1
 bang3point = 0
 bang4point = 0
 bang5point = 0
 bang6point = 0
-count = 0
 
-# mainList[22] = side.batteryCharge
-# mainList[23] = side.engineOiltemp
-# mainList[24] = side.gasolineTank
 
-# mainList = [0,1,1,3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,31.0,0,35,0,1,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
+# import time
+# import random
+# import light
+# import mod_winker
+# import side
+# import engine
+# import mod_winker
+# import mod_wiper
+# import mod_handle_seat_heat
+# import Gear
+# import Braeak
+# import Boot
+# import Accel
+# import mod_radio
 
-#======== 차 중요버튼 =======
+
+# mainList = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,31.0,0,35,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
+# mainList[1] = 0
+# mainList[3] = 0
+# mainList[21] = 1 # 안개등
+# mainList[30] = 1 # 미등
+# mainList[16] = 1 # 상향등
+# mainList[15] = 1 # 하향등
+# mainList[7] = 0
+# list = ['💡']
+
+#======== 중요버튼 ==========
 #check_list[0] = 부트
 #check_list[1] = 브레이크
 #check_list[2] = 엑셀
@@ -46,13 +66,6 @@ count = 0
 #check_list[5] = 시트 열선 On / Off
 #check_list[6] = 통풍 시트 on / off
 #check_list[7] = 비상등 on / off
-#check_list[8] = 볼륨 up   ?????????????????????????????
-#check_list[9] = 볼륨 down   ?????????????????????????????
-#check_list[10] = 라디오 선택 FM / AM   ?????????????????????????????
-#check_list[11] = 라디오 채널 변경   ?????????????????????????????????????
-#check_list[12] = 와이퍼 온  xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-#check_list[13] = 와이퍼 속도 업  xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-#check_list[14] = 와이퍼 워셔액   xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 #check_list[15] = 노멀라이트
 #check_list[16] = 하이빔
 #check_list[17] = 좌측방향등
@@ -64,14 +77,10 @@ count = 0
 #check_list[23] = 오일온도
 #check_list[24] = 기름량  xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
-
 #check_list[25] = 클락션  xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
-
 #check_list[26] = 에어컨 히터 0 , 1 , 2
-#check_list[27] = 희망온도? xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 #check_list[28] = 에어컨 히터 풍량 조절 1, 2, 3
-#check_list[29] = 풍향 조절 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
 
 
@@ -79,8 +88,7 @@ count = 0
 
 
 
-# accident_situation = random.randrange(0,10)
-accident_situation = count
+accident_situation = random.randrange(0,10)
 accident_title = ""
 accident_txt = ""
 accident_number = 0
@@ -93,7 +101,6 @@ radio_channel = ''          # 라디오 채널 받을 문자열
 radio_decibel = ''          # FM / AM 받을 문자열
 
 sound = 0                    # 볼륨 업 다운
-
 
 def radio() :                             # 라디오 문자, 채널??
     radio_value = mod_radio.fm_or_am()
@@ -185,77 +192,123 @@ def right_winker(value) :
     except :
         pass
 
-def rear_light(Break=1,Gear_R=0,tail_light=0,log_map=0,under_light=0,high_light=0,emergency_light=0) :
+# def rear_light(Break=1,Gear_R=0,tail_light=0,log_map=0,under_light=0,high_light=0,emergency_light=0) :
+#     try :
+#         if Break == 0 :
+#             return '             '
+#         elif Break == 1 :
+#             return '\033[31m \033[41m' + '■■■■■■■■■■' + '\033[0m'
+#
+#         if Gear_R == 0 :
+#             return '             '
+#         elif Gear_R == 2 :
+#             return '\033[31m \033[41m' + '■■■■■■■■■■' + '\033[0m'
+#
+#         if tail_light == 0 :
+#             return '             '
+#         elif tail_light == 1 :
+#             return '\033[93m' + '   ■■■■      ' + '\033[0m'
+#
+#         if log_map == 0 :
+#             return '             '
+#         elif log_map == 1 :
+#             return '\033[93m' + '   ■■■■      ' + '\033[0m'
+#
+#         if under_light == 0 :
+#             return '             '
+#         elif under_light == 1 :
+#             return '\033[33m' + '  ■■■■■■■■ ' + '\033[0m'
+#
+#         if high_light == 0 :
+#             return '             '
+#         elif high_light == 1 :
+#             return '\033[33m \033[43m' + '■■■■■■■■■■' + '\033[0m'
+#
+#         if emergency_light == 0 :
+#             return '             '
+#         elif emergency_light == 1 :
+#             return '\033[31m' + '   ■■■■      ' + '\033[0m'
+#     except :
+#         pass
+
+def rear_light(Break=0,Gear_R=0,tail_light=0,log_map=0,under_light=0,high_light=0,emergency_light=0) :
     try :
-        if Break == 1 :
+        if Break == 0 and Gear_R == 0 and tail_light == 0 and log_map == 0 and under_light == 0 and high_light == 0 and emergency_light == 0:
             return '             '
-        elif Break == 0 :
+        elif (Break == 1 or Gear_R == 1) and tail_light == 0 and log_map == 0 and under_light == 0 and high_light == 0 and emergency_light == 0 :
             return '\033[31m \033[41m' + '■■■■■■■■■■' + '\033[0m'
-
-        if Gear_R == 0 :
-            return '             '
-        elif Gear_R == 2 :
-            return '\033[31m \033[41m' + '■■■■■■■■■■' + '\033[0m'
-
-        if tail_light == 0 :
-            return '             '
-        elif tail_light == 1 :
+        elif Break == 0 and Gear_R == 0 and (tail_light == 1 or log_map == 1) and under_light == 0 and high_light == 0 and emergency_light == 0:
             return '\033[93m' + '   ■■■■      ' + '\033[0m'
-
-        if log_map == 0 :
-            return '             '
-        elif log_map == 1 :
-            return '\033[93m' + '   ■■■■      ' + '\033[0m'
-
-        if under_light == 0 :
-            return '             '
-        elif under_light == 1 :
-            return '\033[33m' + '  ■■■■■■■■ ' + '\033[0m'
-
-        if high_light == 0 :
-            return '             '
-        elif high_light == 1 :
-            return '\033[33m \033[43m' + '■■■■■■■■■■' + '\033[0m'
-
-        if emergency_light == 0 :
-            return '             '
-        elif emergency_light == 1 :
+        elif Break == 0 and Gear_R == 0 and tail_light == 0 and log_map == 0 and under_light == 1 and high_light == 0 and emergency_light == 0 :
+            return '\033[33m' + ' ■■■■■■■' + '\033[0m' + '     '
+        elif Break == 0 and Gear_R == 0 and tail_light == 0 and log_map == 0 and under_light == 0 and high_light == 1 and emergency_light == 0 :
+            return '\033[33m \033[43m' + '■■■■■■■■' + '\033[0m' + '    '
+        elif Break == 0 and Gear_R == 0 and tail_light == 0 and log_map == 0 and under_light == 0 and high_light == 0 and emergency_light == 1 :
             return '\033[31m' + '   ■■■■      ' + '\033[0m'
+        elif Break == 0 and Gear_R == 0 and tail_light == 1 and log_map == 1 and under_light == 1 and high_light == 1 and emergency_light == 1 :
+            return '\033[33m' + ' ■■■■' + '\033[0m' + '\033[31m' + '■■■■    ' + '\033[0m'
+        elif Break == 0 and Gear_R == 0 and tail_light == 1 and log_map == 1 and under_light == 1 and high_light == 1 and emergency_light == 0 :
+            return '\033[33m \033[43m' + '■■■■■■■■■■' + '\033[0m'
+        elif Break == 1 and Gear_R == 0 and tail_light == 1 and log_map == 1 and under_light == 1 and high_light == 1 and emergency_light == 0 :
+            return '\033[33m' + ' ■■■■' + '\033[0m' + '\033[31m' + '■■■■    ' + '\033[0m'
+        elif Break == 1 and Gear_R == 0 and tail_light == 1 and log_map == 1 and under_light == 1 and high_light == 1 and emergency_light == 1 :
+            return '\033[33m' + ' ■■■■' + '\033[0m' + '\033[31m' + '■■■■    ' + '\033[0m'
+        elif Break == 1 and Gear_R == 1 and tail_light == 1 and log_map == 1 and under_light == 1 and high_light == 1 and emergency_light == 1 :
+            return '\033[33m \033[43m' + ' ■■■■' + '\033[31m \033[41m' + '■■■■' + '\033[0m'+ '  '
     except :
         pass
 
+# def front_light(tail_light=0,log_map=0,under_light=0,high_light=0,emergency_light=0) :
+#     try :
+#         if tail_light == 0 :
+#             return ''
+#         elif tail_light == 1 :
+#             return '\033[93m' + '   ■■■■      ' + '\033[0m'
+#         if log_map == 0 :
+#             return ''
+#         elif log_map == 1 :
+#             return '\033[93m' + '   ■■■■      ' + '\033[0m'
+#
+#         if under_light == 0 :
+#             return ''
+#         elif under_light == 1 :
+#             return '\033[33m' + '  ■■■■■■■■ ' + '\033[0m'
+#
+#         if high_light == 0 :
+#             return ''
+#         elif high_light == 1 :
+#             return '\033[33m \033[43m' + '■■■■■■■■■■' + '\033[0m'
+#
+#         if emergency_light == 0 :
+#             return ''
+#         elif emergency_light == 1 :
+#             return '\033[31m' + '   ■■■■      ' + '\033[0m'
+#     except :
+#         pass
+
 def front_light(tail_light=0,log_map=0,under_light=0,high_light=0,emergency_light=0) :
-    # tail_light = 0    # 어떻게 할 줄 몰라 일단 임의 값 설정 / 미등 앞 등 켜질경우
-    # log_map = 1    # 어떻게 할 줄 몰라 일단 임의 값 설정 / 안개등 앞 등 켜질경우
-    # under_light = 2    # 어떻게 할 줄 몰라 일단 임의 값 설정 / 하향등 앞 등 켜질경우
-    # high_light = 3    # 어떻게 할 줄 몰라 일단 임의 값 설정 / 상향등 앞 등 켜질경우
-    # emergency_light = 4    # 어떻게 할 줄 몰라 일단 임의 값 설정 / 비상등 앞 등 켜질경우
-    try :
-        if tail_light == 0 :
-            return ''
-        elif tail_light == 1 :
-            return '\033[93m' + '   ■■■■      ' + '\033[0m'
-
-        if log_map == 0 :
-            return ''
-        elif log_map == 1 :
-            return '\033[93m' + '   ■■■■      ' + '\033[0m'
-
-        if under_light == 0 :
-            return ''
-        elif under_light == 1 :
+    try:
+        if tail_light == 0 and log_map == 0 and under_light == 0 and high_light == 0 and emergency_light == 0:
+            return '             '
+        elif (tail_light == 1 or log_map == 1) and under_light == 0 and high_light == 0 and emergency_light == 0:
+                return '\033[93m' + '   ■■■■      ' + '\033[0m'
+        elif tail_light == 0 and log_map == 0 and under_light == 1 and high_light == 0 and emergency_light == 0:
             return '\033[33m' + '  ■■■■■■■■ ' + '\033[0m'
-
-        if high_light == 0 :
-            return ''
-        elif high_light == 1 :
+        elif tail_light == 0 and log_map == 0 and under_light == 0 and high_light == 1 and emergency_light == 0:
             return '\033[33m \033[43m' + '■■■■■■■■■■' + '\033[0m'
-
-        if emergency_light == 0 :
-            return ''
-        elif emergency_light == 1 :
+        elif tail_light == 0 and log_map == 0 and under_light == 0 and high_light == 0 and emergency_light == 1:
             return '\033[31m' + '   ■■■■      ' + '\033[0m'
-    except :
+        elif tail_light == 1 and log_map == 1 and under_light == 1 and high_light == 1 and emergency_light == 1:
+            return '\033[33m' + ' ■■■■' + '\033[0m' + '\033[31m' + '■■■■    ' + '\033[0m'
+        elif tail_light == 1 and log_map == 1 and under_light == 1 and high_light == 1 and emergency_light == 0:
+            return '\033[33m \033[43m' + '■■■■■■■■■■' + '\033[0m'
+        elif tail_light == 1 and log_map == 1 and under_light == 1 and high_light == 1 and emergency_light == 0:
+            return '\033[33m' + ' ■■■■' + '\033[0m' + '\033[31m' + '■■■■    ' + '\033[0m'
+        elif tail_light == 1 and log_map == 1 and under_light == 1 and high_light == 1 and emergency_light == 1:
+            return '\033[33m' + ' ■■■■' + '\033[0m' + '\033[31m' + '■■■■    ' + '\033[0m'
+        elif tail_light == 1 and log_map == 1 and under_light == 1 and high_light == 1 and emergency_light == 1:
+            return '\033[33m \033[43m' + ' ■■■■' + '\033[31m \033[41m' + '■■■■' + '\033[0m' + '  '
+    except:
         pass
 
 def Circulation_Button(value) :         # 내부 순환 버튼??
@@ -308,19 +361,12 @@ def accident(value):                # 사고 발생 상황
         a = "⚠" + " 강한충돌"
         b = "외부에 의한 강한 충돌로 인해 에어백이 터집니다"
         return a,b,9
-    ###################################################################################################################
-    elif value == 10:
-        a = "⚠"
-        b = "눈이 내립니다."
-        return a,b,10
     else :                                 # 이상 없음
         a = "이상 없음"
         b = "      정상 주행중입니다"
         return a,b,0
-    ###################################################################################################################
 
-
-accident_title,accident_txt,accident_number = accident(accident_situation)
+accident_title,accident_txt,accident_number = accident(accident_situation) # 매개변수에 카운트!!
 
 def Air_Conditioning(light=0,step=0) :         # 에어컨 / 히터
     try :
@@ -471,12 +517,6 @@ def drive_text(value) :                # 이건 넣어도 되고 안넣어도 �
 #     except :
 #         pass
 
-
-# def Air_Conditioning_hope_temp(value) :
-
-
-
-
 def board() :             # 계기판
     global AA
     a = 0
@@ -485,7 +525,7 @@ def board() :             # 계기판
     d = 3
     e = 4
     AA = Accel.accel()
-    print(f"""                              {front_light(mainList[30],mainList[21],mainList[15],mainList[16],mainList[7])}                                                     {front_light(0,mainList[21],mainList[15],mainList[16],mainList[7])}
+    print(f"""                              {front_light(mainList[30],mainList[21],mainList[15],mainList[16],mainList[7])}                                                     {front_light(mainList[30],mainList[21],mainList[15],mainList[16],mainList[7])}
                                --------------------------------------------------------------------------
                                 L.winker            상향등    하향등    미등    안개등               R.winker
          ----------------------    {left_winker_mark(mainList[17])}                  {high_light_mark(mainList[16])}       {under_light_mark(mainList[15])}      {tail_light_mark(mainList[30])}      {log_map_mark(mainList[21])}                     {right_winker_mark(mainList[18])}    ----------------------
@@ -499,11 +539,11 @@ def board() :             # 계기판
                                ====================                                Break       Accel
                                      {radio_channel} / {radio_decibel}                                        {break_mark(mainList[1])}           {accel_mark(mainList[2])} 
                                --------------------------------------------------------------------------                         ㅡㅡㅡㅡㅡㅡ상황 발생ㅡㅡㅡㅡㅡ
-                              {rear_light(mainList[1],mainList[3],mainList[30],mainList[21],mainList[15],mainList[16],mainList[7])}                                                     {rear_light(mainList[1],mainList[3],0,mainList[21],mainList[15],mainList[16],mainList[7])}        기어                   {accident_title}   
+                              {rear_light(mainList[1],mainList[3],mainList[30],mainList[21],mainList[15],mainList[16],mainList[7])}                                                     {rear_light(mainList[1],mainList[3],mainList[30],mainList[21],mainList[15],mainList[16],mainList[7])}        기어                   {accident_title}   
                                                                                                                       {gear_mark(mainList[3])}           {accident_txt} 
                                                                                                                                   ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ""")
 
-
+#
 #
 # def board1() :             # 계기판
 #     global AA
@@ -531,12 +571,28 @@ def board() :             # 계기판
 #                                                                                                                      {gear_mark(a)}           {accident_txt}
 #                                                                                                                                   ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ""")
 
-# ==============================================================================================================================================================================
-
 def bang1():
     global p
     p = 1
     #  ／ ｜ ￣ ― ∥ ＼ ┐┘┌└ ┓ ┛ ┏ ┗ 『』 【 】 ―
+    if bang1point == 0:
+        print(f"""------------------------------------------------------------------------
+
+                    핸들
+                                                       --------
+                                                   ----        ----                   
+                                               ----                ----
+                                           ----                        ----
+                                      ----                                ----
+                          ● ● ●       ----               핸들              ----        
+                                      ----                                ----
+                                           ----                        ----
+                                               ----                ----                  
+                                                   ----        ----                  ● ● ●
+                                                       --------
+
+
+                ------------------------------------------------------------------------""")
     if bang1point == 1:
         print(f"""------------------------------------------------------------------------
 
@@ -546,7 +602,7 @@ def bang1():
                                                ----                ----
                                            ----                        ----
                                       ----                                ----
-                                      ----              핸들              ----       
+                                      ----              핸들               ----       
                                       ----                                ----
                                            ----                        ----
                           ▼ ▼ ▼                ----                ----                  
@@ -564,7 +620,7 @@ def bang1():
                           ▲ ▲ ▲                ----                ----
                                            ----                        ----
                                       ----                                ----
-                                      ----               핸들             ----        
+                                      ----               핸들              ----        
                                       ----                                ----
                                            ----                        ----
                                                ----                ----                  
@@ -582,7 +638,7 @@ def bang1():
                                                ----                ----
                                            ----                        ----
                                       ----                                ----
-                          ●하향●      ----               핸들             ----        
+                          ●하향●      ----               핸들              ----        
                                       ----                                ----
                                            ----                        ----
                                                ----                ----                  
@@ -600,7 +656,7 @@ def bang1():
                                                ----                ----
                                            ----                        ----
                                       ----                                ----
-                          ●상향●      ----               핸들             ----        
+                          ●상향●       ----               핸들             ----        
                                       ----                                ----
                                            ----                        ----
                                                ----                ----                  
@@ -1107,6 +1163,7 @@ def bang3():
     global p
     p = 3
     #  ／ ｜ ￣ ― ∥ ＼ ┐┘┌└ ┓ ┛ ┏ ┗ 『』 【 】 ―
+
     if bang3point == 0:
         print(f"""------------------------------------------------------------------------
 
@@ -1235,19 +1292,7 @@ def bang4():
             ------------------------------------------------------------------------""")
 
 
-def fw():
-    global count
-    count += 1
-    if count == 10:
-        accident(count)
-
-    elif count == 20:
-        print("어린이 보호구역입니다.")
-    elif count == 30:
-        print("고라니가 출몰하였습니다.")
-    elif count == 40:
-        print("엔진오일이 과열되었습니다.")
-
+def fw(): # 시선
     if p == 0:
         pass
     elif p == 1:
@@ -1255,10 +1300,12 @@ def fw():
     elif p == 2:
         pass
     elif p == 3:
+        sideList()
         board()
         bang1()
         print(mainList)
     elif p == 4:
+        sideList()
         board()
         bang2()
         print(mainList)
@@ -1267,56 +1314,39 @@ def fw():
     elif p == 6:
         pass
 
-def fa():
-    global count
-    count += 1
-    if count == 10:
-        accident(count)
-    elif count == 20:
-        print("어린이 보호구역입니다.")
-    elif count == 30:
-        print("고라니가 출몰하였습니다.")
-    elif count == 40:
-        print("엔진오일이 과열되었습니다.")
-
+def fa(): # 시선
     if p == 0:
         pass
     elif p == 1:
         pass
     elif p == 2:
+        sideList()
         board()
         bang1()
         print(mainList)
     elif p == 3:
         pass
     elif p == 4:
+        sideList()
         board()
         bang3()
         print(mainList)
     elif p == 5:
         pass
 
-def fs():
-    global count
-    count += 1
-    if count == 10:
-        accident(count)
-    elif count == 20:
-        print("어린이 보호구역입니다.")
-    elif count == 30:
-        print("고라니가 출몰하였습니다.")
-    elif count == 40:
-        print("엔진오일이 과열되었습니다.")
-
+def fs(): # 시선
     if p == 0:
+        sideList()
         board()
         bang3()
         print(mainList)
     elif p == 1:
+        sideList()
         board()
         bang3()
         print(mainList)
     elif p == 2:
+        sideList()
         board()
         bang4()
         print(mainList)
@@ -1329,29 +1359,21 @@ def fs():
     elif p == 6:
         pass
 
-def fd():
-    global count
-    count += 1
-    if count == 10:
-        accident(count)
-    elif count == 20:
-        print("어린이 보호구역입니다.")
-    elif count == 30:
-        print("고라니가 출몰하였습니다.")
-    elif count == 40:
-        print("엔진오일이 과열되었습니다.")
-
+def fd(): # 시선
     if p == 0:
+        sideList()
         board()
         bang2()
         print(mainList)
     elif p == 1:
+        sideList()
         board()
         bang2()
         print(mainList)
     elif p == 2:
         pass
     elif p == 3:
+        sideList()
         board()
         bang4()
         print(mainList)
@@ -1362,15 +1384,15 @@ def fd():
     elif p == 6:
         pass
 
-def fk1():
-
+def fk1(): # 방안에서 메뉴 이동
     global bang1point, bang2point, bang3point, bang4point, bang5point, bang6point
     if p == 1: # 핸들
-        if 1 <= bang1point <= 9:
-            if bang1point == 1:
+        if 0 <= bang1point <= 9:
+            if bang1point == 0:
                 pass
             else:
                 bang1point -= 1
+        sideList()
         board()
         bang1()
     elif p == 2: # 내부버튼
@@ -1379,6 +1401,7 @@ def fk1():
                 pass
             else:
                 bang2point -= 1
+        sideList()
         board()
         bang2()
     elif p == 3: # 시동 및 엑셀,브레이크
@@ -1387,6 +1410,7 @@ def fk1():
                 pass
             else:
                 bang3point -= 1
+        sideList()
         board()
         bang3()
     elif p == 4: # 기어봉
@@ -1396,6 +1420,7 @@ def fk1():
                 pass
             else:
                 bang4point -= 1
+        sideList()
         board()
         bang4()
     elif p == 5:
@@ -1404,6 +1429,7 @@ def fk1():
                 pass
             else:
                 bang5point -= 1
+        sideList()
         board()
         bang5()
     elif p == 6:
@@ -1412,17 +1438,19 @@ def fk1():
                 pass
             else:
                 bang6point += 1
+        sideList()
         board()
         bang6()
 
-def fk2():
+def fk2(): # 방안에서 메뉴 이동
     global bang1point, bang2point, bang3point, bang4point, bang5point, bang6point
     if p == 1:
-        if 1 <= bang1point <= 9:
+        if 0 <= bang1point <= 9:
             if bang1point == 9:
                 pass
             else:
                 bang1point += 1
+        sideList()
         board()
         bang1()
     elif p == 2:
@@ -1431,6 +1459,7 @@ def fk2():
                 pass
             else:
                 bang2point += 1
+        sideList()
         board()
         bang2()
     elif p == 3:
@@ -1439,6 +1468,7 @@ def fk2():
                 pass
             else:
                 bang3point += 1
+        sideList()
         board()
         bang3()
     elif p == 4:
@@ -1448,6 +1478,7 @@ def fk2():
                 pass
             else:
                 bang4point += 1
+        sideList()
         board()
         bang4()
     elif p == 5:
@@ -1456,6 +1487,7 @@ def fk2():
                 pass
             else:
                 bang5point += 1
+        sideList()
         board()
         bang5()
     elif p == 6:
@@ -1464,27 +1496,40 @@ def fk2():
                 pass
             else:
                 bang6point -= 1
+        sideList()
         board()
         bang6()
 
 
-def fk3():
+def fk3(): #결정
     if p == 1:
+        if bang1point == 0:
+            mainList[17]= 0
+            mainList[18]= 0
+            return
         if bang1point ==1:
-            lky = mod_winker.winker_left_on_off()
-            mainList[17] = lky
+            mod_winker.winker_left_on_off()
+            mainList[17] = mod_winker.left
+            if mainList[18] == 1:
+                mainList[18] = 0
             return
         elif bang1point ==2:
-            rky = mod_winker.winker_right_on_off()
-            mainList[18] = rky
+            mod_winker.winker_right_on_off()
+            mainList[18] = mod_winker.right
+            if mainList[17] == 1:
+                mainList[17] = 0
             return
         elif bang1point ==3:
-            hhd = light.normalLight()
-            mainList[15] = hhd # 노멀 라이트
+            light.normalLight()
+            mainList[15] = light.normalLights # 노멀 라이트
             return
-        elif bang2point ==4:
-            shd = light.highBeam()
-            mainList[16] = shd
+        elif bang1point ==4:
+            light.highBeam()
+            mainList[16] = light.highBeams
+            return
+        elif bang1point == 5:
+            auto = light.auto()
+            mainList[30] = auto
             return
         elif bang1point == 6:
             wfon = mod_wiper.wiper_on()
@@ -1521,8 +1566,8 @@ def fk3():
             mainList[6] = swof
             return  # mainList[6] = swof
         elif bang2point ==5:
-            bsd = mod_emergency_light.emergency_light_on_or_off()
-            mainList[7] = bsd
+            mod_emergency_light.emergency_light_on_or_off()
+            mainList[7] = mod_emergency_light.emergency_light
             return  # mainList[7] = bsd
         elif bang2point ==6:
             blu = mod_volume.mod_volume_up()
@@ -1543,9 +1588,6 @@ def fk3():
             boots = Boot.boot(Braeak.a, Gear.a)
             mainList[0] = boots
             engine.enginestart()
-            # side.gasolineIng()
-            side.baterryIng()
-            side.engineOilIng()
             print(mainList)
             return # mainList[0] = boots
         elif bang3point == 2:
@@ -1554,10 +1596,18 @@ def fk3():
             lbl = light.breakLight()
             mainList[19] = lbl
             print(mainList)
+            if mainList[2] == 1:
+                Accel.accel()
+                mainList[2] = 0
+            print(mainList)
             return # mainList[1] = braeaks
         elif bang3point == 3:
             accels = Accel.accel()
             mainList[2] = accels
+            print(mainList)
+            if mainList[1] == 1:
+                Braeak.braeak()
+                mainList[1] = 0
             print(mainList)
             return # mainList[2] = accels
     if p == 4:
@@ -1636,6 +1686,18 @@ def fk3():
 def fk4():
     pass
 
+def timethreading():
+    side.gasolineIng()
+    side.baterryIng()
+    side.engineOilIng()
+
+timethreading()
+
+def sideList():
+    mainList[24] = side.gasolineTank
+    mainList[22] = side.batteryCharge
+    mainList[23] = side.engineOiltemp
+
 while 1:
     moving=input('wasd//j///i')
     if moving == 'w':
@@ -1654,8 +1716,6 @@ while 1:
         fk3()
     elif moving == 'm':
         fk4()
-
-
 
 
 
