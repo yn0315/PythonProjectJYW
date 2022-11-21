@@ -5,9 +5,10 @@ def emergency_light_on_or_off():
         global emergency_light
         if emergency_light == 0:
             emergency_light = 1
+            return emergency_light
         elif emergency_light == 1:
             emergency_light = 0
-        return emergency_light
+            return emergency_light
     except Exception as e:
         print("emergency_light, emergency_light_on_or_off", type(e),e)
 

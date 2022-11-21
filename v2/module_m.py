@@ -1,10 +1,24 @@
 import Gear, Accel, Boot, Braeak, mod_airconditioner,mod_radio,\
     mod_wiper,mod_winker,mod_handle_seat_heat,mod_klaxon,\
 mod_volume,mod_emergency_light,light,random,side, engine
+import time
+import random
+import light
+import mod_winker
+import side
+import engine
+import mod_winker
+import mod_wiper
+import mod_handle_seat_heat
+import Gear
+import Braeak
+import Boot
+import Accel
+import mod_radio
 import os
 # os.system('cls')
 
-mainList =[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
+mainList =[0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
 p = 0
 bang1point = 1
 bang2point = 1
@@ -13,14 +27,55 @@ bang4point = 0
 bang5point = 0
 bang6point = 0
 
-mainList[22] = side.batteryCharge
-mainList[23] = side.engineOiltemp
-mainList[24] = side.gasolineTank
+# mainList[22] = side.batteryCharge
+# mainList[23] = side.engineOiltemp
+# mainList[24] = side.gasolineTank
+
+# mainList = [0,1,1,3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,31.0,0,35,0,1,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
+
+#======== 차 중요버튼 =======
+#check_list[0] = 부트
+#check_list[1] = 브레이크
+#check_list[2] = 엑셀
+#check_list[3] = 기어
+#===========================
+
+#=================================
+#check_list[4] = 핸들 열선 on / off
+#check_list[5] = 시트 열선 On / Off
+#check_list[6] = 통풍 시트 on / off
+#check_list[7] = 비상등 on / off
+#check_list[8] = 볼륨 up   ?????????????????????????????
+#check_list[9] = 볼륨 down   ?????????????????????????????
+#check_list[10] = 라디오 선택 FM / AM   ?????????????????????????????
+#check_list[11] = 라디오 채널 변경   ?????????????????????????????????????
+#check_list[12] = 와이퍼 온  xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+#check_list[13] = 와이퍼 속도 업  xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+#check_list[14] = 와이퍼 워셔액   xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+#check_list[15] = 노멀라이트
+#check_list[16] = 하이빔
+#check_list[17] = 좌측방향등
+#check_list[18] = 우측방향등
+#check_list[19] = 브레이크등
+#check_list[20] = 후진등
+#check_list[21] = 안개등
+#check_list[22] = 배터리량
+#check_list[23] = 오일온도
+#check_list[24] = 기름량  xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
 
-#check_list = [0,1,2,3,4,5,6,7,8,9,1,1,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30]    # 확인할 리스트??
+#check_list[25] = 클락션  xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
-# print(check_list[10],check_list[11])
+
+#check_list[26] = 에어컨 히터 0 , 1 , 2
+#check_list[27] = 희망온도? xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+#check_list[28] = 에어컨 히터 풍량 조절 1, 2, 3
+#check_list[29] = 풍향 조절 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+
+
+
+
+
 
 
 accident_situation = random.randrange(0,10)
@@ -34,6 +89,8 @@ AA = 0          # 악셀 받을 지역변수
 
 radio_channel = ''          # 라디오 채널 받을 문자열
 radio_decibel = ''          # FM / AM 받을 문자열
+
+sound = 0                    # 볼륨 업 다운
 
 def radio() :                             # 라디오 문자, 채널??
     radio_value = mod_radio.fm_or_am()
@@ -89,63 +146,111 @@ def Emergency_Button(value) :        # 깜빡이 버튼 on / off 표시 나타�
     except :
         pass
 
-def winker_mark(value) :         # 깜빡이 계기판 표시 - winker함수와 value 값이 같아야 합니다. 연동 되어야합니다.
-    if value == 0 :  # 왼쪽 깜빡이 안킴
-        return '◀'
-    if value == 1 :  # 오른쪽 깜빡이 안킴
-        return '▶'
-    if value == 2 :  # 왼쪽 깜빡이 킴
-        return '\033[33m' + '◀' + '\033[0m'
-    if value == 3 :  # 오른쪽 깜빡이 킴
-        return '\033[33m' + '▶' + '\033[0m'
-
-def winker(value) : # 깜빡이 넣었을떼  /  winker_mark 함수와 value 값이 같아야 합니다. 연동 되어야합니다.
+def left_winker_mark(value) :
     try :
-        if value == 0 :       # 왼쪽 꺼져있을때
+        if value == 0 :
+            return '◀'
+        elif value == 1 :
+            return '\033[33m' + '◀' + '\033[0m'
+    except :
+        pass
+
+def right_winker_mark(value) :
+    try :
+        if value == 0 :
+            return '▶'
+        elif value == 1 :
+            return '\033[33m' + '▶' + '\033[0m'
+    except :
+        pass
+
+def left_winker(value) :
+    try :
+        if value == 0 :
             return '■■■■■■■■■■■■'
-        elif value == 1 :             # 오른쪽 꺼져있을때
-            return '■■■■■■■■■■■■'
-        elif value == 2 :             # 왼쪽 켜져있을때
-            return '\033[33m' + '■■■■■■■■■■■■' + '\033[0m'
-        elif value == 3 :               # 오른쪽 켜져있을때
+        elif value == 1 :
             return '\033[33m' + '■■■■■■■■■■■■' + '\033[0m'
     except :
         pass
 
-# def rear_light(value) :                         # 후미등  /  하향등, 상향등, 미등, 안개등, 깜빡이 계기판 표시와 연동??
-#     # tail_light = 0    # 어떻게 할 줄 몰라 일단 임의 값 설정 / 미등 뒷 등 켜질경우
-#     # log_map = 1    # 어떻게 할 줄 몰라 일단 임의 값 설정 / 안개등 뒷 등 켜질경우
-#     # under_light = 2    # 어떻게 할 줄 몰라 일단 임의 값 설정 / 하향등 뒷 등 켜질경우
-#     # high_light = 3    # 어떻게 할 줄 몰라 일단 임의 값 설정 / 상향등 뒷 등 켜질경우
-#     # emergency_light = 4    # 어떻게 할 줄 몰라 일단 임의 값 설정 / 비상등 뒷 등 켜질경우
-#     try :
-#         if rear_light1 == 1 or rear_light2 == 1 or rear_light3 == 0 :               # 후미등만 들어왔을 경우
-#             return '\033[31m \033[41m' + '■■■■■■■■■■' + '\033[0m'
-#         elif value == 0 or value == 1 :
-#             return '\033[93m' + '   ■■■■      ' + '\033[0m'
-#         elif value == 2 :
-#             return '\033[33m' + '  ■■■■■■■■ ' + '\033[0m'
-#         elif value == 3 :
-#             return '\033[33m \033[43m' + '■■■■■■■■■■' + '\033[0m'
-#         elif value == 4 :
-#             return '\033[31m' + '   ■■■■      ' + '\033[0m'
-#     except :
-#         pass
+def right_winker(value) :
+    try :
+        if value == 0 :
+            return '■■■■■■■■■■■■'
+        elif value == 1 :
+            return '\033[33m' + '■■■■■■■■■■■■' + '\033[0m'
+    except :
+        pass
 
-def front_light(value) :
+def rear_light(Break=1,Gear_R=0,tail_light=0,log_map=0,under_light=0,high_light=0,emergency_light=0) :
+    try :
+        if Break == 1 :
+            return '             '
+        elif Break == 0 :
+            return '\033[31m \033[41m' + '■■■■■■■■■■' + '\033[0m'
+
+        if Gear_R == 0 :
+            return '             '
+        elif Gear_R == 2 :
+            return '\033[31m \033[41m' + '■■■■■■■■■■' + '\033[0m'
+
+        if tail_light == 0 :
+            return '             '
+        elif tail_light == 1 :
+            return '\033[93m' + '   ■■■■      ' + '\033[0m'
+
+        if log_map == 0 :
+            return '             '
+        elif log_map == 1 :
+            return '\033[93m' + '   ■■■■      ' + '\033[0m'
+
+        if under_light == 0 :
+            return '             '
+        elif under_light == 1 :
+            return '\033[33m' + '  ■■■■■■■■ ' + '\033[0m'
+
+        if high_light == 0 :
+            return '             '
+        elif high_light == 1 :
+            return '\033[33m \033[43m' + '■■■■■■■■■■' + '\033[0m'
+
+        if emergency_light == 0 :
+            return '             '
+        elif emergency_light == 1 :
+            return '\033[31m' + '   ■■■■      ' + '\033[0m'
+    except :
+        pass
+
+def front_light(tail_light=0,log_map=0,under_light=0,high_light=0,emergency_light=0) :
     # tail_light = 0    # 어떻게 할 줄 몰라 일단 임의 값 설정 / 미등 앞 등 켜질경우
     # log_map = 1    # 어떻게 할 줄 몰라 일단 임의 값 설정 / 안개등 앞 등 켜질경우
     # under_light = 2    # 어떻게 할 줄 몰라 일단 임의 값 설정 / 하향등 앞 등 켜질경우
     # high_light = 3    # 어떻게 할 줄 몰라 일단 임의 값 설정 / 상향등 앞 등 켜질경우
     # emergency_light = 4    # 어떻게 할 줄 몰라 일단 임의 값 설정 / 비상등 앞 등 켜질경우
     try :
-        if value == 0 or value == 1 :
+        if tail_light == 0 :
+            return ''
+        elif tail_light == 1 :
             return '\033[93m' + '   ■■■■      ' + '\033[0m'
-        elif value == 2 :
+
+        if log_map == 0 :
+            return ''
+        elif log_map == 1 :
+            return '\033[93m' + '   ■■■■      ' + '\033[0m'
+
+        if under_light == 0 :
+            return ''
+        elif under_light == 1 :
             return '\033[33m' + '  ■■■■■■■■ ' + '\033[0m'
-        elif value == 3 :
+
+        if high_light == 0 :
+            return ''
+        elif high_light == 1 :
             return '\033[33m \033[43m' + '■■■■■■■■■■' + '\033[0m'
-        elif value == 4 :
+
+        if emergency_light == 0 :
+            return ''
+        elif emergency_light == 1 :
             return '\033[31m' + '   ■■■■      ' + '\033[0m'
     except :
         pass
@@ -158,34 +263,34 @@ def Circulation_Button(value) :         # 내부 순환 버튼??
 
 def oil_title(value):          # 기름 제목 ( 기름 부족하면 빨간 글씨로 뜸)
     try :
-        if value == 0 :           # 일정 이상이라면 평균값으로 설정
+        if value >= 31 :           # 일정 이상이라면 평균값으로 설정
             return 'Oil'
-        elif value == 1 :         # 오일값이 일정 이하라면 으로 설정?
+        elif value <= 30.9 :         # 오일값이 일정 이하라면 으로 설정?
             return '\033[31m'+'Oil'+'\033[0m'
     except :
         pass
 
 def oil_text(value) :          # 기름 부족 계기판 표시
     try :
-        if value == 0 :                # 평균 이상일때
+        if value >= 31 :                # 평균 이상일때
             return '⛽'
-        elif value == 1 :              # 기름 부족할때
+        elif value <= 30.9 :              # 기름 부족할때
             return '\033[31m'+'⛽'+'\033[0m'
     except :
         pass
 
 def battery_title(value) :     # 배터리 제목 ( 부족하면 빨간색 글씨로 뜸 )
 
-    if value == 0 :        # 배터리 역시 일정 이상 값이라면 평균 설정
+    if value >= 31 :        # 배터리 역시 일정 이상 값이라면 평균 설정
         return 'Battery'
-    elif value == 1:       # 배터리 값이 일정 이하라면 경고문
+    elif value <= 30.9 :       # 배터리 값이 일정 이하라면 경고문
         return '\033[31m'+'Battery'+'\033[0m'
 
 def battery_text(value) :         # 배터리 계기판 표시
     try :
-        if value == 0 :              # 배터리 충분할 때
+        if value >= 31 :              # 배터리 충분할 때
             return '🔋'
-        elif value == 1 :            # 배터리 모자랄 때
+        elif value <= 30.9 :            # 배터리 모자랄 때
             return '\033[31m'+'🔋'+'\033[0m'
     except :
         pass
@@ -206,7 +311,6 @@ def accident(value):                # 사고 발생 상황
         return a,b,0
 
 accident_title,accident_txt,accident_number = accident(accident_situation)
-
 
 def Air_Conditioning(light=0,step=0) :         # 에어컨 / 히터
     try :
@@ -232,8 +336,6 @@ def Air_Conditioning(light=0,step=0) :         # 에어컨 / 히터
                 return '      '
     except :
         pass
-
-
 
 def sit_heat_rays(value) :          # 자동차 의자 열선 엉따
     try :
@@ -306,6 +408,65 @@ def drive_text(value) :                # 이건 넣어도 되고 안넣어도 �
     except :
         pass
 
+# def radio_voulme_up(value) :
+#     try :
+#         if value == 0 :
+#             return '🔼'
+#         elif value == 1 :
+#             return '\033[31m'+'🔼'+'\033[0m'
+#     except :
+#         pass
+#
+# def radio_voulme_down(value) :
+#     try :
+#         if value == 0 :
+#             return '🔽'
+#         elif value == 1:
+#             return '\033[31m' + '🔽' + '\033[0m'
+#     except :
+#         pass
+#
+# def radio_volume_emoji(up,down) :
+#     try :
+#         if up == 0 and down ==0 :
+#             return '🔇'
+#         elif 1 <= up <= 50 and 1 <= down <= 50 :
+#             return '🔉'
+#         elif 51 <= up <= 100 and 51 <= down <= 100 :
+#             return '🔊'
+#     except :
+#         pass
+#
+# def radio_volume(Boot=0) :
+#     try :
+#         if Boot >= 1 :
+#             return 0
+#         else :
+#             return ''
+#     except :
+#         pass
+#
+# def volume_Up_Down() :                             # 얘네는 업 다운 버튼이 나뉘어야할 거 같음?????
+#     global sound
+#     try :
+#         if radio_volume(mainList[1]) == 0 and mainList[2] >= 1 :
+#             sound = radio_volume(mainList[1]) + mainList[2]
+#             if radio_volume(mainList[1]) == 0 and mainList[3] >= 1 :
+#                 sound = radio_volume(mainList[1]) - mainList[3]
+#             else :
+#                 pass
+#         else :
+#             pass
+#         return sound
+#     except :
+#         pass
+
+
+# def Air_Conditioning_hope_temp(value) :
+
+
+
+
 def board() :             # 계기판
     global AA
     a = 0
@@ -314,24 +475,51 @@ def board() :             # 계기판
     d = 3
     e = 4
     AA = Accel.accel()
-    print(f"""                              {front_light(a)}                                                     {front_light(a)}
+    print(f"""                              {front_light(mainList[30],mainList[21],mainList[15],mainList[16],mainList[7])}                                                     {front_light(0,mainList[21],mainList[15],mainList[16],mainList[7])}
                                --------------------------------------------------------------------------
                                 L.winker            상향등    하향등    미등    안개등               R.winker
-         ----------------------    {winker_mark(a)}                  {high_light_mark(mainList[16])}      {under_light_mark(mainList[15])}       {tail_light_mark(b)}      {log_map_mark(b)}                     {winker_mark(b)}    ----------------------
-        ==                        주행거리                           속도                              연비                       ==
-    　 ==　                      200,000KM                         120KM                             15 l                        ==
-     ==       {winker(a)}     {battery_title(b)}        {oil_title(b)}             현재 온도          내부 순환       {drive_title(a)}        {winker(b)}       ==
-     ==                           {battery_text(b)}           {oil_text(b)}                 //             {Circulation_Button(mainList[6])}            {drive_text(a)}                             ==
+         ----------------------    {left_winker_mark(mainList[17])}                  {high_light_mark(mainList[16])}       {under_light_mark(mainList[15])}      {tail_light_mark(mainList[30])}      {log_map_mark(mainList[21])}                     {right_winker_mark(mainList[18])}    ----------------------
+        ==                        주행거리                           속도                              연비                        ==
+    　 ==　                      200,000KM                         120KM                             15 l                         ==
+     ==       {left_winker(mainList[17])}     {battery_title(mainList[22])}        {oil_title(mainList[24])}             현재 온도          내부 순환       {drive_title(mainList[3])}       {right_winker(mainList[18])}        ==
+     ==                          {battery_text(mainList[22])} {mainList[22]}%      {oil_text(mainList[24])}                 //              {Circulation_Button(mainList[6])}            {drive_text(mainList[3])}                            ==
     　 ==                                                    Emergency_Button                                                    ==
-        ==                                                          {Emergency_Button(mainList[7])}              A / C      💺      ⚙                        ==
-         ----------------------         📻                                         {Air_Conditioning()}    {sit_heat_rays(mainList[5])}  {hanldle_heat_rays(mainList[4])} ---------------------- 
+        ==                                                          {Emergency_Button(mainList[7])}              A / C      💺      ⚙                       ==
+         ----------------------         📻                                         {Air_Conditioning(mainList[26],mainList[28])}    {sit_heat_rays(mainList[5])}  {hanldle_heat_rays(mainList[4])} ---------------------- 
                                ====================                                Break       Accel
                                      {radio_channel} / {radio_decibel}                                        {break_mark(mainList[1])}           {accel_mark(mainList[2])} 
                                --------------------------------------------------------------------------                         ㅡㅡㅡㅡㅡㅡ상황 발생ㅡㅡㅡㅡㅡ
-                              //                                                     //       기어                    {accident_title}   
-                                                                                                                     {gear_mark(mainList[3])}           {accident_txt} 
+                              {rear_light(mainList[1],mainList[3],mainList[30],mainList[21],mainList[15],mainList[16],mainList[7])}                                                     {rear_light(mainList[1],mainList[3],0,mainList[21],mainList[15],mainList[16],mainList[7])}        기어                   {accident_title}   
+                                                                                                                      {gear_mark(mainList[3])}           {accident_txt} 
                                                                                                                                   ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ""")
 
+
+#
+# def board1() :             # 계기판
+#     global AA
+#     a = 0
+#     b = 1
+#     c = 2
+#     d = 3
+#     e = 4
+#     AA = Accel.accel()
+#     print(f"""                              {front_light(e)}                                                     {front_light(e)}
+#                                --------------------------------------------------------------------------
+#                                 L.winker            상향등    하향등    미등    안개등               R.winker
+#          ----------------------    {winker_mark(a)}                  {high_light_mark(b)}      {under_light_mark(b)}       {tail_light_mark(b)}      {log_map_mark(b)}                     {winker_mark(b)}    ----------------------
+#         ==                        주행거리                           속도                              연비                       ==
+#     　 ==　                      200,000KM                         120KM                             15 l                        ==
+#      ==       {winker(a)}     {battery_title(b)}        {oil_title(mainList[24])}             현재 온도          내부 순환       {drive_title(a)}        {winker(b)}       ==
+#      ==                           {battery_text(b)}           {oil_text(mainList[24])}                //              {Circulation_Button(a)}            {drive_text(a)}                             ==
+#     　 ==                                                    Emergency_Button                                                    ==
+#         ==                                                          {Emergency_Button(a)}              A / C      💺      ⚙                        ==
+#          ----------------------         📻                                         {Air_Conditioning(c)}    {sit_heat_rays(a)}  {hanldle_heat_rays(b)} ----------------------
+#                                ====================                                Break       Accel
+#                                      {radio_channel} / {radio_decibel}                                        {break_mark(b)}           {accel_mark(AA)}
+#                                --------------------------------------------------------------------------                         ㅡㅡㅡㅡㅡㅡ상황 발생ㅡㅡㅡㅡㅡ
+#                               {rear_light(e)}                                                     {rear_light(e)}           기어                    {accident_title}
+#                                                                                                                      {gear_mark(a)}           {accident_txt}
+#                                                                                                                                   ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ""")
 
 # ==============================================================================================================================================================================
 
@@ -1047,9 +1235,11 @@ def fw():
     elif p == 3:
         board()
         bang1()
+        print(mainList)
     elif p == 4:
         board()
         bang2()
+        print(mainList)
     elif p == 5:
         pass
     elif p == 6:
@@ -1063,11 +1253,13 @@ def fa():
     elif p == 2:
         board()
         bang1()
+        print(mainList)
     elif p == 3:
         pass
     elif p == 4:
         board()
         bang3()
+        print(mainList)
     elif p == 5:
         pass
 
@@ -1075,12 +1267,15 @@ def fs():
     if p == 0:
         board()
         bang3()
+        print(mainList)
     elif p == 1:
         board()
         bang3()
+        print(mainList)
     elif p == 2:
         board()
         bang4()
+        print(mainList)
     elif p == 3:
         pass
     elif p == 4:
@@ -1094,14 +1289,17 @@ def fd():
     if p == 0:
         board()
         bang2()
+        print(mainList)
     elif p == 1:
         board()
         bang2()
+        print(mainList)
     elif p == 2:
         pass
     elif p == 3:
         board()
         bang4()
+        print(mainList)
     elif p == 4:
         pass
     elif p == 5:
@@ -1289,25 +1487,29 @@ def fk3():
             boots = Boot.boot(Braeak.a, Gear.a)
             mainList[0] = boots
             engine.enginestart()
-            side.gasolineIng()
+            # side.gasolineIng()
             side.baterryIng()
             side.engineOilIng()
+            print(mainList)
             return # mainList[0] = boots
         elif bang3point == 2:
             braeaks = Braeak.braeak()
             mainList[1] = braeaks
             lbl = light.breakLight()
             mainList[19] = lbl
+            print(mainList)
             return # mainList[1] = braeaks
         elif bang3point == 3:
             accels = Accel.accel()
             mainList[2] = accels
+            print(mainList)
             return # mainList[2] = accels
     if p == 4:
         if bang4point == 0:
             gears = Gear.a
             print("파킹기어 상태")
             mainList[3] = gears
+            print(mainList)
             return # mainList[3] = gears
         elif bang4point == 1:
             gears = Gear.a
@@ -1315,16 +1517,19 @@ def fk3():
             mainList[3] = gears
             lrl = light.reverseLight()
             mainList[20] = lrl
+            print(mainList)
             return  # mainList[3] = gears
         elif bang4point == 2:
             gears = Gear.a
             print("중립기어 상태")
             mainList[3] = gears
+            print(mainList)
             return  # mainList[3] = gears
         elif bang4point == 3:
             gears = Gear.a
             print("드라이브기어 상태")
             mainList[3] = gears
+            print(mainList)
             return  # mainList[3] = gears
     if p == 5: # 에어컨에 들어가 들어가 있는 상황
         if bang5point == 0:
@@ -1333,34 +1538,40 @@ def fk3():
             mainList[26] = aironoff
             board()
             bang5()
+            print(mainList)
             return
         elif bang5point == 1:
             odup = mod_airconditioner.aircon_temperature_go_up()
             mainList[27] = odup
             board()
             bang5()
+            print(mainList)
             return
         elif bang5point == 2:
             oddw = mod_airconditioner.aircon_temperature_go_down()
             mainList[27] = oddw
             board()
             bang5()
+            print(mainList)
             return
         elif bang5point == 3:
             blsg = mod_airconditioner.aircon_wind_strength_123()
             mainList[28] = blsg
             board()
             bang5()
+            print(mainList)
             return
         elif bang5point == 4:
             pljj = mod_airconditioner.aircon_direction_go_up_down()
             mainList[29] = pljj
             board()
             bang5()
+            print(mainList)
             return
         elif bang5point == 5:
             board()
             bang2()
+            print(mainList)
             return
 
     if p == 6: # 라디오에 들어가 있는 상황

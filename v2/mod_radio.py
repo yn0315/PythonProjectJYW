@@ -22,8 +22,6 @@ def fm_or_am(): # fm이면 0 am 이면 1
 # 채널이동함수
 def next_channel():
     global current_channel
-    print("a.선택완료")
-
     if current_channel_FM_or_AM == 0: # fm이라면
         for i in range(len(channel_FM)):
             if channel_select_complete == 1:
