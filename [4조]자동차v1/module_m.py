@@ -15,6 +15,7 @@ import Braeak
 import Boot
 import Accel
 import mod_radio
+import Sound
 import os
 # os.system('cls')
 
@@ -92,6 +93,7 @@ accident_situation = random.randrange(0,10)
 accident_title = ""
 accident_txt = ""
 accident_number = 0
+count = 0
 
 accel = 0       # 사고 발생 화면 만들기인데 아직 미사용
 
@@ -352,21 +354,46 @@ def battery_text(value) :         # 배터리 계기판 표시
         pass
 
 def accident(value):                # 사고 발생 상황
-    global accident_situation
+    global count
     if value == 5 :                       # 약한 충돌
         a = "⚠" + " 약한 충돌"
         b = "외부에 의한 약한 충돌이 있습니다"
-        return a,b,5
+        return a,b
     elif value == 9 :                      # 강한 충돌
         a = "⚠" + " 강한충돌"
         b = "외부에 의한 강한 충돌로 인해 에어백이 터집니다"
-        return a,b,9
+        return a,b
+
+    ###################################################################################################################
+    elif value == 10:
+        a = "⚠" + " 사고위험"
+        b = "       눈이 내립니다."
+        return a,b
+
+    elif value == 20:
+        a = "⚠" + " 감속구간"
+        b = "   어린이 보호구역입니다."
+        return a,b
+
+    elif value == 30:
+        a = "⚠" + " 사고위험"
+        b = "   고라니가 출몰하였습니다."
+        return a,b
+
+    elif value == 40:
+        a = "⚠" + " 차량점검"
+        b = "   엔진오일이 과열되었습니다."
+        return a,b
+
+        #############################################################################################################
     else :                                 # 이상 없음
         a = "이상 없음"
         b = "      정상 주행중입니다"
-        return a,b,0
+        return a,b
 
-accident_title,accident_txt,accident_number = accident(accident_situation) # 매개변수에 카운트!!
+
+accident_title,accident_txt = accident(count) # 매개변수에 카운트!!
+
 
 def Air_Conditioning(light=0,step=0) :         # 에어컨 / 히터
     try :
@@ -1293,6 +1320,34 @@ def bang4():
 
 
 def fw(): # 시선
+    global count
+    global accident_txt
+    global accident_title
+    count += 1
+    if count == 10: # 눈
+        accident_title,accident_txt = accident(count)
+        board()
+        Sound.beepsound()
+        time.sleep(2)
+        print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1111")
+    elif count == 20: # 어린이 보호구역
+        accident_title,accident_txt = accident(count)
+        board()
+        Sound.beepsound()
+        time.sleep(2)
+        
+    elif count == 30: # 고라니 출몰
+        accident_title,accident_txt = accident(count)
+        board()
+        Sound.beepsound()
+        time.sleep(2)
+        
+    elif count == 40: # 엔진오일 과열
+        accident_title,accident_txt = accident(count)
+        board()
+        Sound.beepsound()
+        time.sleep(2)
+
     if p == 0:
         pass
     elif p == 1:
@@ -1315,6 +1370,35 @@ def fw(): # 시선
         pass
 
 def fa(): # 시선
+    global count
+    global accident_txt
+    global accident_title
+    count += 1
+    if count == 10: # 눈
+        accident_title, accident_txt = accident(count)
+        board()
+        Sound.beepsound()
+        time.sleep(2)
+        print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1111")
+        
+    elif count == 20: # 어린이 보호구역
+        accident_title,accident_txt = accident(count)
+        board()
+        Sound.beepsound()
+        time.sleep(2)
+        
+    elif count == 30: # 고라니
+        accident_title,accident_txt = accident(count)
+        board()
+        Sound.beepsound()
+        time.sleep(2)
+        
+    elif count == 40: # 엔진오일 과열
+        accident_title,accident_txt = accident(count)
+        board()
+        Sound.beepsound()
+        time.sleep(2)
+
     if p == 0:
         pass
     elif p == 1:
@@ -1335,6 +1419,35 @@ def fa(): # 시선
         pass
 
 def fs(): # 시선
+    global count
+    global accident_txt
+    global accident_title
+    count += 1
+    if count == 10: # 눈
+        accident_title, accident_txt = accident(count)
+        board()
+        Sound.beepsound()
+        time.sleep(2)
+        print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1111")
+
+    elif count == 20: # 어린이 보호구역
+        accident_title,accident_txt = accident(count)
+        board()
+        Sound.beepsound()
+        time.sleep(2)
+
+    elif count == 30: # 고라니
+        accident_title,accident_txt = accident(count)
+        board()
+        Sound.beepsound()
+        time.sleep(2)
+
+    elif count == 40: # 엔진오일 과열
+        accident_title,accident_txt = accident(count)
+        board()
+        Sound.beepsound()
+        time.sleep(2)
+
     if p == 0:
         sideList()
         board()
@@ -1360,6 +1473,35 @@ def fs(): # 시선
         pass
 
 def fd(): # 시선
+    global count
+    global accident_txt
+    global accident_title
+    count += 1
+    if count == 10: # 눈
+        accident_title, accident_txt = accident(count)
+        board()
+        Sound.beepsound()
+        time.sleep(2)
+        print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1111")
+
+    elif count == 20: # 어린이 보호구역
+        accident_title, accident_txt = accident(count)
+        board()
+        Sound.beepsound()
+        time.sleep(2)
+        
+    elif count == 30: # 고라니
+        accident_title, accident_txt = accident(count)
+        board()
+        Sound.beepsound()
+        time.sleep(2)
+        
+    elif count == 40: # 엔진오일 과열
+        accident_title, accident_txt = accident(count)
+        board()
+        Sound.beepsound()
+        time.sleep(2)
+
     if p == 0:
         sideList()
         board()
