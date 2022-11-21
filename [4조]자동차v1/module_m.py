@@ -1328,25 +1328,30 @@ def fw(): # 시선
         accident_title,accident_txt = accident(count)
         board()
         Sound.beepsound()
-        time.sleep(2)
+        time.sleep(1)
+        bang1()
         print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1111")
+
     elif count == 20: # 어린이 보호구역
         accident_title,accident_txt = accident(count)
         board()
         Sound.beepsound()
-        time.sleep(2)
-        
+        time.sleep(1)
+        bang3()
+
     elif count == 30: # 고라니 출몰
         accident_title,accident_txt = accident(count)
         board()
         Sound.beepsound()
-        time.sleep(2)
+        time.sleep(1)
+        bang3()
+
         
     elif count == 40: # 엔진오일 과열
         accident_title,accident_txt = accident(count)
         board()
         Sound.beepsound()
-        time.sleep(2)
+        time.sleep(1)
 
     if p == 0:
         pass
@@ -1378,26 +1383,31 @@ def fa(): # 시선
         accident_title, accident_txt = accident(count)
         board()
         Sound.beepsound()
-        time.sleep(2)
+        time.sleep(1)
+        bang1()
         print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1111")
         
     elif count == 20: # 어린이 보호구역
         accident_title,accident_txt = accident(count)
         board()
         Sound.beepsound()
-        time.sleep(2)
+        time.sleep(1)
+        bang3()
+
         
     elif count == 30: # 고라니
         accident_title,accident_txt = accident(count)
         board()
         Sound.beepsound()
-        time.sleep(2)
-        
+        time.sleep(1)
+        bang3()
+
+
     elif count == 40: # 엔진오일 과열
         accident_title,accident_txt = accident(count)
         board()
         Sound.beepsound()
-        time.sleep(2)
+        time.sleep(1)
 
     if p == 0:
         pass
@@ -1427,26 +1437,30 @@ def fs(): # 시선
         accident_title, accident_txt = accident(count)
         board()
         Sound.beepsound()
-        time.sleep(2)
+        time.sleep(1)
+        bang1()
         print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1111")
 
     elif count == 20: # 어린이 보호구역
         accident_title,accident_txt = accident(count)
         board()
         Sound.beepsound()
-        time.sleep(2)
+        time.sleep(1)
+        bang3()
 
     elif count == 30: # 고라니
         accident_title,accident_txt = accident(count)
         board()
         Sound.beepsound()
-        time.sleep(2)
+        time.sleep(1)
+        bang3()
+
 
     elif count == 40: # 엔진오일 과열
         accident_title,accident_txt = accident(count)
         board()
         Sound.beepsound()
-        time.sleep(2)
+        time.sleep(1)
 
     if p == 0:
         sideList()
@@ -1481,26 +1495,31 @@ def fd(): # 시선
         accident_title, accident_txt = accident(count)
         board()
         Sound.beepsound()
-        time.sleep(2)
+        time.sleep(1)
+        bang1()
         print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1111")
 
     elif count == 20: # 어린이 보호구역
         accident_title, accident_txt = accident(count)
         board()
         Sound.beepsound()
-        time.sleep(2)
+        time.sleep(1)
+        bang3()
+
         
     elif count == 30: # 고라니
         accident_title, accident_txt = accident(count)
         board()
         Sound.beepsound()
-        time.sleep(2)
+        time.sleep(1)
+        bang3()
+        p == 3
         
     elif count == 40: # 엔진오일 과열
         accident_title, accident_txt = accident(count)
         board()
         Sound.beepsound()
-        time.sleep(2)
+        time.sleep(1)
 
     if p == 0:
         sideList()
