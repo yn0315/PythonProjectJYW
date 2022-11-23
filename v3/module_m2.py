@@ -1835,8 +1835,6 @@ def fk3(): #결정
         elif bang3point == 1:
             boots = Boot.boot(Braeak.a, Gear.a)
             mainList[0] = boots
-            if mainList[0] == 1 or mainList[0] == 2:
-                light.taillight()
             engine.enginestart()
             print(mainList)
             return # mainList[0] = boots

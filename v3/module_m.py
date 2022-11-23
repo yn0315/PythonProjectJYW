@@ -2,25 +2,20 @@ import Gear, Accel, Boot, Braeak, mod_airconditioner,mod_radio,\
     mod_wiper,mod_winker,mod_handle_seat_heat,mod_klaxon,\
 mod_volume,mod_emergency_light,light,random,side, engine
 import time
-import random
-import light
-import mod_winker
-import side
-import engine
-import mod_winker
-import mod_wiper
-import mod_handle_seat_heat
-import Gear
-import Braeak
-import Boot
-import Accel
-import mod_radio
 import Sound
 import snow
+import threading
+
+
+
+
+import datetime
+from timeit import default_timer as timer
+from datetime import timedelta
 import os
 # os.system('cls')
 
-mainList =[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
+mainList =[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
 p = 0
 bang1point = 0
 bang2point = 1
@@ -28,22 +23,22 @@ bang3point = 0
 bang4point = 0
 bang5point = 0
 bang6point = 0
+accel1 = 0
+accel2 = 0
+accelfinal = 0
+braeak1 = 0
+braeak2 = 0
+braeakfinal = 0
+accelCount = 0
+braeakCount = 0
+count = 0
+car_speed=0
+mainList[32] = accelCount
+mainList[33] = braeakCount
 
 
-# import time
-# import random
-# import light
-# import mod_winker
-# import side
-# import engine
-# import mod_winker
-# import mod_wiper
-# import mod_handle_seat_heat
-# import Gear
-# import Braeak
-# import Boot
-# import Accel
-# import mod_radio
+
+
 
 
 # mainList = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,31.0,0,35,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
@@ -94,7 +89,6 @@ accident_situation = random.randrange(0,10)
 accident_title = ""
 accident_txt = ""
 accident_number = 0
-count = 0
 
 accel = 0       # 사고 발생 화면 만들기인데 아직 미사용
 
@@ -104,6 +98,7 @@ radio_channel = ''          # 라디오 채널 받을 문자열
 radio_decibel = ''          # FM / AM 받을 문자열
 
 sound = 0                    # 볼륨 업 다운
+
 
 def radio() :                             # 라디오 문자, 채널??
     radio_value = mod_radio.fm_or_am()
@@ -120,6 +115,15 @@ def under_light_mark(value) :             # 하향등 계기판 on/off 표시 �
             return '💡'
         elif value == 1 :           # 켜졌을때
             return '\033[32m'+'💡'+'\033[0m'
+    except :
+        pass
+
+def boot_on_off(value) :
+    try :
+        if value == 0 :
+            return '시동이 꺼져 있습니다'
+        elif value == 2 :
+            return print('시동이 켜져 있습니다')
     except :
         pass
 
@@ -195,123 +199,67 @@ def right_winker(value) :
     except :
         pass
 
-# def rear_light(Break=1,Gear_R=0,tail_light=0,log_map=0,under_light=0,high_light=0,emergency_light=0) :
-#     try :
-#         if Break == 0 :
-#             return '             '
-#         elif Break == 1 :
-#             return '\033[31m \033[41m' + '■■■■■■■■■■' + '\033[0m'
-#
-#         if Gear_R == 0 :
-#             return '             '
-#         elif Gear_R == 2 :
-#             return '\033[31m \033[41m' + '■■■■■■■■■■' + '\033[0m'
-#
-#         if tail_light == 0 :
-#             return '             '
-#         elif tail_light == 1 :
-#             return '\033[93m' + '   ■■■■      ' + '\033[0m'
-#
-#         if log_map == 0 :
-#             return '             '
-#         elif log_map == 1 :
-#             return '\033[93m' + '   ■■■■      ' + '\033[0m'
-#
-#         if under_light == 0 :
-#             return '             '
-#         elif under_light == 1 :
-#             return '\033[33m' + '  ■■■■■■■■ ' + '\033[0m'
-#
-#         if high_light == 0 :
-#             return '             '
-#         elif high_light == 1 :
-#             return '\033[33m \033[43m' + '■■■■■■■■■■' + '\033[0m'
-#
-#         if emergency_light == 0 :
-#             return '             '
-#         elif emergency_light == 1 :
-#             return '\033[31m' + '   ■■■■      ' + '\033[0m'
-#     except :
-#         pass
-
-def rear_light(Break=0,Gear_R=0,tail_light=0,log_map=0,under_light=0,high_light=0,emergency_light=0) :
+def break_light(value) :                         # 후진등
     try :
-        if Break == 0 and Gear_R == 0 and tail_light == 0 and log_map == 0 and under_light == 0 and high_light == 0 and emergency_light == 0:
+        if value == 0 :
             return '             '
-        elif (Break == 1 or Gear_R == 1) and tail_light == 0 and log_map == 0 and under_light == 0 and high_light == 0 and emergency_light == 0 :
-            return '\033[31m \033[41m' + '■■■■■■■■■■' + '\033[0m'
-        elif Break == 0 and Gear_R == 0 and (tail_light == 1 or log_map == 1) and under_light == 0 and high_light == 0 and emergency_light == 0:
-            return '\033[93m' + '   ■■■■      ' + '\033[0m'
-        elif Break == 0 and Gear_R == 0 and tail_light == 0 and log_map == 0 and under_light == 1 and high_light == 0 and emergency_light == 0 :
-            return '\033[33m' + ' ■■■■■■■' + '\033[0m' + '     '
-        elif Break == 0 and Gear_R == 0 and tail_light == 0 and log_map == 0 and under_light == 0 and high_light == 1 and emergency_light == 0 :
-            return '\033[33m \033[43m' + '■■■■■■■■' + '\033[0m' + '    '
-        elif Break == 0 and Gear_R == 0 and tail_light == 0 and log_map == 0 and under_light == 0 and high_light == 0 and emergency_light == 1 :
-            return '\033[31m' + '   ■■■■      ' + '\033[0m'
-        elif Break == 0 and Gear_R == 0 and tail_light == 1 and log_map == 1 and under_light == 1 and high_light == 1 and emergency_light == 1 :
-            return '\033[33m' + ' ■■■■' + '\033[0m' + '\033[31m' + '■■■■    ' + '\033[0m'
-        elif Break == 0 and Gear_R == 0 and tail_light == 1 and log_map == 1 and under_light == 1 and high_light == 1 and emergency_light == 0 :
-            return '\033[33m \033[43m' + '■■■■■■■■■■' + '\033[0m'
-        elif Break == 1 and Gear_R == 0 and tail_light == 1 and log_map == 1 and under_light == 1 and high_light == 1 and emergency_light == 0 :
-            return '\033[33m' + ' ■■■■' + '\033[0m' + '\033[31m' + '■■■■    ' + '\033[0m'
-        elif Break == 1 and Gear_R == 0 and tail_light == 1 and log_map == 1 and under_light == 1 and high_light == 1 and emergency_light == 1 :
-            return '\033[33m' + ' ■■■■' + '\033[0m' + '\033[31m' + '■■■■    ' + '\033[0m'
-        elif Break == 1 and Gear_R == 1 and tail_light == 1 and log_map == 1 and under_light == 1 and high_light == 1 and emergency_light == 1 :
-            return '\033[33m \033[43m' + ' ■■■■' + '\033[31m \033[41m' + '■■■■' + '\033[0m'+ '  '
+        elif value == 1 :
+            return '\033[93m \033[41m' + ' ■■■■■■■■ ' + '\033[0m'
     except :
         pass
 
-# def front_light(tail_light=0,log_map=0,under_light=0,high_light=0,emergency_light=0) :
-#     try :
-#         if tail_light == 0 :
-#             return ''
-#         elif tail_light == 1 :
-#             return '\033[93m' + '   ■■■■      ' + '\033[0m'
-#         if log_map == 0 :
-#             return ''
-#         elif log_map == 1 :
-#             return '\033[93m' + '   ■■■■      ' + '\033[0m'
-#
-#         if under_light == 0 :
-#             return ''
-#         elif under_light == 1 :
-#             return '\033[33m' + '  ■■■■■■■■ ' + '\033[0m'
-#
-#         if high_light == 0 :
-#             return ''
-#         elif high_light == 1 :
-#             return '\033[33m \033[43m' + '■■■■■■■■■■' + '\033[0m'
-#
-#         if emergency_light == 0 :
-#             return ''
-#         elif emergency_light == 1 :
-#             return '\033[31m' + '   ■■■■      ' + '\033[0m'
-#     except :
-#         pass
-
-def front_light(tail_light=0,log_map=0,under_light=0,high_light=0,emergency_light=0) :
-    try:
-        if tail_light == 0 and log_map == 0 and under_light == 0 and high_light == 0 and emergency_light == 0:
+def Gear_R_light(value) :                        # 브레이크등
+    try :
+        if value == 0 :
             return '             '
-        elif (tail_light == 1 or log_map == 1) and under_light == 0 and high_light == 0 and emergency_light == 0:
-                return '\033[93m' + '   ■■■■      ' + '\033[0m'
-        elif tail_light == 0 and log_map == 0 and under_light == 1 and high_light == 0 and emergency_light == 0:
+        elif value == 1 :
+            return '\033[31m \033[41m' + '■■■■■■■■■■' + '\033[0m'
+    except :
+        pass
+
+def log_map_light(value) :                         # 안개등
+    try :
+        if value == 0 :
+            return '             '
+        elif value == 1 :
+            return '\033[36m' + '   ■■■■      ' + '\033[0m'
+    except :
+        pass
+
+def tail_light(value) :                            # 미등
+    try :
+        if value == 0 :
+            return '             '
+        elif value == 1 :
+            return '\033[93m' + '   ■■■■      ' + '\033[0m'
+    except :
+        pass
+
+def emergency_light(value) :                           # 비상 깜빡이
+    try :
+        if value == 0 :
+            return '             '
+        elif value == 1 :
+            return '\033[31m' + '■■■■■' + '\033[0m'
+    except :
+        pass
+
+def high_light(value) :                             # 상향등 - 하이빔
+    try :
+        if value == 0 :
+            return '             '
+        elif value == 1 :
+            return '\033[33m \033[103m' + '■■■■■■■■■■' + '\033[0m'
+    except :
+        pass
+
+def under_light(value) :                            # 하향등
+    try :
+        if value == 0 :
+            return '             '
+        elif value == 1 :
             return '\033[33m' + '  ■■■■■■■■ ' + '\033[0m'
-        elif tail_light == 0 and log_map == 0 and under_light == 0 and high_light == 1 and emergency_light == 0:
-            return '\033[33m \033[43m' + '■■■■■■■■■■' + '\033[0m'
-        elif tail_light == 0 and log_map == 0 and under_light == 0 and high_light == 0 and emergency_light == 1:
-            return '\033[31m' + '   ■■■■      ' + '\033[0m'
-        elif tail_light == 1 and log_map == 1 and under_light == 1 and high_light == 1 and emergency_light == 1:
-            return '\033[33m' + ' ■■■■' + '\033[0m' + '\033[31m' + '■■■■    ' + '\033[0m'
-        elif tail_light == 1 and log_map == 1 and under_light == 1 and high_light == 1 and emergency_light == 0:
-            return '\033[33m \033[43m' + '■■■■■■■■■■' + '\033[0m'
-        elif tail_light == 1 and log_map == 1 and under_light == 1 and high_light == 1 and emergency_light == 0:
-            return '\033[33m' + ' ■■■■' + '\033[0m' + '\033[31m' + '■■■■    ' + '\033[0m'
-        elif tail_light == 1 and log_map == 1 and under_light == 1 and high_light == 1 and emergency_light == 1:
-            return '\033[33m' + ' ■■■■' + '\033[0m' + '\033[31m' + '■■■■    ' + '\033[0m'
-        elif tail_light == 1 and log_map == 1 and under_light == 1 and high_light == 1 and emergency_light == 1:
-            return '\033[33m \033[43m' + ' ■■■■' + '\033[31m \033[41m' + '■■■■' + '\033[0m' + '  '
-    except:
+    except :
         pass
 
 def Circulation_Button(value) :         # 내부 순환 버튼??
@@ -394,7 +342,6 @@ def accident(value):                # 사고 발생 상황
 
 
 accident_title,accident_txt = accident(count) # 매개변수에 카운트!!
-
 
 def Air_Conditioning(light=0,step=0) :         # 에어컨 / 히터
     try :
@@ -552,27 +499,32 @@ def board() :             # 계기판
     c = 2
     d = 3
     e = 4
-    AA = Accel.accel()
-    print(f"""                              {front_light(mainList[30],mainList[21],mainList[15],mainList[16],mainList[7])}                                                     {front_light(mainList[30],mainList[21],mainList[15],mainList[16],mainList[7])}
-                               --------------------------------------------------------------------------
+
+    print(f"""                 
+                               {log_map_light(mainList[21])}                                                   {log_map_light(mainList[21])}    
+                               {tail_light(mainList[30])}                                                   {tail_light(mainList[30])}    
+                               {high_light(mainList[16])}                                                   {high_light(mainList[16])}    
+                               {under_light(mainList[15])}                                                   {under_light(mainList[15])}
+                         {emergency_light(mainList[7])} -------------------------------------------------------------------------- {emergency_light(mainList[7])}
                                 L.winker            상향등    하향등    미등    안개등               R.winker
-         ----------------------    {left_winker_mark(mainList[17])}                  {high_light_mark(mainList[16])}       {under_light_mark(mainList[15])}      {tail_light_mark(mainList[30])}      {log_map_mark(mainList[21])}                     {right_winker_mark(mainList[18])}    ----------------------
-        ==                        주행거리                           속도                              연비                        ==
-    　 ==　                      200,000KM                         120KM                             15 l                         ==
-     ==       {left_winker(mainList[17])}     {battery_title(mainList[22])}        {oil_title(mainList[24])}             현재 온도          내부 순환       {drive_title(mainList[3])}       {right_winker(mainList[18])}        ==
-     ==                          {battery_text(mainList[22])} {mainList[22]}%      {oil_text(mainList[24])}                 //              {Circulation_Button(mainList[6])}            {drive_text(mainList[3])}                            ==
-    　 ==                                                    Emergency_Button                                                    ==
-        ==                                                          {Emergency_Button(mainList[7])}              A / C      💺      ⚙                       ==
+         ----------------------    {left_winker_mark(mainList[17])}                  {high_light_mark(mainList[16])}      {under_light_mark(mainList[15])}      {tail_light_mark(mainList[30])}      {log_map_mark(mainList[21])}                     {right_winker_mark(mainList[18])}  ----------------------
+                                  주행거리                           속도                              연비                        
+    　   　                      200,000KM                         120KM                             15 l                        
+              {left_winker(mainList[17])}     {battery_title(mainList[22])}        {oil_title(mainList[24])}             현재 온도          내부 순환       {drive_title(mainList[3])}         {right_winker(mainList[18])}       
+                                 {battery_text(mainList[22])} {round(mainList[22],1)}%      {oil_text(mainList[24])}                 //            {Circulation_Button(mainList[6])}            {drive_text(mainList[3])}                          
+    　                                                       Emergency_Button                                                    
+                                                                   {Emergency_Button(mainList[7])}               A / C      💺      ⚙                     
          ----------------------         📻                                         {Air_Conditioning(mainList[26],mainList[28])}    {sit_heat_rays(mainList[5])}  {hanldle_heat_rays(mainList[4])} ---------------------- 
-                               ====================                                Break       Accel
-                                     {radio_channel} / {radio_decibel}                                        {break_mark(mainList[1])}           {accel_mark(mainList[2])} 
-                               --------------------------------------------------------------------------                         ㅡㅡㅡㅡㅡㅡ상황 발생ㅡㅡㅡㅡㅡ
-                              {rear_light(mainList[1],mainList[3],mainList[30],mainList[21],mainList[15],mainList[16],mainList[7])}                                                     {rear_light(mainList[1],mainList[3],mainList[30],mainList[21],mainList[15],mainList[16],mainList[7])}        기어                   {accident_title}   
-                                                                                                                      {gear_mark(mainList[3])}           {accident_txt} 
+                               ====================         {boot_on_off(mainList[0])}       Break       Accel       기어
+                                     {radio_channel} / {radio_decibel}                                        {break_mark(mainList[1])}           {accel_mark(mainList[2])}         {gear_mark(mainList[3])}
+                         {emergency_light(mainList[7])} -------------------------------------------------------------------------- {emergency_light(mainList[7])}    
+                               {break_light(mainList[1])}                                                   {break_light(mainList[1])}                      ㅡㅡㅡㅡㅡㅡ상황 발생ㅡㅡㅡㅡㅡ
+                               {log_map_light(mainList[21])}                                                   {log_map_light(mainList[21])}                               {accident_title} 
+                               {Gear_R_light(mainList[3])}                                                   {Gear_R_light(mainList[3])}                                      
+                               {tail_light(mainList[30])}                                                   {tail_light(mainList[30])}                      {accident_txt} 
                                                                                                                                   ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ""")
 
-#
-#
+
 # def board1() :             # 계기판
 #     global AA
 #     a = 0
@@ -583,6 +535,7 @@ def board() :             # 계기판
 #     AA = Accel.accel()
 #     print(f"""                              {front_light(e)}                                                     {front_light(e)}
 #                                --------------------------------------------------------------------------
+#
 #                                 L.winker            상향등    하향등    미등    안개등               R.winker
 #          ----------------------    {winker_mark(a)}                  {high_light_mark(b)}      {under_light_mark(b)}       {tail_light_mark(b)}      {log_map_mark(b)}                     {winker_mark(b)}    ----------------------
 #         ==                        주행거리                           속도                              연비                       ==
@@ -666,7 +619,7 @@ def bang1():
                                                ----                ----
                                            ----                        ----
                                       ----                                ----
-                          ●하향●      ----               핸들              ----        
+                          ●하향●       ----               핸들             ----        
                                       ----                                ----
                                            ----                        ----
                                                ----                ----                  
@@ -702,7 +655,7 @@ def bang1():
                                                ----                ----
                                            ----                        ----
                                       ----                                ----
-                          ●오토●      ----               핸들             ----        
+                          ●오토●       ----               핸들             ----        
                                       ----                                ----
                                            ----                        ----
                                                ----                ----                  
@@ -720,6 +673,24 @@ def bang1():
                                                ----                ----
                                            ----                        ----
                                       ----                                ----
+                          ●안개등●     ----               핸들             ----        
+                                      ----                                ----
+                                           ----                        ----
+                                               ----                ----                  
+                                                   ----        ----                  ● ● ●
+                                                       --------
+
+
+                ------------------------------------------------------------------------""")
+    elif bang1point == 7:
+        print(f"""------------------------------------------------------------------------
+
+                    핸들
+                                                       --------
+                                                   ----        ----                   
+                                               ----                ----
+                                           ----                        ----
+                                      ----                                ----
                           ● ● ●       ----               핸들             ----       ● 1 ●        
                                       ----                                ----
                                            ----                        ----
@@ -729,7 +700,7 @@ def bang1():
 
 
                 ------------------------------------------------------------------------""")
-    elif bang1point == 7:
+    elif bang1point == 8:
         print(f"""------------------------------------------------------------------------
 
                     핸들
@@ -747,7 +718,7 @@ def bang1():
 
 
                 ------------------------------------------------------------------------""")
-    elif bang1point == 8:
+    elif bang1point == 9:
         print(f"""------------------------------------------------------------------------
 
                     핸들
@@ -765,7 +736,7 @@ def bang1():
 
 
                 ------------------------------------------------------------------------""")
-    elif bang1point == 9:
+    elif bang1point == 10:
         print(f"""------------------------------------------------------------------------
 
                     핸들
@@ -774,7 +745,7 @@ def bang1():
                                                ----                ----
                                            ----                        ----
                                       ----              ● ● ●              ----
-                          ● ● ●       ----              클락션             ----        
+                          ● ● ●       ----              클락션              ----        
                                       ----              ● ● ●              ----
                                            ----                        ----
                                                ----                ----                  
@@ -801,83 +772,77 @@ def bang2():
     if bang2point == 1: # 에어컨을 키고 히터로 넘어가고 다시 0으로 돌아오는 기능을 넣기.
         print(f"""------------------------------------------------------------------------
 
-            에어컨   핸들열선   열선시트  통풍시트   비상깜빡이   음상    음하   라디오
-             ┏  ┓     ┏  ┓        ┏  ┓      ┏  ┓        ┏  ┓      ┏  ┓    ┏  ┓    ┏  ┓
+            에어컨   핸들열선   열선시트  내부순환   비상깜빡이   
+             ┏  ┓     ┏  ┓        ┏  ┓      ┏  ┓        ┏  ┓ 
               ｜
-             ┗  ┛     ┗  ┛        ┗  ┛      ┗  ┛        ┗  ┛      ┗  ┛    ┗  ┛    ┗  ┛
+             ┗  ┛     ┗  ┛        ┗  ┛      ┗  ┛        ┗  ┛ 
                 
 ------------------------------------------------------------------------""")
     elif bang2point == 2:
         print(f"""------------------------------------------------------------------------
 
-            에어컨   핸들열선   열선시트  통풍시트   비상깜빡이   음상    음하   라디오
-             ┏  ┓     ┏  ┓        ┏  ┓      ┏  ┓        ┏  ┓      ┏  ┓    ┏  ┓    ┏  ┓
+            에어컨   핸들열선   열선시트  내부순환   비상깜빡이   
+             ┏  ┓     ┏  ┓        ┏  ┓      ┏  ┓        ┏  ┓      
                        ｜
-             ┗  ┛     ┗  ┛        ┗  ┛      ┗  ┛        ┗  ┛      ┗  ┛    ┗  ┛    ┗  ┛
+             ┗  ┛     ┗  ┛        ┗  ┛      ┗  ┛        ┗  ┛      
 
 ------------------------------------------------------------------------""")
     elif bang2point == 3:
         print(f"""------------------------------------------------------------------------
 
-            에어컨   핸들열선   열선시트  통풍시트   비상깜빡이   음상    음하   라디오
-             ┏  ┓     ┏  ┓        ┏  ┓      ┏  ┓        ┏  ┓      ┏  ┓    ┏  ┓    ┏  ┓
+            에어컨   핸들열선   열선시트  내부순환   비상깜빡이   
+             ┏  ┓     ┏  ┓        ┏  ┓      ┏  ┓        ┏  ┓     
                                    ｜
-             ┗  ┛     ┗  ┛        ┗  ┛      ┗  ┛        ┗  ┛      ┗  ┛    ┗  ┛    ┗  ┛
+             ┗  ┛     ┗  ┛        ┗  ┛      ┗  ┛        ┗  ┛      
 
 ------------------------------------------------------------------------""")
     elif bang2point == 4:
         print(f"""------------------------------------------------------------------------
 
-            에어컨   핸들열선   열선시트  통풍시트   비상깜빡이   음상    음하   라디오
-             ┏  ┓     ┏  ┓        ┏  ┓      ┏  ┓        ┏  ┓      ┏  ┓    ┏  ┓    ┏  ┓
+            에어컨   핸들열선   열선시트  내부순환   비상깜빡이   
+             ┏  ┓     ┏  ┓        ┏  ┓      ┏  ┓        ┏  ┓     
                                              ｜
-             ┗  ┛     ┗  ┛        ┗  ┛      ┗  ┛        ┗  ┛      ┗  ┛    ┗  ┛    ┗  ┛
+             ┗  ┛     ┗  ┛        ┗  ┛      ┗  ┛        ┗  ┛     
 
 ------------------------------------------------------------------------""")
     elif bang2point == 5:
         print(f"""------------------------------------------------------------------------
 
-            에어컨   핸들열선   열선시트  통풍시트   비상깜빡이   음상    음하   라디오
-             ┏  ┓     ┏  ┓        ┏  ┓      ┏  ┓        ┏  ┓      ┏  ┓    ┏  ┓    ┏  ┓
+            에어컨   핸들열선   열선시트  내부순환   비상깜빡이   
+             ┏  ┓     ┏  ┓        ┏  ┓      ┏  ┓        ┏  ┓     
                                                          ｜
-             ┗  ┛     ┗  ┛        ┗  ┛      ┗  ┛        ┗  ┛      ┗  ┛    ┗  ┛    ┗  ┛
+             ┗  ┛     ┗  ┛        ┗  ┛      ┗  ┛        ┗  ┛ 
 
 ------------------------------------------------------------------------""")
 
-    elif bang2point == 6:
-        print(f"""------------------------------------------------------------------------
+#     elif bang2point == 6:
+#         print(f"""------------------------------------------------------------------------
+#
+#             에어컨   핸들열선   열선시트  내부순환   비상깜빡이   음상    음하   라디오
+#              ┏  ┓     ┏  ┓        ┏  ┓      ┏  ┓        ┏  ┓      ┏  ┓    ┏  ┓    ┏  ┓
+#                                                                    ｜
+#              ┗  ┛     ┗  ┛        ┗  ┛      ┗  ┛        ┗  ┛      ┗  ┛    ┗  ┛    ┗  ┛
+#
+# ------------------------------------------------------------------------""")
+#     elif bang2point == 7:
+#         print(f"""------------------------------------------------------------------------
+#
+#             에어컨   핸들열선   열선시트  내부순환  비상깜빡이
+#              ┏  ┓     ┏  ┓        ┏  ┓      ┏  ┓        ┏  ┓
+#
+#              ┗  ┛     ┗  ┛        ┗  ┛      ┗  ┛        ┗  ┛
+#
+# ------------------------------------------------------------------------""")
+#     elif bang2point == 8:
+#         print(f"""------------------------------------------------------------------------
+#
+#             에어컨   핸들열선   열선시트  내부순환   비상깜빡이
+#              ┏  ┓     ┏  ┓        ┏  ┓      ┏  ┓        ┏  ┓
+#
+#              ┗  ┛     ┗  ┛        ┗  ┛      ┗  ┛        ┗  ┛
+#
+# ------------------------------------------------------------------------""")
 
-            에어컨   핸들열선   열선시트  통풍시트   비상깜빡이   음상    음하   라디오
-             ┏  ┓     ┏  ┓        ┏  ┓      ┏  ┓        ┏  ┓      ┏  ┓    ┏  ┓    ┏  ┓
-                                                                   ｜
-             ┗  ┛     ┗  ┛        ┗  ┛      ┗  ┛        ┗  ┛      ┗  ┛    ┗  ┛    ┗  ┛
-
-------------------------------------------------------------------------""")
-    elif bang2point == 7:
-        print(f"""------------------------------------------------------------------------
-
-            에어컨   핸들열선   열선시트  통풍시트   비상깜빡이   음상    음하   라디오
-             ┏  ┓     ┏  ┓        ┏  ┓      ┏  ┓        ┏  ┓      ┏  ┓    ┏  ┓    ┏  ┓
-                                                                           ｜
-             ┗  ┛     ┗  ┛        ┗  ┛      ┗  ┛        ┗  ┛      ┗  ┛    ┗  ┛    ┗  ┛
-
-------------------------------------------------------------------------""")
-    elif bang2point == 8:
-        print(f"""------------------------------------------------------------------------
-
-            에어컨   핸들열선   열선시트  통풍시트   비상깜빡이   음상    음하   라디오
-             ┏  ┓     ┏  ┓        ┏  ┓      ┏  ┓        ┏  ┓      ┏  ┓    ┏  ┓    ┏  ┓
-                                                                                   ｜
-             ┗  ┛     ┗  ┛        ┗  ┛      ┗  ┛        ┗  ┛      ┗  ┛    ┗  ┛    ┗  ┛
-
-------------------------------------------------------------------------""")
-    # print(f"""------------------------------------------------------------------------
-    #
-    #         ┏  ┓ ┏  ┓ ┏  ┓ ┏  ┓ ┏  ┓ ┏  ┓ ┏  ┓
-    #                              ｜
-    #         ┗  ┛ ┗  ┛ ┗  ┛ ┗  ┛ ┗  ┛ ┗  ┛ ┗  ┛
-    #
-    # ------------------------------------------------------------------------""")
 
 
 def bang5(): # 에어컨 옵션들 만들기, 뒤로가기 버튼(bang2()로 이동 버튼으로 만들기, 방5내부에선 wasd 방향키사용 불가 에어컨 온도 결정후 돌아가는 기능
@@ -1245,7 +1210,7 @@ def bang3():
                                      ---                   ---
                                        ---               ---
                                           ---         ---
-                                             ￣￣￣￣￣          ┏   ┓   ┏ ｜ ┓
+                                             ￣￣￣￣￣          ┏   j┓   ┏ ｜ ┓
                                                                  ∥   ∥   ∥ ｜ ∥
            ------------------------------------------------------------------------""")
 
@@ -1320,32 +1285,65 @@ def bang4():
             ------------------------------------------------------------------------""")
 
 
-def fw(): # 시선
+
+def speed_up(value):
+    global car_speed
+    count_speed = 1
+    if 0 < value:
+        while True:
+            if count < value + 1:
+                # time.sleep(0.5)
+                car_speed = count_speed * 20
+                count_speed += 1
+            else:
+                return
+    else:
+        while True:
+            if car_speed <= 0:
+                pass
+            else:
+                # time.sleep(0.5)
+                car_speed -= 2
+
+def speed_down(value):
+    global car_speed
+    while True:
+        if 0 < value <= 10:
+            if 0 < car_speed:
+                time.sleep(0.5)
+                car_speed=car_speed-20
+                value-=1
+            elif car_speed == 0:
+                car_speed=0
+                return
+        else:
+            return
+
+def fw():  # 시선
     global count
     global accident_txt
     global accident_title
     global p
     count += 1
-    if count == 10: # 눈
+    if count == 10:  # 눈
         global bang1point
         snow.snow()
-        accident_title,accident_txt = accident(count)
+        accident_title, accident_txt = accident(count)
         board()
         Sound.beepsound()
         count += 1
         time.sleep(1)
         p = 1
-        bang1point = 6
+        bang1point = 8
         bang1()
         accident_title, accident_txt = accident(11)
-        print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1111")
         return
 
-    elif count == 20: # 어린이 보호구역
+    elif count == 20:  # 어린이 보호구역
         global bang3point
         snow.kid()
         time.sleep(1)
-        accident_title,accident_txt = accident(count)
+        accident_title, accident_txt = accident(count)
         board()
         Sound.beepsound()
         time.sleep(1)
@@ -1355,8 +1353,8 @@ def fw(): # 시선
         accident_title, accident_txt = accident(21)
         return
 
-    elif count == 30: # 고라니 출몰
-        accident_title,accident_txt = accident(count)
+    elif count == 30:  # 고라니 출몰
+        accident_title, accident_txt = accident(count)
         board()
         Sound.beepsound()
         time.sleep(1)
@@ -1367,8 +1365,8 @@ def fw(): # 시선
         return
 
 
-    elif count == 40: # 엔진오일 과열
-        accident_title,accident_txt = accident(count)
+    elif count == 40:  # 엔진오일 과열
+        accident_title, accident_txt = accident(count)
         board()
         Sound.beepsound()
         time.sleep(1)
@@ -1376,6 +1374,7 @@ def fw(): # 시선
         p = 3
         bang3point = 1
         bang3()
+        accident_title, accident_txt = accident(41)
         return
 
     if p == 0:
@@ -1396,16 +1395,16 @@ def fw(): # 시선
         print(mainList)
     elif p == 5:
         pass
-    elif p == 6:
-        pass
 
-def fa(): # 시선
+
+
+def fa():  # 시선
     global count
     global accident_txt
     global accident_title
     global p
     count += 1
-    if count == 10: # 눈
+    if count == 10:  # 눈
         global bang1point
         snow.snow()
         accident_title, accident_txt = accident(count)
@@ -1413,16 +1412,16 @@ def fa(): # 시선
         Sound.beepsound()
         time.sleep(1)
         p = 1
-        bang1point = 6
+        bang1point = 8
         bang1()
         accident(11)
-        print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1111")
-        
-    elif count == 20: # 어린이 보호구역
+        return
+
+    elif count == 20:  # 어린이 보호구역
         global bang3point
         snow.kid()
         time.sleep(1)
-        accident_title,accident_txt = accident(count)
+        accident_title, accident_txt = accident(count)
         board()
         Sound.beepsound()
         time.sleep(1)
@@ -1433,8 +1432,8 @@ def fa(): # 시선
         return
 
 
-    elif count == 30: # 고라니
-        accident_title,accident_txt = accident(count)
+    elif count == 30:  # 고라니
+        accident_title, accident_txt = accident(count)
         board()
         Sound.beepsound()
         time.sleep(1)
@@ -1445,14 +1444,15 @@ def fa(): # 시선
         return
 
 
-    elif count == 40: # 엔진오일 과열
-        accident_title,accident_txt = accident(count)
+    elif count == 40:  # 엔진오일 과열
+        accident_title, accident_txt = accident(count)
         board()
         Sound.beepsound()
         time.sleep(1)
         p = 3
         bang3point = 1
         bang3()
+        accident_title, accident_txt = accident(41)
         return
 
     if p == 0:
@@ -1474,13 +1474,14 @@ def fa(): # 시선
     elif p == 5:
         pass
 
-def fs(): # 시선
+
+def fs():  # 시선
     global count
     global accident_txt
     global accident_title
     global p
     count += 1
-    if count == 10: # 눈
+    if count == 10:  # 눈
         global bang1point
         snow.snow()
         accident_title, accident_txt = accident(count)
@@ -1488,16 +1489,16 @@ def fs(): # 시선
         Sound.beepsound()
         time.sleep(1)
         p = 1
-        bang1point = 6
+        bang1point = 8
         bang1()
         accident_title, accident_txt = accident(11)
-        print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1111")
+        return
 
-    elif count == 20: # 어린이 보호구역
+    elif count == 20:  # 어린이 보호구역
         global bang3point
         snow.kid()
         time.sleep(1)
-        accident_title,accident_txt = accident(count)
+        accident_title, accident_txt = accident(count)
         board()
         Sound.beepsound()
         time.sleep(1)
@@ -1507,8 +1508,8 @@ def fs(): # 시선
         accident_title, accident_txt = accident(21)
         return
 
-    elif count == 30: # 고라니
-        accident_title,accident_txt = accident(count)
+    elif count == 30:  # 고라니
+        accident_title, accident_txt = accident(count)
         board()
         Sound.beepsound()
         time.sleep(1)
@@ -1519,14 +1520,15 @@ def fs(): # 시선
         return
 
 
-    elif count == 40: # 엔진오일 과열
-        accident_title,accident_txt = accident(count)
+    elif count == 40:  # 엔진오일 과열
+        accident_title, accident_txt = accident(count)
         board()
         Sound.beepsound()
         time.sleep(1)
         p = 3
         bang3point = 1
         bang3()
+        accident_title, accident_txt = accident(41)
         return
 
     if p == 0:
@@ -1550,16 +1552,16 @@ def fs(): # 시선
         pass
     elif p == 5:
         pass
-    elif p == 6:
-        pass
 
-def fd(): # 시선
+
+
+def fd():  # 시선
     global count
     global accident_txt
     global accident_title
     global p
     count += 1
-    if count == 10: # 눈
+    if count == 10:  # 눈
         global bang1point
         snow.snow()
         accident_title, accident_txt = accident(count)
@@ -1567,12 +1569,12 @@ def fd(): # 시선
         Sound.beepsound()
         time.sleep(1)
         p = 1
-        bang1point = 6
+        bang1point = 8
         bang1()
         accident_title, accident_txt = accident(11)
-        print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1111")
+        return
 
-    elif count == 20: # 어린이 보호구역
+    elif count == 20:  # 어린이 보호구역
         global bang3point
         snow.kid()
         time.sleep(1)
@@ -1587,7 +1589,7 @@ def fd(): # 시선
         return
 
 
-    elif count == 30: # 고라니
+    elif count == 30:  # 고라니
         accident_title, accident_txt = accident(count)
         board()
         Sound.beepsound()
@@ -1598,7 +1600,7 @@ def fd(): # 시선
         accident_title, accident_txt = accident(31)
         return
 
-    elif count == 40: # 엔진오일 과열
+    elif count == 40:  # 엔진오일 과열
         accident_title, accident_txt = accident(count)
         board()
         Sound.beepsound()
@@ -1606,6 +1608,7 @@ def fd(): # 시선
         p = 3
         bang3point = 1
         bang3()
+        accident_title, accident_txt = accident(41)
         return
 
     if p == 0:
@@ -1629,13 +1632,11 @@ def fd(): # 시선
         pass
     elif p == 5:
         pass
-    elif p == 6:
-        pass
 
-def fk1(): # 방안에서 메뉴 이동
+def fk1(): # 방안에서 메뉴 이동 J
     global bang1point, bang2point, bang3point, bang4point, bang5point, bang6point
     if p == 1: # 핸들
-        if 0 <= bang1point <= 9:
+        if 0 <= bang1point <= 10:
             if bang1point == 0:
                 pass
             else:
@@ -1644,9 +1645,9 @@ def fk1(): # 방안에서 메뉴 이동
         board()
         bang1()
     elif p == 2: # 내부버튼
-        if 1 <= bang2point <= 8:
+        if 1 <= bang2point <= 5:
             if bang2point == 1:
-                pass
+                bang2point = 5
             else:
                 bang2point -= 1
         sideList()
@@ -1690,11 +1691,11 @@ def fk1(): # 방안에서 메뉴 이동
         board()
         bang6()
 
-def fk2(): # 방안에서 메뉴 이동
+def fk2(): # 방안에서 메뉴 이동 K
     global bang1point, bang2point, bang3point, bang4point, bang5point, bang6point
     if p == 1:
-        if 0 <= bang1point <= 9:
-            if bang1point == 9:
+        if 0 <= bang1point <= 10:
+            if bang1point == 10:
                 pass
             else:
                 bang1point += 1
@@ -1702,9 +1703,9 @@ def fk2(): # 방안에서 메뉴 이동
         board()
         bang1()
     elif p == 2:
-        if 1 <= bang2point <= 8:
-            if bang2point == 8:
-                pass
+        if 1 <= bang2point <= 5:
+            if bang2point == 5:
+                bang2point = 1
             else:
                 bang2point += 1
         sideList()
@@ -1749,52 +1750,109 @@ def fk2(): # 방안에서 메뉴 이동
         bang6()
 
 
-def fk3(): #결정
+def fk3(): #결정 L
+    global accel1
+    global accel2
+    global accelfinal
+    global accelCount
+
+    global braeak1
+    global braeak2
+    global braeakfinal
+    global braeakCount
     if p == 1:
         if bang1point == 0:
-            mainList[17]= 0
-            mainList[18]= 0
+            mainList[17] = 0
+            mainList[18] = 0
+            board()
+            bang1()
             return
         if bang1point ==1:
             mod_winker.winker_left_on_off()
             mainList[17] = mod_winker.left
             if mainList[18] == 1:
                 mainList[18] = 0
+            board()
+            bang1()
             return
         elif bang1point ==2:
             mod_winker.winker_right_on_off()
             mainList[18] = mod_winker.right
             if mainList[17] == 1:
                 mainList[17] = 0
+            board()
+            bang1()
             return
         elif bang1point ==3:
-            light.normalLight()
-            mainList[15] = light.normalLights # 노멀 라이트
+            if mainList[22] != 0:
+                light.normalLight()
+                mainList[15] = light.normalLights  # 노멀 라이트
+            elif mainList[22] == 0:
+                pass
+            board()
+            bang1()
             return
         elif bang1point ==4:
-            light.highBeam()
-            mainList[16] = light.highBeams
+            if mainList[22] != 0:
+                light.highBeam()
+                mainList[16] = light.highBeams
+            elif mainList[22] == 0:
+                pass
+            board()
+            bang1()
             return
         elif bang1point == 5:
-            auto = light.auto()
-            mainList[30] = auto
+            if mainList[22] != 0:
+                auto = light.auto()
+                mainList[31] = auto
+            elif mainList[22] == 0:
+                pass
+            board()
+            bang1()
             return
         elif bang1point == 6:
-            wfon = mod_wiper.wiper_on()
-            mainList[12] = wfon
-            return
+            if mainList[22] != 0:
+                agd = light.fogLight()
+                mainList[21] = agd
+            elif mainList[22] == 0:
+                pass
         elif bang1point == 7:
-            wfup = mod_wiper.mod_wiper_up()
-            mainList[13] = wfup
+            if mainList[22] != 0:
+                wfon = mod_wiper.wiper_on()
+                mainList[12] = wfon
+                snow.wi()
+            elif mainList[22] == 0:
+                pass
+            board()
+            bang1()
             return
         elif bang1point == 8:
-            wsa = mod_wiper.wiper_washer_fluid()
-            mainList[14] = wsa
+            if mainList[22] != 0:
+                wfup = mod_wiper.mod_wiper_up()
+                snow.wi2()
+                mainList[13] = wfup
+            elif mainList[22] == 0:
+                pass
+            board()
+            bang1()
             return
         elif bang1point == 9:
+            if mainList[22] != 0:
+                wsa = mod_wiper.wiper_washer_fluid()
+                snow.washer_fluid()
+                mainList[14] = wsa
+            elif mainList[22] == 0:
+                pass
+            board()
+            bang1()
+            return
+        elif bang1point == 10:
             klx = mod_klaxon.klaxon()
             mainList[25] = klx
+            board()
+            bang1()
             return
+
     if p == 2:
         if bang2point == 1:
             board()
@@ -1804,68 +1862,113 @@ def fk3(): #결정
         elif bang2point ==2:
             hhof = mod_handle_seat_heat.handle_heat_on_or_off()
             mainList[4] = hhof
+            board()
+            bang2()
             return
         elif bang2point ==3:
             shof = mod_handle_seat_heat.seat_heat_on()
             mainList[5] = shof
+            board()
+            bang2()
             return  # mainList[5] = shof
         elif bang2point ==4:
             swof = mod_handle_seat_heat.seat_wind_on()
             mainList[6] = swof
+            board()
+            bang2()
             return  # mainList[6] = swof
         elif bang2point ==5:
             mod_emergency_light.emergency_light_on_or_off()
             mainList[7] = mod_emergency_light.emergency_light
+            board()
+            bang2()
             return  # mainList[7] = bsd
         elif bang2point ==6:
             blu = mod_volume.mod_volume_up()
             mainList[8] = blu
+            board()
+            bang2()
             return  # mainList[8] = blu
         elif bang2point == 7:
             bld = mod_volume.mod_volume_down()
             mainList[9] = bld
+            board()
+            bang2()
             return  # mainList[8] = bld
         elif bang2point == 8:
-            bang6()
-            return
-             # mod_radio.fm_or_am() # 라디오 페이지 작성해야함.
+            pass # mod_radio.fm_or_am() # 라디오 페이지 작성해야함.
     if p == 3:
         if bang3point == 0:
             pass
+
         elif bang3point == 1:
             boots = Boot.boot(Braeak.a, Gear.a)
             mainList[0] = boots
-            if mainList[0] == 1 or mainList[0] == 2:
-                light.taillight()
             engine.enginestart()
-            print(mainList)
-            return # mainList[0] = boots
+            board()
+            bang3()
+            return
+
         elif bang3point == 2:
+            braeakstart = time.time()
+            braeak1 = braeakstart
+            if braeak2 != 0:
+                braeakfinal = braeak1 - braeak2
+                if 0 < braeakfinal <= 1 and 0 <= braeakCount < 10:
+                    braeakCount += 1
+                    speed_test = threading.Thread(target=speed_down(braeakCount))
+                    speed_test.start()
+                elif braeakfinal > 1:
+                    braeakCount = 0
+            elif braeak2 == 0:
+                pass
             braeaks = Braeak.braeak()
             mainList[1] = braeaks
-            lbl = light.breakLight()
-            mainList[19] = lbl
-            print(mainList)
             if mainList[2] == 1:
-                Accel.accel()
+                Accel.acceloff()
                 mainList[2] = 0
-            print(mainList)
+            if mainList[19] == 0:
+                lbl = light.breakLight()
+                mainList[19] = lbl
+            braeakend = time.time()
+            braeak2 = braeakend
+            board()
+            bang3()
             return # mainList[1] = braeaks
+
         elif bang3point == 3:
+            accelstart = time.time()
+            accel1 = accelstart
+            if accel2 != 0:
+                accelfinal = accel1 - accel2
+                if 0 < accelfinal <= 1 and 0 <= accelCount < 10:
+                    accelCount += 1
+                    speed_test = threading.Thread(target=speed_up(accelCount))
+                    speed_test.start()
+                elif accelfinal > 1:
+                    accelCount = 0
+            elif braeak2 == 0:
+                pass
             accels = Accel.accel()
             mainList[2] = accels
-            print(mainList)
             if mainList[1] == 1:
-                Braeak.braeak()
+                Braeak.braeakoff()
                 mainList[1] = 0
-            print(mainList)
+                lbl = light.breakLight()
+                mainList[19] = lbl
+            accelend = time.time()
+            accel2 = accelend
+            board()
+            bang3()
             return # mainList[2] = accels
+
     if p == 4:
         if bang4point == 0:
             gears = Gear.a
             print("파킹기어 상태")
             mainList[3] = gears
-            print(mainList)
+            board()
+            bang4()
             return # mainList[3] = gears
         elif bang4point == 1:
             gears = Gear.a
@@ -1873,20 +1976,26 @@ def fk3(): #결정
             mainList[3] = gears
             lrl = light.reverseLight()
             mainList[20] = lrl
-            print(mainList)
+            board()
+            bang4()
             return  # mainList[3] = gears
+
         elif bang4point == 2:
             gears = Gear.a
             print("중립기어 상태")
             mainList[3] = gears
-            print(mainList)
+            board()
+            bang4()
             return  # mainList[3] = gears
+
         elif bang4point == 3:
             gears = Gear.a
             print("드라이브기어 상태")
             mainList[3] = gears
-            print(mainList)
+            board()
+            bang4()
             return  # mainList[3] = gears
+
     if p == 5: # 에어컨에 들어가 들어가 있는 상황
         if bang5point == 0:
             aironoff = mod_airconditioner.air_conditioner_heater()
@@ -1894,44 +2003,37 @@ def fk3(): #결정
             mainList[26] = aironoff
             board()
             bang5()
-            print(mainList)
             return
         elif bang5point == 1:
             odup = mod_airconditioner.aircon_temperature_go_up()
             mainList[27] = odup
             board()
             bang5()
-            print(mainList)
             return
         elif bang5point == 2:
             oddw = mod_airconditioner.aircon_temperature_go_down()
             mainList[27] = oddw
             board()
             bang5()
-            print(mainList)
             return
         elif bang5point == 3:
             blsg = mod_airconditioner.aircon_wind_strength_123()
             mainList[28] = blsg
             board()
             bang5()
-            print(mainList)
             return
         elif bang5point == 4:
             pljj = mod_airconditioner.aircon_direction_go_up_down()
             mainList[29] = pljj
             board()
             bang5()
-            print(mainList)
             return
         elif bang5point == 5:
             board()
             bang2()
-            print(mainList)
             return
 
-    if p == 6: # 라디오에 들어가 있는 상황
-        pass
+
 
 def fk4():
     pass
@@ -1944,9 +2046,14 @@ def timethreading():
 timethreading()
 
 def sideList():
-    mainList[24] = side.gasolineTank
-    mainList[22] = side.batteryCharge
-    mainList[23] = side.engineOiltemp
+    mainList[24] = round(side.gasolineTank,2)
+    mainList[22] = round(side.batteryCharge,2)
+    mainList[23] = round(side.engineOiltemp,2)
+
+board()
+bang1()
+
+
 
 while 1:
     moving=input('wasd//j///i')
@@ -1964,8 +2071,11 @@ while 1:
         fk2()
     elif moving == 'l':
         fk3()
+        print("엑셀 카운트", accelCount)
+        print("브레이크 카운트", braeakCount)
     elif moving == 'm':
         fk4()
+
 
 
 
