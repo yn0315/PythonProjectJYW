@@ -6,7 +6,7 @@ import snow
 import time
 import threading
 import datetime
-from bs4 import BeautifulSoup
+# from bs4 import BeautifulSoup
 import urllib.request
 
 
@@ -68,9 +68,9 @@ now = datetime.datetime.now()
 
 nowDate = now.strftime("%Y년 %m월 %d일 %H시 %M분")
 
-webpage = urllib.request.urlopen('https://search.naver.com/search.naver?where=nexearch&sm=top_hty&fbm=0&ie=utf8&query=%EB%8C%80%EC%A0%84%EB%82%A0%EC%94%A8')
-soup = BeautifulSoup(webpage,'html.parser')
-temps = soup.find('div',attrs={"class":"temperature_text"}).get_text()
+# webpage = urllib.request.urlopen('https://search.naver.com/search.naver?where=nexearch&sm=top_hty&fbm=0&ie=utf8&query=%EB%8C%80%EC%A0%84%EB%82%A0%EC%94%A8')
+# soup = BeautifulSoup(webpage,'html.parser')
+# temps = soup.find('div',attrs={"class":"temperature_text"}).get_text()
 
 
 accident_situation = random.randrange(0,10)
@@ -86,6 +86,63 @@ radio_channel = ''          # 라디오 채널 받을 문자열
 radio_decibel = ''          # FM / AM 받을 문자열
 
 sound = 0                    # 볼륨 업 다운
+
+class EmergencyAccident:
+    @classmethod
+    def snow_fall(cls):
+        global count
+        global bang1point
+        snow.snow()
+        accident_title, accident_txt = accident(count)
+        board()
+        Sound.beepsound()
+        count += 1
+        # time.sleep(1)
+        p = 1
+        bang1point = 8
+        bang1()
+        accident_title, accident_txt = accident(11)
+
+    @classmethod
+    def kid_security(cls):
+        global bang3point
+        snow.kid()
+        # time.sleep(1)
+        accident_title, accident_txt = accident(count)
+        board()
+        Sound.beepsound()
+        # time.sleep(1)
+        p = 2
+        bang3point = 2
+        bang3()
+        accident_title, accident_txt = accident(21)
+
+    @classmethod
+    def gorani(cls):
+        snow.grani()
+        accident_title, accident_txt = accident(count)
+        board()
+        Sound.beepsound()
+        # time.sleep(1)
+        p = 2
+        bang3point = 2
+        bang3()
+        accident_title, accident_txt = accident(31)
+
+    @classmethod
+    def engine_overheat(cls):
+        accident_title, accident_txt = accident(count)
+        board()
+        Sound.beepsound()
+        # time.sleep(1)
+        # time.sleep(1)
+        p = 3
+        bang3point = 1
+        bang3()
+        accident_title, accident_txt = accident(41)
+
+
+
 
 def radio() :                             # 라디오 문자, 채널??
     radio_value = mod_radio.fm_or_am()
@@ -500,7 +557,7 @@ def board() :             # 계기판
                                   주행거리                           속도                              연비                        
     　   　                      200,000KM                          {car_speed}KM                            15 l                        
          {left_winker(mainList[17])}          {battery_title(mainList[22])}        {oil_title(mainList[24])}         {nowDate}          내부 순환       {drive_title(mainList[3])}{right_winker(mainList[18])}       
-                                 {battery_text(mainList[22])}{round(mainList[22],1)}%         {oil_text(mainList[24])}              {temps}                {Circulation_Button(mainList[6])}            {drive_text(mainList[3])}                          
+                                 {battery_text(mainList[22])}{round(mainList[22],1)}%         {oil_text(mainList[24])}              #temp                {Circulation_Button(mainList[6])}            {drive_text(mainList[3])}                          
     　                                                       Emergency_Button                                                    
                                                                    {Emergency_Button(mainList[7])}               A / C      💺      ⚙                     
          ----------------------         📻                                         {Air_Conditioning(mainList[26],mainList[28])}    {sit_heat_rays(mainList[5])}  {hanldle_heat_rays(mainList[4])} ---------------------- 
@@ -877,7 +934,7 @@ def bang5():  # 에어컨 옵션들 만들기, 뒤로가기 버튼(bang2()로 �
                 print(f"""------------------------------------------------------------------------
                 에어컨
 
-                    희망온도 : {mod_airconditioner.select_temperature}                                              ⚪
+                    현재온도 : {mod_airconditioner.current_temperature}                                              ⚪
                     바람세기 : {mod_airconditioner.wind_strength}                                          →→   / /
                     {mod_airconditioner.heater_aircon()}                                                   ／／ 
 
@@ -924,7 +981,7 @@ def bang5():  # 에어컨 옵션들 만들기, 뒤로가기 버튼(bang2()로 �
                 print(f"""------------------------------------------------------------------------
                 에어컨
 
-                    희망온도 : {mod_airconditioner.select_temperature}                                              ⚪
+                    현재온도 : {mod_airconditioner.current_temperature}                                              ⚪
                     바람세기 : {mod_airconditioner.wind_strength}                                          →→   / /
                     {mod_airconditioner.heater_aircon()}                                                   ／／ 
 
@@ -1337,56 +1394,20 @@ def fw():  # 시선
     global p
     count += 1
     if count == 10:  # 눈
-        global bang1point
-        snow.snow()
-        accident_title, accident_txt = accident(count)
-        board()
-        Sound.beepsound()
-        count += 1
-        # time.sleep(1)
-        p = 1
-        bang1point = 8
-        bang1()
-        accident_title, accident_txt = accident(11)
+        EmergencyAccident.snow_fall()
         return
 
     elif count == 20:  # 어린이 보호구역
-        global bang3point
-        snow.kid()
-        # time.sleep(1)
-        accident_title, accident_txt = accident(count)
-        board()
-        Sound.beepsound()
-        # time.sleep(1)
-        p = 2
-        bang3point = 2
-        bang3()
-        accident_title, accident_txt = accident(21)
+        EmergencyAccident.kid_security()
         return
 
     elif count == 30:  # 고라니 출몰
-        snow.grani()
-        accident_title, accident_txt = accident(count)
-        board()
-        Sound.beepsound()
-        # time.sleep(1)
-        p = 2
-        bang3point = 2
-        bang3()
-        accident_title, accident_txt = accident(31)
+        EmergencyAccident.gorani()
         return
 
 
     elif count == 40:  # 엔진오일 과열
-        accident_title, accident_txt = accident(count)
-        board()
-        Sound.beepsound()
-        # time.sleep(1)
-        # time.sleep(1)
-        p = 3
-        bang3point = 1
-        bang3()
-        accident_title, accident_txt = accident(41)
+        EmergencyAccident.engine_overheat()
         return
 
     if p == 0:
@@ -1416,55 +1437,21 @@ def fa():  # 시선
     global p
     count += 1
     if count == 10:  # 눈
-        global bang1point
-        snow.snow()
-        accident_title, accident_txt = accident(count)
-        board()
-        Sound.beepsound()
-        # time.sleep(1)
-        p = 1
-        bang1point = 8
-        bang1()
-        accident(11)
+        EmergencyAccident.snow_fall()
         return
 
     elif count == 20:  # 어린이 보호구역
-        global bang3point
-        snow.kid()
-        # time.sleep(1)
-        accident_title, accident_txt = accident(count)
-        board()
-        Sound.beepsound()
-        # time.sleep(1)
-        p = 2
-        bang3point = 2
-        bang3()
-        accident_title, accident_txt = accident(21)
+        EmergencyAccident.kid_security()
         return
 
 
     elif count == 30:  # 고라니
-        snow.grani()
-        accident_title, accident_txt = accident(count)
-        board()
-        Sound.beepsound()
-        # time.sleep(1)
-        p = 2
-        bang3point = 2
-        bang3()
-        accident_title, accident_txt = accident(31)
+        EmergencyAccident.gorani()
         return
 
 
     elif count == 40:  # 엔진오일 과열
-        accident_title, accident_txt = accident(count)
-        board()
-        Sound.beepsound()
-        # time.sleep(1)
-        p = 3
-        bang3point = 1
-        bang3()
-        accident_title, accident_txt = accident(41)
+        EmergencyAccident.engine_overheat()
         return
 
     if p == 0:
@@ -1494,54 +1481,20 @@ def fs():  # 시선
     global p
     count += 1
     if count == 10:  # 눈
-        global bang1point
-        snow.snow()
-        accident_title, accident_txt = accident(count)
-        board()
-        Sound.beepsound()
-        # time.sleep(1)
-        p = 1
-        bang1point = 8
-        bang1()
-        accident_title, accident_txt = accident(11)
+        EmergencyAccident.snow_fall()
         return
 
     elif count == 20:  # 어린이 보호구역
-        global bang3point
-        snow.kid()
-        # time.sleep(1)
-        accident_title, accident_txt = accident(count)
-        board()
-        Sound.beepsound()
-        # time.sleep(1)
-        p = 2
-        bang3point = 2
-        bang3()
-        accident_title, accident_txt = accident(21)
+        EmergencyAccident.kid_security()
         return
 
     elif count == 30:  # 고라니
-        snow.grani()
-        accident_title, accident_txt = accident(count)
-        board()
-        Sound.beepsound()
-        # time.sleep(1)
-        p = 2
-        bang3point = 2
-        bang3()
-        accident_title, accident_txt = accident(31)
+        EmergencyAccident.gorani()
         return
 
 
     elif count == 40:  # 엔진오일 과열
-        accident_title, accident_txt = accident(count)
-        board()
-        Sound.beepsound()
-        # time.sleep(1)
-        p = 3
-        bang3point = 1
-        bang3()
-        accident_title, accident_txt = accident(41)
+        EmergencyAccident.engine_overheat()
         return
 
     if p == 0:
@@ -1575,53 +1528,20 @@ def fd():  # 시선
     count += 1
     if count == 10:  # 눈
         global bang1point
-        snow.snow()
-        accident_title, accident_txt = accident(count)
-        board()
-        Sound.beepsound()
-        # time.sleep(1)
-        p = 1
-        bang1point = 8
-        bang1()
-        accident_title, accident_txt = accident(11)
+        EmergencyAccident.snow_fall()
         return
 
     elif count == 20:  # 어린이 보호구역
-        global bang3point
-        snow.kid()
-        # time.sleep(1)
-        accident_title, accident_txt = accident(count)
-        board()
-        Sound.beepsound()
-        # time.sleep(1)
-        p = 2
-        bang3point = 2
-        bang3()
-        accident_title, accident_txt = accident(21)
+        EmergencyAccident.kid_security()
         return
 
 
     elif count == 30:  # 고라니
-        snow.grani()
-        accident_title, accident_txt = accident(count)
-        board()
-        Sound.beepsound()
-        # time.sleep(1)
-        p = 2
-        bang3point = 2
-        bang3()
-        accident_title, accident_txt = accident(31)
+        EmergencyAccident.gorani()
         return
 
     elif count == 40:  # 엔진오일 과열
-        accident_title, accident_txt = accident(count)
-        board()
-        Sound.beepsound()
-        # time.sleep(1)
-        p = 3
-        bang3point = 1
-        bang3()
-        accident_title, accident_txt = accident(41)
+        EmergencyAccident.engine_overheat()
         return
 
     if p == 0:
@@ -2034,12 +1954,15 @@ def fk3():  # 결정 L
             return
         elif bang5point == 1:
             odup = mod_airconditioner.aircon_temperature_go_up()
+            test = threading.Thread(target=mod_airconditioner.aircon_temperature_auto())
+            test.start()
             mainList[27] = odup
             board()
             bang5()
             return
         elif bang5point == 2:
             oddw = mod_airconditioner.aircon_temperature_go_down()
+            airtimethred()
             mainList[27] = oddw
             board()
             bang5()
@@ -2074,6 +1997,10 @@ def timethreading():
 
 timethreading()
 
+def airtimethred():
+    mod_airconditioner.temperateIng()
+
+airtimethred()
 
 def sideList():
     mainList[24] = round(side.gasolineTank, 2)

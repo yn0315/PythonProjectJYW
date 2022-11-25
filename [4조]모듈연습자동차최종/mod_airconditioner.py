@@ -1,3 +1,7 @@
+import time
+
+import threading
+import engine
 current_temperature = 18 # 현재온도변수
 select_temperature = 18 # 선택온도변수
 aircon_on_or_off = 0 # 에어컨 켰는지 여부 변수 0 꺼짐 1 에어컨 2 히터
@@ -5,6 +9,7 @@ wind_strength = 1 # 에어컨 바람세기 변수 0 꺼짐 1 약 2 중 3 강
 heater_wind_strength = 1 # 히터 바람세기 변수
 wind_direction = 0 # 바람 방향 변수 0 위 1 아래
 aircon_heater = '꺼짐상태'
+
 
 
 #######################################################################################################################
@@ -52,6 +57,39 @@ def aircon_temperature_go_down():
 
         aircon_select_complete()
         return select_temperature
+
+
+# 에어컨 실시간 온도변화
+def aircon_temperature_auto():
+
+    global select_temperature
+    global current_temperature
+    if current_temperature > select_temperature: # 현재온도가 높을 경우
+        current_temperature -= 1
+
+    elif current_temperature < select_temperature:
+        current_temperature += 1
+
+    elif current_temperature == select_temperature:
+        pass
+
+
+
+Timer=0
+def set_interval2(func, sec):
+    global Timer
+    def func_wrapper():
+        set_interval2(func, sec)
+        func()
+    Timer = threading.Timer(sec, func_wrapper)
+    Timer.start() # 쓰레드 작동 시작
+
+def temperateIng():
+    global Timer
+    if engine.engines == 1:
+        Timer=set_interval2(aircon_temperature_auto, 10)
+
+
 
 #######################################################################################################################
 
