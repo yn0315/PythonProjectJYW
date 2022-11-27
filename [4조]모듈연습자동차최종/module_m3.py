@@ -6,6 +6,8 @@ import snow
 import time
 import threading
 import datetime
+import sys
+sys.setrecursionlimit(10**6)
 # from bs4 import BeautifulSoup
 import urllib.request
 
@@ -557,7 +559,7 @@ def board() :             # 계기판
                                   주행거리                           속도                              연비                        
     　   　                      200,000KM                          {car_speed}KM                            15 l                        
          {left_winker(mainList[17])}          {battery_title(mainList[22])}        {oil_title(mainList[24])}         {nowDate}          내부 순환       {drive_title(mainList[3])}{right_winker(mainList[18])}       
-                                 {battery_text(mainList[22])}{round(mainList[22],1)}%         {oil_text(mainList[24])}              #temp                {Circulation_Button(mainList[6])}            {drive_text(mainList[3])}                          
+                                 {battery_text(mainList[22])}{round(mainList[22],1)}%         {oil_text(mainList[24])}              #temp{mod_airconditioner.current_temperature}                {Circulation_Button(mainList[6])}            {drive_text(mainList[3])}                          
     　                                                       Emergency_Button                                                    
                                                                    {Emergency_Button(mainList[7])}               A / C      💺      ⚙                     
          ----------------------         📻                                         {Air_Conditioning(mainList[26],mainList[28])}    {sit_heat_rays(mainList[5])}  {hanldle_heat_rays(mainList[4])} ---------------------- 
@@ -934,7 +936,7 @@ def bang5():  # 에어컨 옵션들 만들기, 뒤로가기 버튼(bang2()로 �
                 print(f"""------------------------------------------------------------------------
                 에어컨
 
-                    현재온도 : {mod_airconditioner.current_temperature}                                              ⚪
+                    희망온도 : {mod_airconditioner.select_temperature}                                              ⚪
                     바람세기 : {mod_airconditioner.wind_strength}                                          →→   / /
                     {mod_airconditioner.heater_aircon()}                                                   ／／ 
 
@@ -981,7 +983,7 @@ def bang5():  # 에어컨 옵션들 만들기, 뒤로가기 버튼(bang2()로 �
                 print(f"""------------------------------------------------------------------------
                 에어컨
 
-                    현재온도 : {mod_airconditioner.current_temperature}                                              ⚪
+                    희망온도 : {mod_airconditioner.select_temperature}                                              ⚪
                     바람세기 : {mod_airconditioner.wind_strength}                                          →→   / /
                     {mod_airconditioner.heater_aircon()}                                                   ／／ 
 
@@ -1954,15 +1956,16 @@ def fk3():  # 결정 L
             return
         elif bang5point == 1:
             odup = mod_airconditioner.aircon_temperature_go_up()
-            test = threading.Thread(target=mod_airconditioner.aircon_temperature_auto())
-            test.start()
+            # airtimethred()
+
+            mod_airconditioner.aircon_temperature_auto()
             mainList[27] = odup
             board()
             bang5()
             return
         elif bang5point == 2:
             oddw = mod_airconditioner.aircon_temperature_go_down()
-            airtimethred()
+            mod_airconditioner.aircon_temperature_auto()
             mainList[27] = oddw
             board()
             bang5()
@@ -1975,6 +1978,7 @@ def fk3():  # 결정 L
             return
         elif bang5point == 4:
             pljj = mod_airconditioner.aircon_direction_go_up_down()
+
             mainList[29] = pljj
             board()
             bang5()
@@ -1997,10 +2001,10 @@ def timethreading():
 
 timethreading()
 
-def airtimethred():
-    mod_airconditioner.temperateIng()
+# def airtimethred():
+#     mod_airconditioner.temperateIng()
 
-airtimethred()
+# airtimethred()
 
 def sideList():
     mainList[24] = round(side.gasolineTank, 2)

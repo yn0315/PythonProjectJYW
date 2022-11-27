@@ -1,3 +1,4 @@
+import datetime
 import time
 
 import threading
@@ -65,30 +66,51 @@ def aircon_temperature_auto():
     global select_temperature
     global current_temperature
     if current_temperature > select_temperature: # 현재온도가 높을 경우
+
         current_temperature -= 1
 
     elif current_temperature < select_temperature:
         current_temperature += 1
 
     elif current_temperature == select_temperature:
-        pass
+        return
+    threading.Timer(10, aircon_temperature_auto)
+    aircon_temperature_auto()
+
+#
+# from apscheduler.scheduler import Scheduler
+#
+# sched = Scheduler()
+# sched.start()
+#
+# def some_job():
+#     print "Every 10 seconds"
+#
+# sched.add_interval_job(some_job, seconds = 10)
+#
+# ....
+# sched.shutdown()
 
 
+# now = datetime.datetime.second
 
-Timer=0
-def set_interval2(func, sec):
-    global Timer
-    def func_wrapper():
-        set_interval2(func, sec)
-        func()
-    Timer = threading.Timer(sec, func_wrapper)
-    Timer.start() # 쓰레드 작동 시작
-
-def temperateIng():
-    global Timer
-    if engine.engines == 1:
-        Timer=set_interval2(aircon_temperature_auto, 10)
-
+# Timer=0
+# def set_interval2(func, sec):
+#     global Timer
+#
+#     def func_wrapper():
+#         set_interval2(func,sec=100)
+#         func()
+#
+#     Timer = threading.Timer(sec, aircon_temperature_auto())
+#
+#     Timer.start() # 쓰레드 작동 시작
+#
+# def temperateIng():
+#     global Timer
+#     if engine.engines == 1:
+#         Timer=set_interval2(aircon_temperature_auto,1)
+#
 
 
 #######################################################################################################################
