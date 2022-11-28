@@ -3,6 +3,8 @@ import time
 
 import threading
 import engine
+import asyncio
+import apscheduler
 current_temperature = 18 # 현재온도변수
 select_temperature = 18 # 선택온도변수
 aircon_on_or_off = 0 # 에어컨 켰는지 여부 변수 0 꺼짐 1 에어컨 2 히터
@@ -61,36 +63,77 @@ def aircon_temperature_go_down():
 
 
 # 에어컨 실시간 온도변화
-def aircon_temperature_auto():
-
-    global select_temperature
-    global current_temperature
-    if current_temperature > select_temperature: # 현재온도가 높을 경우
-
-        current_temperature -= 1
-
-    elif current_temperature < select_temperature:
-        current_temperature += 1
-
-    elif current_temperature == select_temperature:
-        return
-    threading.Timer(10, aircon_temperature_auto)
-    aircon_temperature_auto()
-
+# def aircon_temperature_auto():
 #
-# from apscheduler.scheduler import Scheduler
+#     global select_temperature
+#     global current_temperature
+#     if current_temperature > select_temperature: # 현재온도가 높을 경우
 #
-# sched = Scheduler()
+#         current_temperature -= 1
+#
+#     elif current_temperature < select_temperature:
+#         current_temperature += 1
+#
+#     elif current_temperature == select_temperature:
+#         return
+#     threading.Timer(10, aircon_temperature_auto)
+#     aircon_temperature_auto()
+
+
+# note that there are many other schedulers available
+# from apscheduler.schedulers.background import BackgroundScheduler
+#
+# sched = BackgroundScheduler()
+
+# def some_job():
+#     print('Every 10 seconds')
+
+# async def aircon_temperature_auto():
+#
+#     global select_temperature
+#     global current_temperature
+#     if current_temperature > select_temperature: # 현재온도가 높을 경우
+#         threading.Timer(10, aircon_temperature_auto).start()
+#         current_temperature -= 1
+#         if current_temperature == select_temperature:
+#             return
+#
+#     elif current_temperature < select_temperature:
+#         threading.Timer(10, aircon_temperature_auto).start()
+#         current_temperature += 1
+#         if current_temperature == select_temperature:
+#             return
+    # threading.Timer(10, aircon_temperature_auto).start()
+
+
+    import random
+    import asyncio  # 비동기처리
+    cal_list = []  # 정적생성
+
+# async def show():
+    # await asyncio.sleep(10)
+    # aircon_temperature_auto()
+    # print(current_temperature)
+# 동적생성
+
+# async def main():
+#     # 작업하려는 대상을
+#     # await asyncio.gather()
+#     await asyncio.gather(
+#
+#         aircon_temperature_auto()
+#     )
+    # elif current_temperature == select_temperature:
+    #     return
+
+
+# # seconds can be replaced with minutes, hours, or days
+# sched.add_job(aircon_temperature_auto, 'interval', seconds=10)
 # sched.start()
 #
-# def some_job():
-#     print "Every 10 seconds"
+# ...
 #
-# sched.add_interval_job(some_job, seconds = 10)
-#
-# ....
 # sched.shutdown()
-
 
 # now = datetime.datetime.second
 
@@ -168,3 +211,6 @@ def air_conditioner_heater():
 
     except Exception as e:
         print("air_conditioner", type(e), e)
+
+
+# aircon_temperature_auto()

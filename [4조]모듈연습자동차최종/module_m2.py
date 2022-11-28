@@ -6,8 +6,6 @@ import snow
 import time
 import threading
 import datetime
-import asyncio
-
 # from bs4 import BeautifulSoup
 import urllib.request
 
@@ -70,9 +68,9 @@ now = datetime.datetime.now()
 
 nowDate = now.strftime("%Y년 %m월 %d일 %H시 %M분")
 
-# webpage = urllib.request.urlopen('https://search.naver.com/search.naver?where=nexearch&sm=top_hty&fbm=0&ie=utf8&query=%EB%8C%80%EC%A0%84%EB%82%A0%EC%94%A8')
-# soup = BeautifulSoup(webpage,'html.parser')
-# temps = soup.find('div',attrs={"class":"temperature_text"}).get_text()
+webpage = urllib.request.urlopen('https://search.naver.com/search.naver?where=nexearch&sm=top_hty&fbm=0&ie=utf8&query=%EB%8C%80%EC%A0%84%EB%82%A0%EC%94%A8')
+soup = BeautifulSoup(webpage,'html.parser')
+temps = soup.find('div',attrs={"class":"temperature_text"}).get_text()
 
 
 accident_situation = random.randrange(0,10)
@@ -88,156 +86,6 @@ radio_channel = ''          # 라디오 채널 받을 문자열
 radio_decibel = ''          # FM / AM 받을 문자열
 
 sound = 0                    # 볼륨 업 다운
-
-
-name_list = [] # 버튼이름 리스트
-temp_name_list = [] # 버튼이름 리스트와 길이를 같게 하여 마지막 인덱스 자리에만 True를 집어넣음
-# 버튼이름 리스트의 마지막 인덱스에 들어가면 다음 변수를 True로........????
-
-# 생성자로 버튼을 부르면 버튼이 만들어지는, 길이 확인하는 함수, 마지막버튼인지 확인하는 함수, 
-class button():
-
-    # 생성자메서드
-    def __init__(self, button_name):
-        self.button_name = button_name
-        # 버튼 길이, 마지막 버튼인지 여부
-
-        print(""" 
-        ┏   ┓
-          |
-        ┗   ┛""")
-            
-
-
-
-
-
-    class buttonA():
-
-        def __init__(self,bang5point):
-            self.bang5pont = bang5point
-        def fk_one(self):
-            self.bang5point = 0
-            aironoff = mod_airconditioner.air_conditioner_heater()
-            mod_airconditioner.heater_aircon()
-            mainList[26] = aironoff
-            mainList[28] = mod_airconditioner.wind_strength
-            board()
-            bang5()
-            return
-
-    class buttonB():
-        def __init__(self,bang5point):
-            self.bang5point = bang5point
-
-        def fk_two(self):
-            self.bang5point = 1
-            odup = mod_airconditioner.aircon_temperature_go_up()
-
-            mainList[27] = odup
-            board()
-            bang5()
-            return
-
-    class buttonC():
-        def __init__(self, bang5point):
-            self.bang5point = bang5point
-        def fk_three(self):
-            self.bang5point = 2
-            oddw = mod_airconditioner.aircon_temperature_go_down()
-            mainList[27] = oddw
-            board()
-            bang5()
-            return
-
-    class buttonD():
-        def __init__(self, bang5point):
-            self.bang5point = bang5point
-        def fk_four(self):
-            self.bang5point = 3
-            blsg = mod_airconditioner.aircon_wind_strength_123()
-            mainList[28] = blsg
-            board()
-            bang5()
-            return
-
-    class buttonE():
-
-        def __init__(self, bang5point):
-            self.bang5point = bang5point
-        def fk_five(self):
-            self.bang5point = 4
-            pljj = mod_airconditioner.aircon_direction_go_up_down()
-
-            mainList[29] = pljj
-            board()
-            bang5()
-            return
-
-    class buttonF():
-        def __init__(self, bang5point):
-            self.bang5point = bang5point
-
-        def fk_six(self):
-            self.bang5point = 5
-            board()
-            bang2()
-            return
-class EmergencyAccident:
-    @classmethod
-    def snow_fall(cls):
-        global count
-        global bang1point
-        snow.snow()
-        accident_title, accident_txt = accident(count)
-        board()
-        Sound.beepsound()
-        count += 1
-
-        p = 1
-        bang1point = 8
-        bang1()
-        accident_title, accident_txt = accident(11)
-
-    @classmethod
-    def kid_security(cls):
-        global bang3point
-        snow.kid()
-
-        accident_title, accident_txt = accident(count)
-        board()
-        Sound.beepsound()
-
-        p = 2
-        bang3point = 2
-        bang3()
-        accident_title, accident_txt = accident(21)
-
-    @classmethod
-    def gorani(cls):
-        snow.grani()
-        accident_title, accident_txt = accident(count)
-        board()
-        Sound.beepsound()
-
-        p = 2
-        bang3point = 2
-        bang3()
-        accident_title, accident_txt = accident(31)
-
-    @classmethod
-    def engine_overheat(cls):
-        accident_title, accident_txt = accident(count)
-        board()
-        Sound.beepsound()
-
-        p = 3
-        bang3point = 1
-        bang3()
-        accident_title, accident_txt = accident(41)
-
-
-
 
 def radio() :                             # 라디오 문자, 채널??
     radio_value = mod_radio.fm_or_am()
@@ -652,7 +500,7 @@ def board() :             # 계기판
                                   주행거리                           속도                              연비                        
     　   　                      200,000KM                          {car_speed}KM                            15 l                        
          {left_winker(mainList[17])}          {battery_title(mainList[22])}        {oil_title(mainList[24])}         {nowDate}          내부 순환       {drive_title(mainList[3])}{right_winker(mainList[18])}       
-                                 {battery_text(mainList[22])}{round(mainList[22],1)}%         {oil_text(mainList[24])}              #temp{mod_airconditioner.current_temperature}                {Circulation_Button(mainList[6])}            {drive_text(mainList[3])}                          
+                                 {battery_text(mainList[22])}{round(mainList[22],1)}%         {oil_text(mainList[24])}              {temps}                {Circulation_Button(mainList[6])}            {drive_text(mainList[3])}                          
     　                                                       Emergency_Button                                                    
                                                                    {Emergency_Button(mainList[7])}               A / C      💺      ⚙                     
          ----------------------         📻                                         {Air_Conditioning(mainList[26],mainList[28])}    {sit_heat_rays(mainList[5])}  {hanldle_heat_rays(mainList[4])} ---------------------- 
@@ -1489,20 +1337,56 @@ def fw():  # 시선
     global p
     count += 1
     if count == 10:  # 눈
-        EmergencyAccident.snow_fall()
+        global bang1point
+        snow.snow()
+        accident_title, accident_txt = accident(count)
+        board()
+        Sound.beepsound()
+        count += 1
+        # time.sleep(1)
+        p = 1
+        bang1point = 8
+        bang1()
+        accident_title, accident_txt = accident(11)
         return
 
     elif count == 20:  # 어린이 보호구역
-        EmergencyAccident.kid_security()
+        global bang3point
+        snow.kid()
+        # time.sleep(1)
+        accident_title, accident_txt = accident(count)
+        board()
+        Sound.beepsound()
+        # time.sleep(1)
+        p = 2
+        bang3point = 2
+        bang3()
+        accident_title, accident_txt = accident(21)
         return
 
     elif count == 30:  # 고라니 출몰
-        EmergencyAccident.gorani()
+        snow.grani()
+        accident_title, accident_txt = accident(count)
+        board()
+        Sound.beepsound()
+        # time.sleep(1)
+        p = 2
+        bang3point = 2
+        bang3()
+        accident_title, accident_txt = accident(31)
         return
 
 
     elif count == 40:  # 엔진오일 과열
-        EmergencyAccident.engine_overheat()
+        accident_title, accident_txt = accident(count)
+        board()
+        Sound.beepsound()
+        # time.sleep(1)
+        # time.sleep(1)
+        p = 3
+        bang3point = 1
+        bang3()
+        accident_title, accident_txt = accident(41)
         return
 
     if p == 0:
@@ -1532,40 +1416,69 @@ def fa():  # 시선
     global p
     count += 1
     if count == 10:  # 눈
-        EmergencyAccident.snow_fall()
+        global bang1point
+        snow.snow()
+        accident_title, accident_txt = accident(count)
+        board()
+        Sound.beepsound()
+        # time.sleep(1)
+        p = 1
+        bang1point = 8
+        bang1()
+        accident(11)
         return
 
     elif count == 20:  # 어린이 보호구역
-        EmergencyAccident.kid_security()
+        global bang3point
+        snow.kid()
+        # time.sleep(1)
+        accident_title, accident_txt = accident(count)
+        board()
+        Sound.beepsound()
+        # time.sleep(1)
+        p = 2
+        bang3point = 2
+        bang3()
+        accident_title, accident_txt = accident(21)
         return
 
 
     elif count == 30:  # 고라니
-        EmergencyAccident.gorani()
+        snow.grani()
+        accident_title, accident_txt = accident(count)
+        board()
+        Sound.beepsound()
+        # time.sleep(1)
+        p = 2
+        bang3point = 2
+        bang3()
+        accident_title, accident_txt = accident(31)
         return
 
 
     elif count == 40:  # 엔진오일 과열
-        EmergencyAccident.engine_overheat()
+        accident_title, accident_txt = accident(count)
+        board()
+        Sound.beepsound()
+        # time.sleep(1)
+        p = 3
+        bang3point = 1
+        bang3()
+        accident_title, accident_txt = accident(41)
         return
 
-    if p == 0:
-        pass
-    elif p == 1:
-        pass
-    elif p == 2:
+    if p == 2:
         sideList()
         board()
         bang1()
         print(mainList)
-    elif p == 3:
-        pass
+
     elif p == 4:
         sideList()
         board()
         bang3()
         print(mainList)
-    elif p == 5:
+    else:
         pass
 
 
@@ -1576,20 +1489,54 @@ def fs():  # 시선
     global p
     count += 1
     if count == 10:  # 눈
-        EmergencyAccident.snow_fall()
+        global bang1point
+        snow.snow()
+        accident_title, accident_txt = accident(count)
+        board()
+        Sound.beepsound()
+        # time.sleep(1)
+        p = 1
+        bang1point = 8
+        bang1()
+        accident_title, accident_txt = accident(11)
         return
 
     elif count == 20:  # 어린이 보호구역
-        EmergencyAccident.kid_security()
+        global bang3point
+        snow.kid()
+        # time.sleep(1)
+        accident_title, accident_txt = accident(count)
+        board()
+        Sound.beepsound()
+        # time.sleep(1)
+        p = 2
+        bang3point = 2
+        bang3()
+        accident_title, accident_txt = accident(21)
         return
 
     elif count == 30:  # 고라니
-        EmergencyAccident.gorani()
+        snow.grani()
+        accident_title, accident_txt = accident(count)
+        board()
+        Sound.beepsound()
+        # time.sleep(1)
+        p = 2
+        bang3point = 2
+        bang3()
+        accident_title, accident_txt = accident(31)
         return
 
 
     elif count == 40:  # 엔진오일 과열
-        EmergencyAccident.engine_overheat()
+        accident_title, accident_txt = accident(count)
+        board()
+        Sound.beepsound()
+        # time.sleep(1)
+        p = 3
+        bang3point = 1
+        bang3()
+        accident_title, accident_txt = accident(41)
         return
 
     if p == 0:
@@ -1607,13 +1554,8 @@ def fs():  # 시선
         board()
         bang4()
         print(mainList)
-    elif p == 3:
+    else:
         pass
-    elif p == 4:
-        pass
-    elif p == 5:
-        pass
-
 
 def fd():  # 시선
     global count
@@ -1623,20 +1565,53 @@ def fd():  # 시선
     count += 1
     if count == 10:  # 눈
         global bang1point
-        EmergencyAccident.snow_fall()
+        snow.snow()
+        accident_title, accident_txt = accident(count)
+        board()
+        Sound.beepsound()
+        # time.sleep(1)
+        p = 1
+        bang1point = 8
+        bang1()
+        accident_title, accident_txt = accident(11)
         return
 
     elif count == 20:  # 어린이 보호구역
-        EmergencyAccident.kid_security()
+        global bang3point
+        snow.kid()
+        # time.sleep(1)
+        accident_title, accident_txt = accident(count)
+        board()
+        Sound.beepsound()
+        # time.sleep(1)
+        p = 2
+        bang3point = 2
+        bang3()
+        accident_title, accident_txt = accident(21)
         return
 
 
     elif count == 30:  # 고라니
-        EmergencyAccident.gorani()
+        snow.grani()
+        accident_title, accident_txt = accident(count)
+        board()
+        Sound.beepsound()
+        # time.sleep(1)
+        p = 2
+        bang3point = 2
+        bang3()
+        accident_title, accident_txt = accident(31)
         return
 
     elif count == 40:  # 엔진오일 과열
-        EmergencyAccident.engine_overheat()
+        accident_title, accident_txt = accident(count)
+        board()
+        Sound.beepsound()
+        # time.sleep(1)
+        p = 3
+        bang3point = 1
+        bang3()
+        accident_title, accident_txt = accident(41)
         return
 
     if p == 0:
@@ -1649,16 +1624,12 @@ def fd():  # 시선
         board()
         bang2()
         print(mainList)
-    elif p == 2:
-        pass
     elif p == 3:
         sideList()
         board()
         bang4()
         print(mainList)
-    elif p == 4:
-        pass
-    elif p == 5:
+    else:
         pass
 
 
@@ -1702,14 +1673,11 @@ def fk1():  # 방안에서 메뉴 이동 J
         board()
         bang4()
     elif p == 5:
-        # if 0 <= bang5point <= 5:  # 에어컨 기능이 몇개가 될지 모르니 일단 보류
-        #     if bang5point == 0:
-        #         pass
-        #     else:
-        #         bang5point -= 1
-        a = button.buttonA
-        a.fk_one()
-
+        if 0 <= bang5point <= 5:  # 에어컨 기능이 몇개가 될지 모르니 일단 보류
+            if bang5point == 0:
+                pass
+            else:
+                bang5point -= 1
         sideList()
         board()
         bang5()
@@ -1764,13 +1732,11 @@ def fk2():  # 방안에서 메뉴 이동 K
         board()
         bang4()
     elif p == 5:
-        # if 0 <= bang5point <= 5:  # 에어컨 기능이 몇개가 될지 모르니 일단 보류
-        #     if bang5point == 5:
-        #         pass
-        #     else:
-        #         bang5point += 1
-        b = button.buttonB
-        b.fk_two()
+        if 0 <= bang5point <= 5:  # 에어컨 기능이 몇개가 될지 모르니 일단 보류
+            if bang5point == 5:
+                pass
+            else:
+                bang5point += 1
         sideList()
         board()
         bang5()
@@ -2043,77 +2009,47 @@ def fk3():  # 결정 L
 
 
 
-
-
-
-
-
     if p == 5:  # 에어컨에 들어가 들어가 있는 상황
-        c= button.buttonC
-        c.fk_three()
-        # if bang5point == 0:
-        #     aironoff = mod_airconditioner.air_conditioner_heater()
-        #     mod_airconditioner.heater_aircon()
-        #     mainList[26] = aironoff
-        #     mainList[28] = mod_airconditioner.wind_strength
-        #     board()
-        #     bang5()
-        #     return
-        # elif bang5point == 1:
-        #     odup = mod_airconditioner.aircon_temperature_go_up()
-        #     # # mod_airconditioner.aircon_temperature_auto()
-        #     # asyncio.run(mod_airconditioner.main())
-        #     # # a = threading.Timer(10, mod_airconditioner.aircon_temperature_auto)
-        #     # # a.start()
-        #     # # mod_airconditioner.aircon_temperature_auto()
-        #     mainList[27] = odup
-        #     board()
-        #     bang5()
-        #     return
-        # elif bang5point == 2:
-        #     oddw = mod_airconditioner.aircon_temperature_go_down()
-        #     # # mod_airconditioner.aircon_temperature_auto()
-        #     # asyncio.run(mod_airconditioner.main())
-        #     # # a = threading.Timer(10, mod_airconditioner.aircon_temperature_auto)
-        #     # # a.start()
-        #     # # mod_airconditioner.aircon_temperature_auto()
-        #     mainList[27] = oddw
-        #     board()
-        #     bang5()
-        #     return
-        # elif bang5point == 3:
-        #     blsg = mod_airconditioner.aircon_wind_strength_123()
-        #     mainList[28] = blsg
-        #     board()
-        #     bang5()
-        #     return
-        # elif bang5point == 4:
-        #     pljj = mod_airconditioner.aircon_direction_go_up_down()
-        #
-        #     mainList[29] = pljj
-        #     board()
-        #     bang5()
-        #     return
-        # elif bang5point == 5:
-        #     board()
-        #     bang2()
-        #     return
+        if bang5point == 0:
+            aironoff = mod_airconditioner.air_conditioner_heater()
+            mod_airconditioner.heater_aircon()
+            mainList[26] = aironoff
+            mainList[28] = mod_airconditioner.wind_strength
+            board()
+            bang5()
+            return
+        elif bang5point == 1:
+            odup = mod_airconditioner.aircon_temperature_go_up()
+            mainList[27] = odup
+            board()
+            bang5()
+            return
+        elif bang5point == 2:
+            oddw = mod_airconditioner.aircon_temperature_go_down()
+            mainList[27] = oddw
+            board()
+            bang5()
+            return
+        elif bang5point == 3:
+            blsg = mod_airconditioner.aircon_wind_strength_123()
+            mainList[28] = blsg
+            board()
+            bang5()
+            return
+        elif bang5point == 4:
+            pljj = mod_airconditioner.aircon_direction_go_up_down()
+            mainList[29] = pljj
+            board()
+            bang5()
+            return
+        elif bang5point == 5:
+            board()
+            bang2()
+            return
 
 
 def fk4():
-    if p == 5:
-        d = button.buttonD
-        d.fk_four()
-
-def fk5():
-    if p == 5:
-        e = button.buttonE
-        e.fk_five()
-def fk6():
-    if p == 5:
-        f = button.buttonF
-        f.fk_six()
-
+    pass
 
 
 def timethreading():
@@ -2124,10 +2060,6 @@ def timethreading():
 
 timethreading()
 
-# def airtimethred():
-#     mod_airconditioner.temperateIng()
-
-# airtimethred()
 
 def sideList():
     mainList[24] = round(side.gasolineTank, 2)
@@ -2138,8 +2070,6 @@ def sideList():
 sideList()
 board()
 bang1()
-
-
 
 while 1:
     moving = input('wasd//j///i')
@@ -2161,11 +2091,3 @@ while 1:
         print("브레이크 카운트", braeakCount)
     elif moving == 'm':
         fk4()
-    elif moving == 'n':
-        fk5()
-    elif moving == "o":
-        fk6()
-
-
-
-
