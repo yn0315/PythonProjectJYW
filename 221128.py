@@ -1,4 +1,5 @@
-class A:
+
+class A():
     def __init__(self, name):
         self.name = name
     class B: #A클래스의 내부클래스
