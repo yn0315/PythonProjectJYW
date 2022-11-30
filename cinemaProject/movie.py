@@ -1,8 +1,7 @@
 import theater
 import random
 
-name_list = []
-time_list = []
+
 
 class movie:
     # 영화클래스는 텍스트파일에서 정보를 가져오는 과정이 필요, 삭제, 수정과정 필요
@@ -12,6 +11,8 @@ class movie:
     time = 0 # 러닝타임
     show_time = 0
     movie_info = []
+    name_list = []
+    time_list = []
     # 영화 생성할 때 영화관 랜덤배치 X
     def __init__(self):
         try:
@@ -23,8 +24,7 @@ class movie:
         except Exception as e:
             print("파일불러오기", type(e), e)
 
-        # for i in range(len(self.movie_info)):
-        #     print(self.movie_info[i])
+
 
     @staticmethod
     def add_write_movie(name, time, star):
