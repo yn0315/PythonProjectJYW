@@ -1,8 +1,10 @@
 import socket
+import time
 import tkinter
 from _thread import *
 import threading
 from tkinter import *
+from tkinter import ttk
 from time import sleep
 import pymysql
 import tkinter.font as tkFont
@@ -25,33 +27,44 @@ client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 client_socket.connect((HOST, PORT))
 
-def shopping_exit():
-    global shopping
-    shopping.pack_forget()
-    exit_button.pack_forget()
+
+def exit_window():
+    window.destroy()
+def news_exit():
+    global news
+    news.pack_forget()
+    back_button.pack_forget()
+    client_socket.sendall(bytes('main'.encode('utf-8')))
     id_input.delete(0, len(id_input.get()))
     password_input.delete(0, len(password_input.get()))
     login_button['state'] = 'normal'
 
 
-def lonin():
+def login():
     values = json.dumps({
         "userId" : id_input.get(),
         "userPw" : password_input.get()
 
     }).encode('utf-8')
+    # 서버로 id,pw값 전송
     client_socket.sendall(bytes('login'.encode('utf-8')))
     client_socket.sendall(bytes(values))
 
-    data = client_socket.recv(16184)
-    if bytes(data).decode() == "0":
 
-        shopping.pack(side='left', fill='both', expand=True)
-        shopping.pack()
-        exit_button.pack()
-        login_button['state'] = 'disabled'
-    elif bytes(data).decode() == "1":
-        tkinter.messagebox.showinfo("메세지","정보가 맞지 않습니다.")
+    data = json.loads(client_socket.recv(16184))
+    print(data , "data!!!!!!!!!!!!")
+
+
+    if data["logIn"] == "1":
+        news.pack(side='left', fill='both', expand=True)
+        news.pack()
+        print(data)
+    elif data["logIn"] == "0":
+        tkinter.messagebox.showinfo("메세지", "정보가 맞지 않습니다.")
+
+    # 검색.......검색.......검색..............
+
+
 
 def sign_member():
     signFrame.pack(side='left', fill='both', expand=True)
@@ -73,7 +86,7 @@ def sign():
         "userId": sign_id_input.get(),
         "userPw": sign_password_input.get(),
         "userName": sign_name_input.get(),
-        "userAddr": sign_addr_input.get(),
+        "userAddr": addr_combobox.get(),
         "userGender": sign_gender_input.get(),
         "userAge": sign_age_input.get()
 
@@ -90,17 +103,11 @@ def sign():
         print(type(ex), ex)
 
 
-
-
     data = client_socket.recv(16184)
     if bytes(data).decode() == "1":
         tkinter.messagebox.showinfo("메시지","존재하는 아이디입니다.")
-    else:
+    elif bytes(data).decode() == "0":
         tkinter.messagebox.showinfo("메시지","가입이 완료되었습니다.")
-        sign_member()
-
-
-
 
 
 def exit_signFrame():
@@ -137,10 +144,10 @@ frame1.pack()
 id_input = Entry(window, bg='white', font=22)
 id_input.place(width=300, height=40, x=600, y=450)
 
-password_input = Entry(window, bg='white', font=22)
+password_input = Entry(window, bg='white', font=22,show='*')
 password_input.place(width=300, height=40, x=600, y=530)
 
-login_button = Button(window, text='로그인', command =lonin, width=12, height=2, bg='antiquewhite')
+login_button = Button(window, text='로그인', command =login, width=12, height=2, bg='antiquewhite')
 fontExample = tkFont.Font(family="굴림체", size=9)
 login_button.configure(font=fontExample,borderwidth= 0)
 login_button.place(x=950, y=455)
@@ -149,16 +156,29 @@ make_id = Button(window, text='회원 가입',  command= sign_member , width=12,
 make_id.configure(font=fontExample,borderwidth= 0)
 make_id.place(x=950, y=535)
 
+#############################################뉴스 프레임##############################################################
+news = Frame(window, relief='solid', bd=2,background='ivory')
+back_button = Button(news, text= '뒤로가기', command = news_exit, bg='antiquewhite',width=12, height=2)
+back_button.configure(font=fontExample,borderwidth=0)
+back_button.place(x= 30,y = 25)
 
-shopping = Frame(window, relief='solid', bd=2)
-exit_button = Button(shopping, text= 'EXIT', command = shopping_exit)
+sign_id_input = Entry(news, bg='white', font=22)
+sign_id_input.place(width=300, height=40, x=700, y=20)
 
+search_button = Button(news, text= '검색', command = exit_signFrame, bg='antiquewhite',width=12, height=2)
+search_button.configure(font=fontExample,borderwidth=0)
+search_button.place(x= 1050,y = 25)
+
+titleLabel = tkinter.Label(news, text='rkrkrk',background='ivory')
+titleLabel.place(x=30,y=100)
+
+
+###################################################################################################################
 
 signFrame = Frame(window, relief='solid', bd=2,background='ivory')
 sign_button = Button(signFrame, text= '가입', command = sign,bg='antiquewhite',width=12, height=2)
 sign_button.configure(font= fontExample,borderwidth=0)
 sign_button.place(x= 440,y = 700)
-
 
 back_button = Button(signFrame, text= '뒤로가기', command = exit_signFrame, bg='antiquewhite',width=12, height=2)
 back_button.configure(font=fontExample,borderwidth=0)
@@ -173,7 +193,7 @@ sign_id_input.place(width=300, height=40, x=220, y=170)
 sign_pw_label = Label(signFrame, text="비밀번호",background='ivory')
 sign_pw_label.place(x= 150,y= 250)
 
-sign_password_input = Entry(signFrame, bg='white', font=22)
+sign_password_input = Entry(signFrame, bg='white', font=22,show='*')
 sign_password_input.place(width=300, height=40, x=220, y=250)
 
 sign_name_label = Label(signFrame, text="이름",background='ivory')
@@ -194,13 +214,21 @@ sign_age_input.place(width=300, height=40, x=220, y=490)
 sign_age_label = Label(signFrame, text="나이",background='ivory')
 sign_age_label.place(x= 150,y= 490)
 
-sign_addr_input = Entry(signFrame, bg='white', font=22)
-sign_addr_input.place(width=300, height=40, x=220, y=570)
+#sign_addr_input = Entry(signFrame, bg='white', font=22)
+#sign_addr_input.place(width=300, height=40, x=220, y=570)
 
 sign_addr_label = Label(signFrame, text="주소",background='ivory')
 sign_addr_label.place(x= 150,y= 570)
 
+a=["서울", "경기", "강원", "충북", "충남", "대전","세종", "경북", "경남", "전북", "전남", "제주"]           # 콤보 박스에 나타낼 항목 리스트
+addr_combobox = tkinter.ttk.Combobox(signFrame)    # root라는 창에 콤보박스 생성
+addr_combobox.config(height=40,width=40)           # 높이 설정
+addr_combobox.config(values=a)           # 나타낼 항목 리스트(a) 설정
+addr_combobox.config(state="readonly")   # 콤보 박스에 사용자가 직접 입력 불가
+addr_combobox.set("서울")           # 맨 처음 나타낼 값 설정
+addr_combobox.place(x= 220,y= 570)
 
 
+window.protocol('WM_DELETE_WINDOW',exit_window)
 
 window.mainloop()
