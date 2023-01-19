@@ -1,13 +1,19 @@
 import socketserver
 import threading
 import datetime
+import pandas as pd
 import json
 import pymysql
 from selenium import webdriver
 from selenium.webdriver.common.by import By
+from urllib import parse
+import bs4
 
 
-HOST = '192.168.0.5' # 서버의 ip를 열음. (이 서버의 ip로 클라이언트가 접속을 해야 한다), 그전에 ping을 먼저 확인하도록.
+
+
+
+HOST = '172.20.10.2' # 서버의 ip를 열음. (이 서버의 ip로 클라이언트가 접속을 해야 한다), 그전에 ping을 먼저 확인하도록.
 PORT = 9900       # 포트번호 (같아야 함)
 lock = threading.Lock()  # syncronized 동기화 진행하는 스레드 생성
 
@@ -19,6 +25,38 @@ con = pymysql.connect(host='localhost', user='root', password='7539518642a', db=
 # con 객체에서 cursor 만들기
 
 cur = con.cursor()
+
+driver = webdriver.Chrome()
+WEBDRIVER_OPTIONS = webdriver.ChromeOptions()
+WEBDRIVER_OPTIONS.add_argument("headless")
+
+url = ''
+def newsUrl(keyword):
+
+
+    keywordIn = parse.quote(keyword)
+    base_url = f"https://search.hankookilbo.com/Search?tab=NEWS&sort=relation&searchText={keywordIn}&searchTypeSet=TITLE,CONTENTS&selectedPeriod=%EC%A0%84%EC%B2%B4&filter=head"
+    # 검색어 위 url에 추가해서 검색 후 띄워주기
+    print(keyword)
+    print(base_url)
+
+    url = base_url
+    return url
+
+
+
+
+
+# for i in range(5):
+#     result_css= driver.find_elements(By.CSS_SELECTOR,'#AAA > div.inner > div > div.tab-contents > div > div.tab-contents > div > ul > li:nth-child('+str(i)+') > div:nth-child(1) > div > a')
+#
+#     for i in range(len(result_css)):
+#
+#         print(result_css[i].text + '\n')
+
+
+
+
 
 
 class ChatingServer(socketserver.ThreadingMixIn, socketserver.TCPServer):
@@ -64,43 +102,60 @@ class User:  # 사용자관리 및 채팅 메세지 전송을 담당하는 클�
             User.userList = userId
 
             # sql변수에 sql문법 작성
-            sql4 = 'INSERT INTO member VALUES(%s,%s,%s,%s,%s,%s)'
+            sql2 = 'INSERT INTO member VALUES(%s,%s,%s,%s,%s,%s)'
             val = [(userId, userPw, userName, userAge, userGender, userAddr)]
 
             # sql변수에 sql문법 작성
-            sql = '''SELECT * FROM member; '''
+
+
+            cur.executemany(sql2, val)
+            con.commit()
+
+            sql4 = 'SELECT * FROM member WHERE mem_id =' + f'"{userId}"'
+            cur.execute(sql4)
+            data = cur.fetchall()
+            print(data[0][0])
+            # sql변수에 sql문법 작성
+
+            sql5 = 'INSERT INTO waching_data VALUES(%s,%s,%s,%s,%s)'
+            val3 = [(data[0][0], data[0][3], data[0][4], data[0][5], "1")]
             # 커서를 통해 sql문 실행
-            try:
-                cur.executemany(sql4, val)
-                con.commit()
-            except Exception as ex:
-                print('addUser', type(ex), ex)
+            cur.executemany(sql5, val3)
+            con.commit()
+
 
             return "0"  # 없으면 0
 
         for k in data: # sql 데이터를 가져와 하나씩 뽑은후
             for i in range(len(k)):
                 if userId == k[i]: # 아이디가 있으면
+
                     return "1"
 
                 else:
                     User.userList = userId
 
                     # sql변수에 sql문법 작성
-                    sql4 = 'INSERT INTO member VALUES(%s,%s,%s,%s,%s,%s)'
-                    val = [(userId, userPw, userName, userAge, userGender, userAddr)]
+                    sql3 = 'INSERT INTO member VALUES(%s,%s,%s,%s,%s,%s)'
+                    val2 = [(userId, userPw, userName, userAge, userGender, userAddr)]
 
+                    cur.executemany(sql3, val2)
+                    con.commit()
+                    ###########################################################################################
+                    sql4 = 'SELECT * FROM member WHERE mem_id =' + f'"{userId}"'
+                    cur.execute(sql4)
+                    data = cur.fetchall()
+                    print(data[0][0])
                     # sql변수에 sql문법 작성
-                    sql = '''SELECT *
-                              FROM member; '''
+
+                    sql5 = 'INSERT INTO waching_data VALUES(%s,%s,%s,%s,%s)'
+                    val3 = [(data[0][0], data[0][3], data[0][4], data[0][5], "1")]
                     # 커서를 통해 sql문 실행
-                    try:
-                        cur.executemany(sql4, val)
-                        con.commit()
-                    except Exception as ex:
-                        print('addUser',type(ex),ex)
+                    cur.executemany(sql5, val3)
+                    con.commit()
 
                     return "0" # 없으면 0
+
 
 
     def loginUser(self, userId, userPw):
@@ -136,7 +191,23 @@ class User:  # 사용자관리 및 채팅 메세지 전송을 담당하는 클�
 
         return values
 
+    def addTitle(self,userId, title):
+        # 회원 아이디로 waching_data찾아서 읽어옴
+        print(11111111111111111111111111111111111111111111111111111111)
 
+        sql4 = 'SELECT * FROM waching_data WHERE mem_id =' + f'"{userId}"'
+        cur.execute(sql4)
+        data1 = cur.fetchall()
+        print(data1)
+        # sql변수에 sql문법 작성
+
+        sql = '''UPDATE waching_data SET title =''' + f'"{title}"' + ''' WHERE title ='''+ f'"{data1[0][4]}"'''
+        cur.execute(sql)
+        print(sql)
+
+        cur.fetchall()
+        con.commit()
+        print("commit!!!!!!!")
 
 
 class MyTcpHandler(socketserver.BaseRequestHandler):
@@ -158,38 +229,57 @@ class MyTcpHandler(socketserver.BaseRequestHandler):
                 if bytes(data).decode() == 'sign': # 회원가입
                     print(bytes(data).decode())
                     json_dict = json.loads(self.request.recv(16184))
+
                     result = self.user.addUser(json_dict["userId"], json_dict["userPw"], json_dict["userName"],
                                                json_dict["userAddr"], json_dict["userAge"], json_dict["userGender"])
+
                     self.request.send(result.encode())
+
 
                 elif bytes(data).decode() == 'login': # 로그인
 
+                    global user_id
                     # 클라이언트로부터 로그인정보 id,pw받아옴
-                    json_dict = json.loads(self.request.recv(16184))
-                    result = self.user.loginUser(json_dict["userId"], json_dict["userPw"])
-                    self.request.send(json.dumps(result).encode('utf-8'))
-                    result2 = self.request.recv(16184)
 
-                    if str(result2) == 'main':
+                    json_dict = json.loads(self.request.recv(16184))
+
+                    result = self.user.loginUser(json_dict["userId"], json_dict["userPw"])
+                    # 회원정보 저장
+
+                    self.request.send(json.dumps(result).encode('utf-8'))
+                    user_id = json_dict["userId"]
+                    result2 = self.request.recv(16184)
+                    print(result2)
+
+                    if bytes(result2).decode() == 'search':
+
+                        # 검색어
+                        result3 = self.request.recv(16184)
+                        print(bytes(result3).decode())
+                        # 검색어 저장
+                        self.user.addTitle(user_id,bytes(result3).decode())
+
+                        # 검색 및 출력
+
+
+                        break
+
+                    if bytes(result2).decode() == 'main':
                         break
 
 
         except Exception as e:
             print("handle",e)
 
-
-
 def runServer():
-    print('+++ 채팅 서버를 시작합니다.')
-    print('+++ 채텅 서버를 끝내려면 Ctrl-C를 누르세요.')
+    print('+++ 서버를 시작합니다.')
 
     try:
-
         server = ChatingServer((HOST, PORT), MyTcpHandler)# 서버 객체 생성
         # 인스턴스 = 클래스명(생성자)
         server.serve_forever() # 클라이언트의 접속요청 수락 및 handle() 메소드 호출하는 역할
     except KeyboardInterrupt:
-        print('--- 채팅 서버를 종료합니다.')
+        print('--- 서버를 종료합니다.')
         server.shutdown()
         server.server_close()
 

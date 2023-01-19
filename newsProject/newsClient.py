@@ -11,7 +11,7 @@ import tkinter.font as tkFont
 import json
 import tkinter.messagebox
 
-HOST = '192.168.0.5'
+HOST =  '172.20.10.2'
 PORT =9900
 
 #sql을 파이썬에서 활용하기 위해 pymysql 라이브러리 설치 import
@@ -50,20 +50,25 @@ def login():
     client_socket.sendall(bytes('login'.encode('utf-8')))
     client_socket.sendall(bytes(values))
 
-
     data = json.loads(client_socket.recv(16184))
-    print(data , "data!!!!!!!!!!!!")
+
 
 
     if data["logIn"] == "1":
         news.pack(side='left', fill='both', expand=True)
         news.pack()
         print(data)
+
     elif data["logIn"] == "0":
         tkinter.messagebox.showinfo("메세지", "정보가 맞지 않습니다.")
 
     # 검색.......검색.......검색..............
 
+
+def search_news():
+    client_socket.sendall(bytes('search'.encode('utf-8')))
+
+    client_socket.sendall(bytes(search_input.get().encode('utf-8')))
 
 
 def sign_member():
@@ -162,10 +167,10 @@ back_button = Button(news, text= '뒤로가기', command = news_exit, bg='antiqu
 back_button.configure(font=fontExample,borderwidth=0)
 back_button.place(x= 30,y = 25)
 
-sign_id_input = Entry(news, bg='white', font=22)
-sign_id_input.place(width=300, height=40, x=700, y=20)
+search_input = Entry(news, bg='white', font=22)
+search_input.place(width=300, height=40, x=700, y=20)
 
-search_button = Button(news, text= '검색', command = exit_signFrame, bg='antiquewhite',width=12, height=2)
+search_button = Button(news, text= '검색', command = search_news, bg='antiquewhite',width=12, height=2)
 search_button.configure(font=fontExample,borderwidth=0)
 search_button.place(x= 1050,y = 25)
 
