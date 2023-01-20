@@ -7,7 +7,8 @@ import pymysql
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from urllib import parse
-import bs4
+import requests
+from bs4 import BeautifulSoup
 
 
 
@@ -31,27 +32,59 @@ WEBDRIVER_OPTIONS = webdriver.ChromeOptions()
 WEBDRIVER_OPTIONS.add_argument("headless")
 
 url = ''
+
+
+
 def newsUrl(keyword):
 
 
     keywordIn = parse.quote(keyword)
     base_url = f"https://search.hankookilbo.com/Search?tab=NEWS&sort=relation&searchText={keywordIn}&searchTypeSet=TITLE,CONTENTS&selectedPeriod=%EC%A0%84%EC%B2%B4&filter=head"
     # 검색어 위 url에 추가해서 검색 후 띄워주기
-    print(keyword)
-    print(base_url)
+    # print(base_url)
+    response = requests.get(base_url)
 
-    url = base_url
+    title = []
+    content = []
+    if response.status_code == 200:
+        html = response.text
+        soup = BeautifulSoup(html,'html.parser')
+        ul = soup.select_one(('ul.board-list'))
+        title1 = ul.select('li > div > h3 > a')
+        content1 = ul.select('li > div > div > a')
+        content= []
+        for i in range(len(title1)):
+            if i % 2 == 0:
+                title.append(title1[i].get_text())
 
-    for i in range(1,6):
-        result_css = driver.find_elements(By.CSS_SELECTOR,
-        '#AAA > div.inner > div > div.tab-contents > div > div.tab-contents > div > ul > li:nth-child('+str(i)+') > div.inn.mb_only > div > a')
+
+        content.append(content1[0].get_text())
+        content.append(content1[2].get_text())
+        content.append(content1[4].get_text())
+        content.append(content1[6].get_text())
+        content.append(content1[8].get_text())
 
 
-        for j in range(len(result_css)):
-            print(111111111111111111111111111)
-            print(result_css[j].text + '\n')
 
-    return url
+
+
+
+    else:
+        print(response.status_code)
+
+    return title,content
+
+
+
+# def find():
+#     for i in range(1, 6):
+#         result_css = driver.find_elements(By.CSS_SELECTOR,
+#                                           '#AAA > div.inner > div > div.tab-contents > div > div.tab-contents > div > ul > li:nth-child(' + str(
+#                                               i) + ') > div.inn.mb_only > div > a')
+#
+#         for j in range(len(result_css)):
+#             print(111111111111111111111111111)
+#             print(result_css[j].text + '\n')
 
 
 
@@ -257,8 +290,22 @@ class MyTcpHandler(socketserver.BaseRequestHandler):
                         # 검색어 저장
                         self.user.addTitle(user_id,bytes(result3).decode())
 
-                        driver.get(newsUrl(bytes(result3).decode()))
+                        #driver.get(newsUrl(bytes(result3).decode()))
+                        title, content = newsUrl(bytes(result3).decode())
 
+                        values = json.dumps({
+
+                            "title": title,
+                            "content": content,
+
+                        }).encode('utf-8')
+
+
+                        print(values)
+                        self.request.sendall(bytes(values))
+
+
+                        #find()
                         # 검색 및 출력
 
 

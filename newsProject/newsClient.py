@@ -70,6 +70,22 @@ def search_news():
 
     client_socket.sendall(bytes(search_input.get().encode('utf-8')))
 
+    json_data = json.loads(client_socket.recv(92236))
+
+    titleLabel1.configure(text=json_data["title"][0])
+    titleLabel2.configure(text=json_data["title"][1])
+    titleLabel3.configure(text=json_data["title"][2])
+    titleLabel4.configure(text=json_data["title"][3])
+    titleLabel5.configure(text=json_data["title"][4])
+
+
+    contentLabel1.configure(text=json_data["content"][0])
+    contentLabel2.configure(text=json_data["content"][1])
+    contentLabel3.configure(text=json_data["content"][2])
+    contentLabel4.configure(text=json_data["content"][3])
+    contentLabel5.configure(text=json_data["content"][4])
+
+
 
 def sign_member():
     signFrame.pack(side='left', fill='both', expand=True)
@@ -120,7 +136,7 @@ def exit_signFrame():
 
 
 window = Tk()
-window.geometry('1200x800')
+window.geometry('1200x900')
 window.title('NewsWindow')
 
 window.configure(bg='ivory')
@@ -174,10 +190,38 @@ search_button = Button(news, text= '검색', command = search_news, bg='antiquew
 search_button.configure(font=fontExample,borderwidth=0)
 search_button.place(x= 1050,y = 25)
 
-titleLabel = tkinter.Label(news, text='rkrkrk',background='ivory')
-titleLabel.place(x=30,y=100)
+titleLabel1 = tkinter.Label(news, background='ivory') # 아이보리
+titleLabel1.place(x=30,y=100)
 
+contentLabel1 = tkinter.Label(news, background='white',justify="left",anchor="n")
+contentLabel1.place(x= 30, y=130, width=1000, height= 100)
 
+titleLabel2 = tkinter.Label(news, background='ivory') # 아이보리
+titleLabel2.place(x=30,y=250)
+
+contentLabel2 = tkinter.Label(news, background='white')
+contentLabel2.place(x= 30, y=280, width=1000, height= 100)
+
+titleLabel3 = tkinter.Label(news, background='ivory') # 아이보리
+titleLabel3.place(x=30,y=400)
+
+contentLabel3 = tkinter.Label(news, background='white')
+contentLabel3.place(x= 30, y=430, width=1000, height= 100)
+
+titleLabel4 = tkinter.Label(news, background='ivory') # 아이보리
+titleLabel4.place(x=30,y=550)
+
+contentLabel4 = tkinter.Label(news, background='white')
+contentLabel4.place(x= 30, y=580, width=1000, height= 100)
+
+titleLabel5 = tkinter.Label(news, background='ivory') # 아이보리
+titleLabel5.place(x=30,y=700)
+
+contentLabel5 = tkinter.Label(news, background='white')
+contentLabel5.place(x= 30, y=730, width=1000, height= 100)
+
+# scrollbar = Scrollbar(news)
+# scrollbar.pack(side="right", fill="y")
 ###################################################################################################################
 
 signFrame = Frame(window, relief='solid', bd=2,background='ivory')
