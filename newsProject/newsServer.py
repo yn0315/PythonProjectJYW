@@ -41,19 +41,17 @@ def newsUrl(keyword):
     print(base_url)
 
     url = base_url
+
+    for i in range(1,6):
+        result_css = driver.find_elements(By.CSS_SELECTOR,
+        '#AAA > div.inner > div > div.tab-contents > div > div.tab-contents > div > ul > li:nth-child('+str(i)+') > div.inn.mb_only > div > a')
+
+
+        for j in range(len(result_css)):
+            print(111111111111111111111111111)
+            print(result_css[j].text + '\n')
+
     return url
-
-
-
-
-
-# for i in range(5):
-#     result_css= driver.find_elements(By.CSS_SELECTOR,'#AAA > div.inner > div > div.tab-contents > div > div.tab-contents > div > ul > li:nth-child('+str(i)+') > div:nth-child(1) > div > a')
-#
-#     for i in range(len(result_css)):
-#
-#         print(result_css[i].text + '\n')
-
 
 
 
@@ -258,6 +256,8 @@ class MyTcpHandler(socketserver.BaseRequestHandler):
                         print(bytes(result3).decode())
                         # 검색어 저장
                         self.user.addTitle(user_id,bytes(result3).decode())
+
+                        driver.get(newsUrl(bytes(result3).decode()))
 
                         # 검색 및 출력
 
