@@ -11,7 +11,7 @@ import tkinter.font as tkFont
 import json
 import tkinter.messagebox
 
-HOST =  '172.20.10.2'
+HOST =  '172.30.1.46'
 PORT =9900
 
 #sql을 파이썬에서 활용하기 위해 pymysql 라이브러리 설치 import
@@ -27,7 +27,9 @@ client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 client_socket.connect((HOST, PORT))
 
-
+loginId = ''
+loginPw = ''
+searchTitle = ''
 def exit_window():
     window.destroy()
 def news_exit():
@@ -39,38 +41,97 @@ def news_exit():
     password_input.delete(0, len(password_input.get()))
     login_button['state'] = 'normal'
 
+def newsContent_exit():
+    global loginId
+    global loginPw
+    global newsContent
+    global searchTitle
+    newsContent.pack_forget()
+    back_button.pack_forget()
+
+    news.pack(side='left', fill='both', expand=True)
+    news.pack()
+
+    client_socket.sendall(bytes('back'.encode('utf-8')))
+
+    client_socket.sendall(bytes('login2'.encode('utf-8')))
+
+    data = json.loads(client_socket.recv(92236))
+    print(data["title"][0])
+
+    # searchTitle = data["title"]
+
+    titleLabel1.configure(text=data["title"][0])
+    titleLabel2.configure(text=data["title"][1])
+    titleLabel3.configure(text=data["title"][2])
+    titleLabel4.configure(text=data["title"][3])
+    titleLabel5.configure(text=data["title"][4])
+
+    contentLabel1.configure(text=data["content"][0])
+    contentLabel2.configure(text=data["content"][1])
+    contentLabel3.configure(text=data["content"][2])
+    contentLabel4.configure(text=data["content"][3])
+    contentLabel5.configure(text=data["content"][4])
+
 
 def login():
+    global loginId
+    global searchTitle
+    global loginPw
+
+    search_input.delete(0, len(search_input.get()))
+
     values = json.dumps({
         "userId" : id_input.get(),
         "userPw" : password_input.get()
 
     }).encode('utf-8')
     # 서버로 id,pw값 전송
+    loginId = id_input.get()
+    loginPw = password_input.get()
+
+
     client_socket.sendall(bytes('login'.encode('utf-8')))
     client_socket.sendall(bytes(values))
 
     data = json.loads(client_socket.recv(16184))
+    searchTitle = data["title"]
+
 
 
 
     if data["logIn"] == "1":
         news.pack(side='left', fill='both', expand=True)
         news.pack()
-        print(data)
+
+        json_data = json.loads(client_socket.recv(92236))
+
+        titleLabel1.configure(text=json_data["title"][0])
+        titleLabel2.configure(text=json_data["title"][1])
+        titleLabel3.configure(text=json_data["title"][2])
+        titleLabel4.configure(text=json_data["title"][3])
+        titleLabel5.configure(text=json_data["title"][4])
+
+        contentLabel1.configure(text=json_data["content"][0])
+        contentLabel2.configure(text=json_data["content"][1])
+        contentLabel3.configure(text=json_data["content"][2])
+        contentLabel4.configure(text=json_data["content"][3])
+        contentLabel5.configure(text=json_data["content"][4])
 
     elif data["logIn"] == "0":
         tkinter.messagebox.showinfo("메세지", "정보가 맞지 않습니다.")
 
-    # 검색.......검색.......검색..............
 
 
 def search_news():
+    global searchTitle
     client_socket.sendall(bytes('search'.encode('utf-8')))
 
-    client_socket.sendall(bytes(search_input.get().encode('utf-8')))
+    searchTitle = search_input.get()
+    client_socket.sendall(bytes(searchTitle.encode('utf-8')))
 
     json_data = json.loads(client_socket.recv(92236))
+    print(json_data["content"])
 
     titleLabel1.configure(text=json_data["title"][0])
     titleLabel2.configure(text=json_data["title"][1])
@@ -86,11 +147,97 @@ def search_news():
     contentLabel5.configure(text=json_data["content"][4])
 
 
+def readNews1():
+    global conc
+    news.pack_forget()
+    newsContent.pack(side='left', fill='both', expand=True)
+    newsContent.pack()
+
+    client_socket.sendall(bytes('read1'.encode('utf-8')))
+
+    json_data = json.loads(client_socket.recv(92236))
+
+    conc = ''
+    for j in json_data["content"]:
+        conc += j+'\n'
+
+    news_contentLabel1.configure(text=conc)
+    conc = ''
+
+def readNews2():
+    global conc1
+    news.pack_forget()
+    newsContent.pack(side='left', fill='both', expand=True)
+    newsContent.pack()
+
+    client_socket.sendall(bytes('read2'.encode('utf-8')))
+
+    json_data = json.loads(client_socket.recv(92236))
+
+    conc1 = ''
+    for j in json_data["content"]:
+        conc1 += j + '\n'
+    news_contentLabel1.configure(text=conc1)
+
+    del conc1
+
+
+def readNews3():
+    global conc2
+    news.pack_forget()
+    newsContent.pack(side='left', fill='both', expand=True)
+    newsContent.pack()
+    client_socket.sendall(bytes('read3'.encode('utf-8')))
+
+    json_data = json.loads(client_socket.recv(92236))
+
+    conc2 = ''
+    for j in json_data["content"]:
+        conc2 += j + '\n'
+    news_contentLabel1.configure(text=conc2)
+
+    del conc2
+
+def readNews4():
+    global conc3
+    news.pack_forget()
+    newsContent.pack(side='left', fill='both', expand=True)
+    newsContent.pack()
+
+    client_socket.sendall(bytes('read4'.encode('utf-8')))
+
+    json_data = json.loads(client_socket.recv(92236))
+
+    conc3 = ''
+    for j in json_data["content"]:
+        conc3 += j + '\n'
+    news_contentLabel1.configure(text=conc3)
+
+    del conc3
+
+
+def readNews5():
+    global conc4
+    news.pack_forget()
+    newsContent.pack(side='left', fill='both', expand=True)
+    newsContent.pack()
+    client_socket.sendall(bytes('read5'.encode('utf-8')))
+
+    json_data = json.loads(client_socket.recv(92236))
+
+    conc4 = ''
+    for j in json_data["content"]:
+        conc4 += j + '\n'
+    news_contentLabel1.configure(text=conc4)
+
+    del conc4
+
 
 def sign_member():
     signFrame.pack(side='left', fill='both', expand=True)
     signFrame.pack()
     client_socket.sendall(bytes("sign".encode('utf-8')))
+
 
     return
 
@@ -178,50 +325,87 @@ make_id.configure(font=fontExample,borderwidth= 0)
 make_id.place(x=950, y=535)
 
 #############################################뉴스 프레임##############################################################
+
 news = Frame(window, relief='solid', bd=2,background='ivory')
 back_button = Button(news, text= '뒤로가기', command = news_exit, bg='antiquewhite',width=12, height=2)
 back_button.configure(font=fontExample,borderwidth=0)
-back_button.place(x= 30,y = 25)
+back_button.place(x= 100,y = 25)
 
 search_input = Entry(news, bg='white', font=22)
-search_input.place(width=300, height=40, x=700, y=20)
+search_input.place(width=300, height=40, x=650, y=20)
 
 search_button = Button(news, text= '검색', command = search_news, bg='antiquewhite',width=12, height=2)
 search_button.configure(font=fontExample,borderwidth=0)
-search_button.place(x= 1050,y = 25)
+search_button.place(x= 1020,y = 25)
 
 titleLabel1 = tkinter.Label(news, background='ivory') # 아이보리
-titleLabel1.place(x=30,y=100)
+titleLabel1.place(x=100,y=100)
 
 contentLabel1 = tkinter.Label(news, background='white',justify="left",anchor="n")
-contentLabel1.place(x= 30, y=130, width=1000, height= 100)
+contentLabel1.place(x= 100, y=130, width=1000, height= 100)
 
-titleLabel2 = tkinter.Label(news, background='ivory') # 아이보리
-titleLabel2.place(x=30,y=250)
+button1 = Button(news, text= '이동', command = readNews1, bg='antiquewhite',width=12, height=2)
+button1.configure(font=fontExample,borderwidth=0)
+button1.place(x= 1020,y = 100)
+
+
+titleLabel2 = tkinter.Label(news, background='ivory',justify="left",anchor="n") # 아이보리
+titleLabel2.place(x=100,y=250)
 
 contentLabel2 = tkinter.Label(news, background='white')
-contentLabel2.place(x= 30, y=280, width=1000, height= 100)
+contentLabel2.place(x= 100, y=280, width=1000, height= 100)
 
-titleLabel3 = tkinter.Label(news, background='ivory') # 아이보리
-titleLabel3.place(x=30,y=400)
+button2 = Button(news, text= '이동', command = readNews2, bg='antiquewhite',width=12, height=2)
+button2.configure(font=fontExample,borderwidth=0)
+button2.place(x= 1020,y = 250)
+
+titleLabel3 = tkinter.Label(news, background='ivory',justify="left",anchor="n") # 아이보리
+titleLabel3.place(x=100,y=400)
 
 contentLabel3 = tkinter.Label(news, background='white')
-contentLabel3.place(x= 30, y=430, width=1000, height= 100)
+contentLabel3.place(x= 100, y=430, width=1000, height= 100)
 
-titleLabel4 = tkinter.Label(news, background='ivory') # 아이보리
-titleLabel4.place(x=30,y=550)
+button3 = Button(news, text= '이동', command = readNews3, bg='antiquewhite',width=12, height=2)
+button3.configure(font=fontExample,borderwidth=0)
+button3.place(x= 1020,y = 400)
+
+titleLabel4 = tkinter.Label(news, background='ivory',justify="left",anchor="n") # 아이보리
+titleLabel4.place(x=100,y=550)
 
 contentLabel4 = tkinter.Label(news, background='white')
-contentLabel4.place(x= 30, y=580, width=1000, height= 100)
+contentLabel4.place(x= 100, y=580, width=1000, height= 100)
 
-titleLabel5 = tkinter.Label(news, background='ivory') # 아이보리
-titleLabel5.place(x=30,y=700)
+button4 = Button(news, text= '이동', command = readNews4, bg='antiquewhite',width=12, height=2)
+button4.configure(font=fontExample,borderwidth=0)
+button4.place(x= 1020,y = 550)
+
+titleLabel5 = tkinter.Label(news, background='ivory',justify="left",anchor="n") # 아이보리
+titleLabel5.place(x=100,y=700)
 
 contentLabel5 = tkinter.Label(news, background='white')
-contentLabel5.place(x= 30, y=730, width=1000, height= 100)
+contentLabel5.place(x= 100, y=730, width=1000, height= 100)
+
+button5 = Button(news, text= '이동', command = readNews5, bg='antiquewhite',width=12, height=2)
+button5.configure(font=fontExample,borderwidth=0)
+button5.place(x= 1020,y = 700)
 
 # scrollbar = Scrollbar(news)
 # scrollbar.pack(side="right", fill="y")
+
+#################################################본문 프레임#########################################################
+
+newsContent = Frame(window, relief='solid', bd=2,background='ivory')
+content_back_button = Button(newsContent, text= '뒤로가기', command = newsContent_exit, bg='antiquewhite',width=12, height=2)
+content_back_button.configure(font=fontExample,borderwidth=0)
+content_back_button.place(x= 100,y = 25)
+
+news_contentLabel1 = tkinter.Label(newsContent, background='white',justify="left",anchor="n")
+news_contentLabel1.place(x= 100, y=130, width=1000, height= 800)
+
+
+
+
+
 ###################################################################################################################
 
 signFrame = Frame(window, relief='solid', bd=2,background='ivory')

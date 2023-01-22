@@ -14,7 +14,7 @@ from bs4 import BeautifulSoup
 
 
 
-HOST = '172.20.10.2' # 서버의 ip를 열음. (이 서버의 ip로 클라이언트가 접속을 해야 한다), 그전에 ping을 먼저 확인하도록.
+HOST = '172.30.1.46' # 서버의 ip를 열음. (이 서버의 ip로 클라이언트가 접속을 해야 한다), 그전에 ping을 먼저 확인하도록.
 PORT = 9900       # 포트번호 (같아야 함)
 lock = threading.Lock()  # syncronized 동기화 진행하는 스레드 생성
 
@@ -32,61 +32,101 @@ WEBDRIVER_OPTIONS = webdriver.ChromeOptions()
 WEBDRIVER_OPTIONS.add_argument("headless")
 
 url = ''
+g_title = []
+g_content = []
+a_link = []
 
+g_content1 =[]
 
+g_loginId = ''
+g_loginPw = ''
 
 def newsUrl(keyword):
 
+    global g_title
+    global g_content
+    global a_link
 
     keywordIn = parse.quote(keyword)
+    print(keyword,"키워드!!!!!!!!!!!!!!!!!!!")
     base_url = f"https://search.hankookilbo.com/Search?tab=NEWS&sort=relation&searchText={keywordIn}&searchTypeSet=TITLE,CONTENTS&selectedPeriod=%EC%A0%84%EC%B2%B4&filter=head"
     # 검색어 위 url에 추가해서 검색 후 띄워주기
     # print(base_url)
     response = requests.get(base_url)
 
-    title = []
-    content = []
+
     if response.status_code == 200:
         html = response.text
         soup = BeautifulSoup(html,'html.parser')
         ul = soup.select_one(('ul.board-list'))
         title1 = ul.select('li > div > h3 > a')
-        content1 = ul.select('li > div > div > a')
-        content= []
-        for i in range(len(title1)):
-            if i % 2 == 0:
-                title.append(title1[i].get_text())
+        news_content1 = ul.select('li > div > div > a')
+        news_content2 = ul.select('li > div > div')
+
+        a = []
+        a_link = []
+
+        for con in news_content2:
+
+            a.append(con.find("a")["href"])
+
+        for j in range(len(a)):
+            if j % 2 == 0:
+                a_link.append(a[j])
+
+        print(a_link)
 
 
-        content.append(content1[0].get_text())
-        content.append(content1[2].get_text())
-        content.append(content1[4].get_text())
-        content.append(content1[6].get_text())
-        content.append(content1[8].get_text())
+        for k in range(len(title1)):
+            if k % 2 == 0:
+                g_title.append(title1[k].get_text())
 
 
-
+        g_content.append(news_content1[0].get_text())
+        g_content.append(news_content1[2].get_text())
+        g_content.append(news_content1[4].get_text())
+        g_content.append(news_content1[6].get_text())
+        g_content.append(news_content1[8].get_text())
 
 
 
     else:
         print(response.status_code)
 
-    return title,content
+    return g_title,g_content
+
+def readNews(url):
+
+    global g_content1
+    g_content1 = []
+
+    # keywordIn = parse.quote(keyword)
+    base_url = url
+    # 검색어 위 url에 추가해서 검색 후 띄워주기
+    # print(base_url)
+    response = requests.get(base_url)
+
+
+    if response.status_code == 200:
+        html = response.text
+        soup = BeautifulSoup(html,'html.parser')
+
+        content1 = soup.select_one('body > div.wrap.imp-end > div.container.end-uni > div.end-body > div > div.col-main')
+        c = content1.find_all('p')
+
+
+        for i in c:
+
+            g_content1.append(i.get_text())
+        # print(c)
 
 
 
-# def find():
-#     for i in range(1, 6):
-#         result_css = driver.find_elements(By.CSS_SELECTOR,
-#                                           '#AAA > div.inner > div > div.tab-contents > div > div.tab-contents > div > ul > li:nth-child(' + str(
-#                                               i) + ') > div.inn.mb_only > div > a')
-#
-#         for j in range(len(result_css)):
-#             print(111111111111111111111111111)
-#             print(result_css[j].text + '\n')
+    else:
+        print(response.status_code)
 
 
+    return g_content1
 
 
 
@@ -208,7 +248,7 @@ class User:  # 사용자관리 및 채팅 메세지 전송을 담당하는 클�
         # 최근 검색어로 추천기사 띄워주기위해
         for i in range(len(data2)):
             values["title"] = str(data2[0][i])
-            #result[0][1] = str(data2[0][i])
+
 
 
         for i in range(len(data1)):
@@ -224,7 +264,6 @@ class User:  # 사용자관리 및 채팅 메세지 전송을 담당하는 클�
 
     def addTitle(self,userId, title):
         # 회원 아이디로 waching_data찾아서 읽어옴
-        print(11111111111111111111111111111111111111111111111111111111)
 
         sql4 = 'SELECT * FROM waching_data WHERE mem_id =' + f'"{userId}"'
         cur.execute(sql4)
@@ -257,7 +296,7 @@ class MyTcpHandler(socketserver.BaseRequestHandler):
                 if bytes(data).decode() == '':
                     break
 
-                if bytes(data).decode() == 'sign': # 회원가입
+                elif bytes(data).decode() == 'sign': # 회원가입
                     print(bytes(data).decode())
                     json_dict = json.loads(self.request.recv(16184))
 
@@ -266,55 +305,295 @@ class MyTcpHandler(socketserver.BaseRequestHandler):
 
                     self.request.send(result.encode())
 
+                elif bytes(data).decode() == 'login2':  # 본문에서 뒤로가기 실행시
+                    print('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
+
+                    global g_title
+                    global g_content
+                    global a_link
+                    global g_loginId
+                    global g_loginPw
+
+                    # 클라이언트로부터 로그인정보 id,pw받아옴
+                    result = self.user.loginUser(g_loginId, g_loginPw)
+
+                    title0, cont0 = newsUrl(result["title"])
+                    print(title0)
+                    values0 = json.dumps({
+
+                        "title": title0,
+                        "content": cont0,
+
+                    }).encode('utf-8')
+
+                    # 회원정보 저장
+
+                    self.request.sendall(bytes(values0))
+                    g_title = []
+                    g_content = []
+
+
+                    while True:
+
+                        result2 = self.request.recv(16184)
+
+                        if bytes(result2).decode() == 'search':
+
+                            # 검색어
+                            result3 = self.request.recv(16184)
+                            print(bytes(result3).decode())
+                            # 검색어 저장
+                            self.user.addTitle(g_loginId,bytes(result3).decode())
+
+                            #driver.get(newsUrl(bytes(result3).decode()))
+
+                            title1, content1 = newsUrl(bytes(result3).decode())
+
+                            values1 = json.dumps({
+
+                                "title": title1,
+                                "content": content1,
+
+                            }).encode('utf-8')
+
+                            print(bytes(values1).decode())
+                            self.request.sendall(bytes(values1))
+                            break
+
+                            # 검색 및 출력
+
+                        elif bytes(result2).decode() == 'main':
+                            break
+
+                        elif bytes(result2).decode() == 'read1':
+                            print(bytes(result2).decode())
+                            try:
+                                # 본문내용 보내기
+                                con1 = readNews(a_link[0])
+
+                                values2 = json.dumps({
+
+                                    "content": con1,
+
+                                }).encode('utf-8')
+
+                                self.request.sendall(bytes(values2))
+                                result4 = self.request.recv(16184)
+                                if bytes(result4).decode() == 'back':
+                                    break
+                            except Exception as e:
+                                print(type(e),e)
+
+                        elif bytes(result2).decode() == 'read2':
+
+                            # 본문내용 보내기
+                            con2 = readNews(a_link[1])
+
+                            values3 = json.dumps({
+
+                                "content": con2,
+
+                            }).encode('utf-8')
+
+                            self.request.sendall(bytes(values3))
+                            result4 = self.request.recv(16184)
+                            if bytes(result4).decode() == 'back':
+                                break
+
+                        elif bytes(result2).decode() == 'read3':
+
+                            # 본문내용 보내기
+                            con3 = readNews(a_link[2])
+
+                            values4 = json.dumps({
+
+                                "content": con3,
+
+                            }).encode('utf-8')
+
+                            self.request.sendall(bytes(values4))
+                            result4 = self.request.recv(16184)
+                            if bytes(result4).decode() == 'back':
+
+                                break
+
+                        elif bytes(result2).decode() == 'read4':
+
+                            # 본문내용 보내기
+                            con4 = readNews(a_link[3])
+
+                            values5 = json.dumps({
+
+                                "content": con4,
+
+                            }).encode('utf-8')
+
+                            self.request.sendall(bytes(values5))
+                            result4 = self.request.recv(16184)
+                            if bytes(result4).decode() == 'back':
+
+                                break
+
+                        elif bytes(result2).decode() == 'read5':
+
+                            # 본문내용 보내기
+                            con5 = readNews(a_link[4])
+
+                            values6 = json.dumps({
+
+                                "content": con5,
+
+                            }).encode('utf-8')
+
+                            self.request.sendall(bytes(values6))
+                            result4 = self.request.recv(16184)
+                            if bytes(result4).decode() == 'back':
+                                break
 
                 elif bytes(data).decode() == 'login': # 로그인
 
-                    global user_id
+
                     # 클라이언트로부터 로그인정보 id,pw받아옴
 
                     json_dict = json.loads(self.request.recv(16184))
-
+                    g_loginId = json_dict["userId"]
+                    g_loginPw = json_dict["userPw"]
                     result = self.user.loginUser(json_dict["userId"], json_dict["userPw"])
+
+                    title, cont = newsUrl(result["title"])
+
+                    values = json.dumps({
+
+                        "title": title,
+                        "content": cont,
+
+                    }).encode('utf-8')
+
+                    print(title)
+
                     # 회원정보 저장
-
                     self.request.send(json.dumps(result).encode('utf-8'))
-                    user_id = json_dict["userId"]
-                    result2 = self.request.recv(16184)
-                    print(result2)
 
-                    if bytes(result2).decode() == 'search':
+                    self.request.sendall(bytes(values))
+                    g_title = []
+                    g_content = []
 
-                        # 검색어
-                        result3 = self.request.recv(16184)
-                        print(bytes(result3).decode())
-                        # 검색어 저장
-                        self.user.addTitle(user_id,bytes(result3).decode())
+                    while True:
 
-                        #driver.get(newsUrl(bytes(result3).decode()))
-                        title, content = newsUrl(bytes(result3).decode())
+                        result2 = self.request.recv(16184)
 
-                        values = json.dumps({
+                        if bytes(result2).decode() == 'search':
 
-                            "title": title,
-                            "content": content,
+                            # 검색어
+                            result3 = self.request.recv(16184)
+                            print(bytes(result3).decode())
+                            # 검색어 저장
+                            self.user.addTitle(g_loginId,bytes(result3).decode())
 
-                        }).encode('utf-8')
+                            #driver.get(newsUrl(bytes(result3).decode()))
 
+                            title1, content1 = newsUrl(bytes(result3).decode())
 
-                        print(values)
-                        self.request.sendall(bytes(values))
+                            values1 = json.dumps({
 
+                                "title": title1,
+                                "content": content1,
 
-                        #find()
-                        # 검색 및 출력
+                            }).encode('utf-8')
 
+                            print(bytes(values1).decode())
+                            self.request.sendall(bytes(values1))
+                            break
 
-                        break
+                            # 검색 및 출력
 
-                    if bytes(result2).decode() == 'main':
-                        break
+                        elif bytes(result2).decode() == 'main':
+                            break
 
+                        elif bytes(result2).decode() == 'read1':
+                            print(bytes(result2).decode())
+                            try:
+                                # 본문내용 보내기
+                                con1 = readNews(a_link[0])
 
+                                values2 = json.dumps({
+
+                                    "content": con1,
+
+                                }).encode('utf-8')
+
+                                self.request.sendall(bytes(values2))
+                                result4 = self.request.recv(16184)
+                                if bytes(result4).decode() == 'back':
+                                    break
+                            except Exception as e:
+                                print(type(e),e)
+
+                        elif bytes(result2).decode() == 'read2':
+
+                            # 본문내용 보내기
+                            con2 = readNews(a_link[1])
+
+                            values3 = json.dumps({
+
+                                "content": con2,
+
+                            }).encode('utf-8')
+
+                            self.request.sendall(bytes(values3))
+                            result4 = self.request.recv(16184)
+                            if bytes(result4).decode() == 'back':
+                                break
+
+                        elif bytes(result2).decode() == 'read3':
+
+                            # 본문내용 보내기
+                            con3 = readNews(a_link[2])
+
+                            values4 = json.dumps({
+
+                                "content": con3,
+
+                            }).encode('utf-8')
+
+                            self.request.sendall(bytes(values4))
+                            result4 = self.request.recv(16184)
+                            if bytes(result4).decode() == 'back':
+
+                                break
+
+                        elif bytes(result2).decode() == 'read4':
+
+                            # 본문내용 보내기
+                            con4 = readNews(a_link[3])
+
+                            values5 = json.dumps({
+
+                                "content": con4,
+
+                            }).encode('utf-8')
+
+                            self.request.sendall(bytes(values5))
+                            result4 = self.request.recv(16184)
+                            if bytes(result4).decode() == 'back':
+
+                                break
+
+                        elif bytes(result2).decode() == 'read5':
+
+                            # 본문내용 보내기
+                            con5 = readNews(a_link[4])
+
+                            values6 = json.dumps({
+
+                                "content": con5,
+
+                            }).encode('utf-8')
+
+                            self.request.sendall(bytes(values6))
+                            result4 = self.request.recv(16184)
+                            if bytes(result4).decode() == 'back':
+                                break
         except Exception as e:
             print("handle",e)
 
