@@ -10,9 +10,16 @@ import pymysql
 import tkinter.font as tkFont
 import json
 import tkinter.messagebox
+import os
+import threading
+
+
+
 
 HOST =  '172.30.1.46'
 PORT =9900
+
+current_working_directory = os.getcwd()
 
 #sql을 파이썬에서 활용하기 위해 pymysql 라이브러리 설치 import
 
@@ -30,6 +37,10 @@ client_socket.connect((HOST, PORT))
 loginId = ''
 loginPw = ''
 searchTitle = ''
+
+g_age = 0
+g_gen = ''
+
 def exit_window():
     window.destroy()
 def news_exit():
@@ -67,12 +78,15 @@ def newsContent_exit():
     titleLabel4.configure(text=data["title"][3])
     titleLabel5.configure(text=data["title"][4])
 
-    contentLabel1.configure(text=data["content"][0])
-    contentLabel2.configure(text=data["content"][1])
-    contentLabel3.configure(text=data["content"][2])
-    contentLabel4.configure(text=data["content"][3])
-    contentLabel5.configure(text=data["content"][4])
+    contentLabel1.configure(text=str(data["content"][0]).strip())
+    contentLabel2.configure(text=str(data["content"][1]).strip())
+    contentLabel3.configure(text=str(data["content"][2]).strip())
+    contentLabel4.configure(text=str(data["content"][3]).strip())
+    contentLabel5.configure(text=str(data["content"][4]).strip())
 
+def upd(title):
+
+    mainLabel.configure(text=title[0])
 
 def login():
     global loginId
@@ -94,17 +108,19 @@ def login():
     client_socket.sendall(bytes('login'.encode('utf-8')))
     client_socket.sendall(bytes(values))
 
-    data = json.loads(client_socket.recv(16184))
+    data = json.loads(client_socket.recv(92236))
     searchTitle = data["title"]
 
 
-
-
     if data["logIn"] == "1":
+        # container.pack(side='left', fill='both', expand=True)
         news.pack(side='left', fill='both', expand=True)
-        news.pack()
+        #news.pack()
+        # scrollbar.pack(side="right", fill="y")
 
         json_data = json.loads(client_socket.recv(92236))
+
+        #upd(json_data["g_title"])
 
         titleLabel1.configure(text=json_data["title"][0])
         titleLabel2.configure(text=json_data["title"][1])
@@ -112,11 +128,12 @@ def login():
         titleLabel4.configure(text=json_data["title"][3])
         titleLabel5.configure(text=json_data["title"][4])
 
-        contentLabel1.configure(text=json_data["content"][0])
-        contentLabel2.configure(text=json_data["content"][1])
-        contentLabel3.configure(text=json_data["content"][2])
-        contentLabel4.configure(text=json_data["content"][3])
-        contentLabel5.configure(text=json_data["content"][4])
+
+        contentLabel1.configure(text=str(json_data["content"][0]).strip())
+        contentLabel2.configure(text=str(json_data["content"][1]).strip())
+        contentLabel3.configure(text=str(json_data["content"][2]).strip())
+        contentLabel4.configure(text=str(json_data["content"][3]).strip())
+        contentLabel5.configure(text=str(json_data["content"][4]).strip())
 
     elif data["logIn"] == "0":
         tkinter.messagebox.showinfo("메세지", "정보가 맞지 않습니다.")
@@ -131,7 +148,6 @@ def search_news():
     client_socket.sendall(bytes(searchTitle.encode('utf-8')))
 
     json_data = json.loads(client_socket.recv(92236))
-    print(json_data["content"])
 
     titleLabel1.configure(text=json_data["title"][0])
     titleLabel2.configure(text=json_data["title"][1])
@@ -140,43 +156,94 @@ def search_news():
     titleLabel5.configure(text=json_data["title"][4])
 
 
-    contentLabel1.configure(text=json_data["content"][0])
-    contentLabel2.configure(text=json_data["content"][1])
-    contentLabel3.configure(text=json_data["content"][2])
-    contentLabel4.configure(text=json_data["content"][3])
-    contentLabel5.configure(text=json_data["content"][4])
+    contentLabel1.configure(text=str(json_data["content"][0]).strip())
+    contentLabel2.configure(text=str(json_data["content"][1]).strip())
+    contentLabel3.configure(text=str(json_data["content"][2]).strip())
+    contentLabel4.configure(text=str(json_data["content"][3]).strip())
+    contentLabel5.configure(text=str(json_data["content"][4]).strip())
+
+
+def ageGen_news():
+    global g_age
+    global g_gen
+
+    client_socket.sendall(bytes('select'.encode('utf-8')))
+
+    g_age = age_combobox.get()
+    g_gen = gen_combobox.get()
+
+    values = json.dumps({
+        "userAge" : g_age,
+        "userGen" : g_gen
+
+    }).encode('utf-8')
+
+    client_socket.sendall(bytes(values))
+
+    json_data = json.loads(client_socket.recv(92236))
+    print(json_data["content"])
+
+    titleLabel1.configure(text=json_data["title"][0])
+    titleLabel2.configure(text=json_data["title"][1])
+    titleLabel3.configure(text=json_data["title"][2])
+    titleLabel4.configure(text=json_data["title"][3])
+    titleLabel5.configure(text=json_data["title"][4])
+
+    contentLabel1.configure(text=str(json_data["content"][0]).strip())
+    contentLabel2.configure(text=str(json_data["content"][1]).strip())
+    contentLabel3.configure(text=str(json_data["content"][2]).strip())
+    contentLabel4.configure(text=str(json_data["content"][3]).strip())
+    contentLabel5.configure(text=str(json_data["content"][4]).strip())
 
 
 def readNews1():
     global conc
+    global concArr
     news.pack_forget()
     newsContent.pack(side='left', fill='both', expand=True)
-    newsContent.pack()
+    #newsContent.pack()
 
     client_socket.sendall(bytes('read1'.encode('utf-8')))
 
     json_data = json.loads(client_socket.recv(92236))
 
     conc = ''
-    for j in json_data["content"]:
-        conc += j+'\n'
+
+    concArr = []
+
+    for i in range(len(json_data["content"]) -1):
+        concArr.append(json_data["content"][i])
+
+    for j in range(len(concArr)):
+        if j == 0:
+            conc += concArr[j] + '\n\n\n'
+        else:
+            conc += concArr[j] + '\n\n'
 
     news_contentLabel1.configure(text=conc)
     conc = ''
 
 def readNews2():
     global conc1
+    global concArr1
     news.pack_forget()
     newsContent.pack(side='left', fill='both', expand=True)
-    newsContent.pack()
+    #newsContent.pack()
 
     client_socket.sendall(bytes('read2'.encode('utf-8')))
 
     json_data = json.loads(client_socket.recv(92236))
 
     conc1 = ''
-    for j in json_data["content"]:
-        conc1 += j + '\n'
+    concArr1 = []
+    for i in range(len(json_data["content"]) - 1):
+        concArr1.append(json_data["content"][i])
+
+    for j in range(len(concArr1)):
+        if j == 0:
+            conc1 += concArr1[j] + '\n\n\n'
+        else:
+            conc1 += concArr1[j] + '\n\n'
     news_contentLabel1.configure(text=conc1)
 
     del conc1
@@ -184,33 +251,51 @@ def readNews2():
 
 def readNews3():
     global conc2
+    global concArr2
     news.pack_forget()
     newsContent.pack(side='left', fill='both', expand=True)
-    newsContent.pack()
+    #newsContent.pack()
     client_socket.sendall(bytes('read3'.encode('utf-8')))
 
     json_data = json.loads(client_socket.recv(92236))
 
     conc2 = ''
-    for j in json_data["content"]:
-        conc2 += j + '\n'
+
+    concArr2 = []
+    for i in range(len(json_data["content"]) - 1):
+        concArr2.append(json_data["content"][i])
+
+    for j in range(len(concArr)):
+        if j == 0:
+            conc2 += concArr2[j] + '\n\n\n'
+        else:
+            conc2 += concArr2[j] + '\n\n'
     news_contentLabel1.configure(text=conc2)
 
     del conc2
 
 def readNews4():
     global conc3
+    global concArr3
     news.pack_forget()
     newsContent.pack(side='left', fill='both', expand=True)
-    newsContent.pack()
+    #newsContent.pack()
 
     client_socket.sendall(bytes('read4'.encode('utf-8')))
 
     json_data = json.loads(client_socket.recv(92236))
 
     conc3 = ''
-    for j in json_data["content"]:
-        conc3 += j + '\n'
+
+    concArr3 = []
+    for i in range(len(json_data["content"]) - 1):
+        concArr3.append(json_data["content"][i])
+
+    for j in range(len(concArr)):
+        if j == 0:
+            conc3 += concArr3[j] + '\n\n\n'
+        else:
+            conc3 += concArr3[j] + '\n\n'
     news_contentLabel1.configure(text=conc3)
 
     del conc3
@@ -218,16 +303,25 @@ def readNews4():
 
 def readNews5():
     global conc4
+    global concArr4
     news.pack_forget()
     newsContent.pack(side='left', fill='both', expand=True)
-    newsContent.pack()
+    #newsContent.pack()
     client_socket.sendall(bytes('read5'.encode('utf-8')))
 
     json_data = json.loads(client_socket.recv(92236))
 
     conc4 = ''
-    for j in json_data["content"]:
-        conc4 += j + '\n'
+    concArr4 = []
+    for i in range(len(json_data["content"]) - 1):
+
+        concArr4.append(json_data["content"][i])
+
+    for j in range(len(concArr)):
+        if j == 0:
+            conc4 += concArr4[j] + '\n\n\n'
+        else:
+            conc4 += concArr4[j] + '\n\n'
     news_contentLabel1.configure(text=conc4)
 
     del conc4
@@ -299,38 +393,72 @@ frame3 = tkinter.Frame(window)
 # frame3.grid(row=0, column=0, sticky="nsew")
 frame1.pack()
 
-# photo = PhotoImage(file = 'C:\\Users\\202-uil\\Desktop\\KCY\\musinsa.jpg')
-# musin = Label(window, image=photo, width=464, height=350)
-# musin.pack(expand=1, anchor=CENTER)
-
-
-# photo = PhotoImage(file = "C:\\Users\\myosi\\OneDrive\\바탕 화면\\mu2.png")
-
-#logo = Label(window, image=photo)
-#logo.place(x=160, y=100)
+photo = PhotoImage(file = 'newsImg.png')
+logo = Label(window, image=photo)
+logo.pack(expand=1, anchor=CENTER)
+logo.place(x=250, y=250)
 
 id_input = Entry(window, bg='white', font=22)
-id_input.place(width=300, height=40, x=600, y=450)
+id_input.place(width=300, height=40, x=700, y=450)
 
 password_input = Entry(window, bg='white', font=22,show='*')
-password_input.place(width=300, height=40, x=600, y=530)
+password_input.place(width=300, height=40, x=700, y=530)
 
 login_button = Button(window, text='로그인', command =login, width=12, height=2, bg='antiquewhite')
 fontExample = tkFont.Font(family="굴림체", size=9)
 login_button.configure(font=fontExample,borderwidth= 0)
-login_button.place(x=950, y=455)
+login_button.place(x=1020, y=455)
 
 make_id = Button(window, text='회원 가입',  command= sign_member , width=12, height=2, bg='antiquewhite')
 make_id.configure(font=fontExample,borderwidth= 0)
-make_id.place(x=950, y=535)
+make_id.place(x=1020, y=535)
 
 #############################################뉴스 프레임##############################################################
 
-news = Frame(window, relief='solid', bd=2,background='ivory')
+#####################################################
+
+news = Frame(window, relief='solid',background='ivory')
+# scrollbar = ttk.Scrollbar(news,orient='vertical',command=news.yview)
+# scrollable_frame = ttk.Frame(news)
+#
+# scrollbar.bind('<Configure>', lambda e: news.configure(scrollregion=news.bbox("all")))
+#
+# news.create_window((0,0),window=scrollable_frame,anchor='nw')
+# news.configure(yscrollcommand=scrollbar.set)
+
+#####################################################
+
 back_button = Button(news, text= '뒤로가기', command = news_exit, bg='antiquewhite',width=12, height=2)
 back_button.configure(font=fontExample,borderwidth=0)
 back_button.place(x= 100,y = 25)
 
+######################################################################################################
+
+age=["10", "20", "30", "40", "50", "60"]           # 콤보 박스에 나타낼 항목 리스트
+age_combobox = tkinter.ttk.Combobox(news)    # root라는 창에 콤보박스 생성
+age_combobox.config(height=40,width=10)           # 높이 설정
+age_combobox.config(values=age)           # 나타낼 항목 리스트(a) 설정
+age_combobox.config(state="readonly")   # 콤보 박스에 사용자가 직접 입력 불가
+age_combobox.set("나이순")           # 맨 처음 나타낼 값 설정
+age_combobox.place(x= 200,y= 25)
+
+
+gen=["남", "여"]           # 콤보 박스에 나타낼 항목 리스트
+gen_combobox = tkinter.ttk.Combobox(news)    # root라는 창에 콤보박스 생성
+gen_combobox.config(height=40,width=10)           # 높이 설정
+gen_combobox.config(values=gen)           # 나타낼 항목 리스트(a) 설정
+gen_combobox.config(state="readonly")   # 콤보 박스에 사용자가 직접 입력 불가
+gen_combobox.set("성별순")           # 맨 처음 나타낼 값 설정
+gen_combobox.place(x= 300,y= 25)
+
+ageGen_button = Button(news, text= '조회', command = ageGen_news, bg='antiquewhite',width=12, height=2)
+ageGen_button.configure(font=fontExample,borderwidth=0)
+ageGen_button.place(x= 410,y = 25)
+
+mainLabel = tkinter.Label(news, background='white',justify="left",anchor="n",wraplength=980,pady=10)
+mainLabel.place(x= 200, y=70, width=290, height= 30)
+
+######################################################################################################
 search_input = Entry(news, bg='white', font=22)
 search_input.place(width=300, height=40, x=650, y=20)
 
@@ -339,71 +467,72 @@ search_button.configure(font=fontExample,borderwidth=0)
 search_button.place(x= 1020,y = 25)
 
 titleLabel1 = tkinter.Label(news, background='ivory') # 아이보리
-titleLabel1.place(x=100,y=100)
+titleFont= tkFont.Font(weight='bold',size=10)
+titleLabel1.configure(font=titleFont)
+titleLabel1.place(x=100,y=110)
 
-contentLabel1 = tkinter.Label(news, background='white',justify="left",anchor="n")
-contentLabel1.place(x= 100, y=130, width=1000, height= 100)
+contentLabel1 = tkinter.Label(news, background='white',justify="left",anchor="n",wraplength=980,pady=10)
+contentLabel1.place(x= 100, y=140, width=1000, height= 100)
 
 button1 = Button(news, text= '이동', command = readNews1, bg='antiquewhite',width=12, height=2)
 button1.configure(font=fontExample,borderwidth=0)
-button1.place(x= 1020,y = 100)
+button1.place(x= 1020,y = 110)
 
 
 titleLabel2 = tkinter.Label(news, background='ivory',justify="left",anchor="n") # 아이보리
-titleLabel2.place(x=100,y=250)
+titleLabel2.configure(font=titleFont)
+titleLabel2.place(x=100,y=260)
 
-contentLabel2 = tkinter.Label(news, background='white')
-contentLabel2.place(x= 100, y=280, width=1000, height= 100)
+contentLabel2 = tkinter.Label(news, background='white',justify="left",anchor="n",wraplength=980,pady=10)
+contentLabel2.place(x= 100, y=290, width=1000, height= 100)
 
 button2 = Button(news, text= '이동', command = readNews2, bg='antiquewhite',width=12, height=2)
 button2.configure(font=fontExample,borderwidth=0)
-button2.place(x= 1020,y = 250)
+button2.place(x= 1020,y = 260)
 
 titleLabel3 = tkinter.Label(news, background='ivory',justify="left",anchor="n") # 아이보리
-titleLabel3.place(x=100,y=400)
+titleLabel3.configure(font=titleFont)
+titleLabel3.place(x=100,y=410)
 
-contentLabel3 = tkinter.Label(news, background='white')
-contentLabel3.place(x= 100, y=430, width=1000, height= 100)
+contentLabel3 = tkinter.Label(news, background='white',justify="left",anchor="n",wraplength=980,pady=10)
+contentLabel3.place(x= 100, y=440, width=1000, height= 100)
 
 button3 = Button(news, text= '이동', command = readNews3, bg='antiquewhite',width=12, height=2)
 button3.configure(font=fontExample,borderwidth=0)
-button3.place(x= 1020,y = 400)
+button3.place(x= 1020,y = 410)
 
 titleLabel4 = tkinter.Label(news, background='ivory',justify="left",anchor="n") # 아이보리
-titleLabel4.place(x=100,y=550)
+titleLabel4.configure(font=titleFont)
+titleLabel4.place(x=100,y=560)
 
-contentLabel4 = tkinter.Label(news, background='white')
-contentLabel4.place(x= 100, y=580, width=1000, height= 100)
+contentLabel4 = tkinter.Label(news, background='white',justify="left",anchor="n",wraplength=980,pady=10)
+contentLabel4.place(x= 100, y=590, width=1000, height= 100)
 
 button4 = Button(news, text= '이동', command = readNews4, bg='antiquewhite',width=12, height=2)
 button4.configure(font=fontExample,borderwidth=0)
-button4.place(x= 1020,y = 550)
+button4.place(x= 1020,y = 560)
 
 titleLabel5 = tkinter.Label(news, background='ivory',justify="left",anchor="n") # 아이보리
-titleLabel5.place(x=100,y=700)
+titleLabel5.configure(font=titleFont)
+titleLabel5.place(x=100,y=710)
 
-contentLabel5 = tkinter.Label(news, background='white')
-contentLabel5.place(x= 100, y=730, width=1000, height= 100)
+contentLabel5 = tkinter.Label(news, background='white',justify="left",anchor="n",wraplength=980,pady=10)
+contentLabel5.place(x= 100, y=740, width=1000, height= 100)
 
 button5 = Button(news, text= '이동', command = readNews5, bg='antiquewhite',width=12, height=2)
 button5.configure(font=fontExample,borderwidth=0)
-button5.place(x= 1020,y = 700)
+button5.place(x= 1020,y = 710)
 
-# scrollbar = Scrollbar(news)
-# scrollbar.pack(side="right", fill="y")
 
 #################################################본문 프레임#########################################################
 
-newsContent = Frame(window, relief='solid', bd=2,background='ivory')
+newsContent = Frame(window, relief='solid',background='ivory')
 content_back_button = Button(newsContent, text= '뒤로가기', command = newsContent_exit, bg='antiquewhite',width=12, height=2)
 content_back_button.configure(font=fontExample,borderwidth=0)
 content_back_button.place(x= 100,y = 25)
 
-news_contentLabel1 = tkinter.Label(newsContent, background='white',justify="left",anchor="n")
+news_contentLabel1 = tkinter.Label(newsContent, background='white',justify="left",anchor="n",wraplength=980,pady=10)
 news_contentLabel1.place(x= 100, y=130, width=1000, height= 800)
-
-
-
 
 
 ###################################################################################################################
