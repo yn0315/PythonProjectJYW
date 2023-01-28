@@ -12,27 +12,20 @@ import json
 import tkinter.messagebox
 import os
 import threading
+import PyInstaller
 
 
 
 
-HOST =  '172.30.1.46'
+HOST = '172.30.1.46'
 PORT =9900
 
 current_working_directory = os.getcwd()
 
-#sql을 파이썬에서 활용하기 위해 pymysql 라이브러리 설치 import
-
-con = pymysql.connect(host='localhost', user='root', password='7539518642a', db='news_db', charset='utf8')
-#user,pw,host,db,charset 등 매개변수 설정 후 connect 한 객체 : con
-
-# con 객체에서 cursor 만들기
-
-cur = con.cursor()
-
 client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 client_socket.connect((HOST, PORT))
+
 
 loginId = ''
 loginPw = ''
@@ -40,6 +33,69 @@ searchTitle = ''
 
 g_age = 0
 g_gen = ''
+g_replyList = []
+
+g_labelX = 100
+g_labelY = 100
+g_titleLabelX = 100
+g_titleLabelY = 100
+g_replyInput = ''
+# 터미널에 명령어 pyinstaller -w -F 클라이언트 파일명.py
+# 콘솔 나타내지 않는 옵션
+# -F 단일파일 exe로 묶는 옵션
+# 터미널 경로를 클라이언트 py를 포함하고 있는 경로로 설정
+# exe결과물은 해당 폴더 아래 dist폴더에 생성됨
+
+
+class replyBox():
+    def __init__(self, textContent, id):
+        global g_labelX
+        global g_labelY
+        global g_titleLabelX
+        global g_titleLabelY
+        replyLabel = tkinter.Label(FF, background='white', justify="left", anchor="n", wraplength=980, pady=20, text='"' + textContent + '"')
+        titleLabel1 = tkinter.Label(FF, background='ivory', text=id)  # 아이보리
+        titleFont = tkFont.Font(weight='bold', size=10)
+        titleLabel1.configure(font=titleFont)
+
+        if g_labelY == 100:
+            replyLabel.place(x=g_labelX, y=g_labelY, width=1000, height=100)
+            titleLabel1.place(x=g_titleLabelX, y=g_titleLabelY)
+            g_labelY = 210
+            g_titleLabelY = 220
+
+
+
+        elif g_labelY != 100:
+            replyLabel.place(x=g_labelX, y=g_labelY, width=1000, height=100)
+            g_labelY = g_labelY + 110
+            print(g_labelY)
+            titleLabel1.place(x=g_titleLabelX, y=g_titleLabelY)
+            g_titleLabelY = g_titleLabelY + 110
+
+class Reply:
+    replyList = []
+
+    def __init__(self, newsNum,newsLength):
+
+        tempNews = list(0 for i in range(newsLength))
+        Reply.replyList = tempNews
+
+
+    # def createReply(self):
+        tempNews[newsNum] = {"writer": "", "reply": ""}
+        for i in range(len(Reply.replyList)):
+            Reply.replyList[i] = tempNews[i]
+
+def registerComment():
+    global g_replyInput
+    g_replyInput = FF_input.get()
+    replyBox(FF_input.get(), loginId)
+    FF_input.delete(0, len(FF_input.get()))
+    client_socket.sendall(bytes('replyContent'.encode('utf-8')))
+    client_socket.sendall(bytes(g_replyInput.encode('utf-8')))
+
+
 
 def exit_window():
     window.destroy()
@@ -84,9 +140,15 @@ def newsContent_exit():
     contentLabel4.configure(text=str(data["content"][3]).strip())
     contentLabel5.configure(text=str(data["content"][4]).strip())
 
-def upd(title):
-
-    mainLabel.configure(text=title[0])
+def updateInputBox(title):
+    if g_age != '나이순' and g_gen != '성별순':
+        mainLabel.configure(text='"' + g_age+'대", ' +'"'+ g_gen+'성"의 키워드 '+ '"'+title+'"')
+    elif g_age =='나이순' and g_gen != '성별순':
+        mainLabel.configure(text='"' + g_gen + '성"의 키워드 ' + '"' + title + '"')
+    elif g_age != '나이순' and g_gen =='성별순':
+        mainLabel.configure(text='"' + g_age + '대"의 키워드 ' + '"' + title + '"')
+    elif g_age == '나이순' and g_gen == '성별순':
+        mainLabel.configure(text='')
 
 def login():
     global loginId
@@ -145,9 +207,11 @@ def search_news():
     client_socket.sendall(bytes('search'.encode('utf-8')))
 
     searchTitle = search_input.get()
+    print(searchTitle,"검색어")
     client_socket.sendall(bytes(searchTitle.encode('utf-8')))
 
     json_data = json.loads(client_socket.recv(92236))
+    print(json_data["title"][0])
 
     titleLabel1.configure(text=json_data["title"][0])
     titleLabel2.configure(text=json_data["title"][1])
@@ -182,6 +246,9 @@ def ageGen_news():
 
     json_data = json.loads(client_socket.recv(92236))
     print(json_data["content"])
+    # json_data["selectTitle"]
+    updateInputBox(json_data["selectTitle"])
+
 
     titleLabel1.configure(text=json_data["title"][0])
     titleLabel2.configure(text=json_data["title"][1])
@@ -207,9 +274,16 @@ def readNews1():
 
     json_data = json.loads(client_socket.recv(92236))
 
+
     conc = ''
 
     concArr = []
+
+    Reply(json_data["newsNum"], json_data["newsLength"])
+    # client_socket.sendall(bytes('replyContent'.encode('utf-8')))
+    # client_socket.sendall(bytes(FF_input.get().encode('utf-8')))
+    # print(bytes(FF_input.get().encode('utf-8')))
+
 
     for i in range(len(json_data["content"]) -1):
         concArr.append(json_data["content"][i])
@@ -233,9 +307,12 @@ def readNews2():
     client_socket.sendall(bytes('read2'.encode('utf-8')))
 
     json_data = json.loads(client_socket.recv(92236))
+    client_socket.sendall(bytes('replyContent'.encode('utf-8')))
+    client_socket.sendall(bytes(FF_input.get().encode('utf-8')))
 
     conc1 = ''
     concArr1 = []
+    Reply(json_data["newsNum"], json_data["newsLength"])
     for i in range(len(json_data["content"]) - 1):
         concArr1.append(json_data["content"][i])
 
@@ -258,14 +335,17 @@ def readNews3():
     client_socket.sendall(bytes('read3'.encode('utf-8')))
 
     json_data = json.loads(client_socket.recv(92236))
+    client_socket.sendall(bytes('replyContent'.encode('utf-8')))
+    client_socket.sendall(bytes(FF_input.get().encode('utf-8')))
 
     conc2 = ''
 
     concArr2 = []
+    Reply(json_data["newsNum"], json_data["newsLength"])
     for i in range(len(json_data["content"]) - 1):
         concArr2.append(json_data["content"][i])
 
-    for j in range(len(concArr)):
+    for j in range(len(concArr2)):
         if j == 0:
             conc2 += concArr2[j] + '\n\n\n'
         else:
@@ -288,10 +368,14 @@ def readNews4():
     conc3 = ''
 
     concArr3 = []
+    Reply(json_data["newsNum"], json_data["newsLength"])
+    client_socket.sendall(bytes('replyContent'.encode('utf-8')))
+    client_socket.sendall(bytes(FF_input.get().encode('utf-8')))
+
     for i in range(len(json_data["content"]) - 1):
         concArr3.append(json_data["content"][i])
 
-    for j in range(len(concArr)):
+    for j in range(len(concArr3)):
         if j == 0:
             conc3 += concArr3[j] + '\n\n\n'
         else:
@@ -313,11 +397,15 @@ def readNews5():
 
     conc4 = ''
     concArr4 = []
+    Reply(json_data["newsNum"], json_data["newsLength"])
+    client_socket.sendall(bytes('replyContent'.encode('utf-8')))
+    client_socket.sendall(bytes(FF_input.get().encode('utf-8')))
+
     for i in range(len(json_data["content"]) - 1):
 
         concArr4.append(json_data["content"][i])
 
-    for j in range(len(concArr)):
+    for j in range(len(concArr4)):
         if j == 0:
             conc4 += concArr4[j] + '\n\n\n'
         else:
@@ -325,6 +413,12 @@ def readNews5():
     news_contentLabel1.configure(text=conc4)
 
     del conc4
+
+def readReply():
+    newsContent.pack_forget()
+    FF.pack(side='left', fill='both', expand=True)
+
+    pass
 
 
 def sign_member():
@@ -532,7 +626,20 @@ content_back_button.configure(font=fontExample,borderwidth=0)
 content_back_button.place(x= 100,y = 25)
 
 news_contentLabel1 = tkinter.Label(newsContent, background='white',justify="left",anchor="n",wraplength=980,pady=10)
-news_contentLabel1.place(x= 100, y=130, width=1000, height= 800)
+news_contentLabel1.place(x= 100, y=130, width=1000, height= 700)
+
+button4 = Button(newsContent, text= '댓글', command = readReply, bg='antiquewhite',width=12, height=2)
+button4.configure(font=fontExample,borderwidth=0)
+button4.place(x= 1020,y = 110)
+
+###
+FF= Frame(window, relief='solid',background='ivory')
+FF_button = Button(FF, text= '등록', bg='antiquewhite',width=12, height=2, command= registerComment)
+FF_button.configure(font=fontExample,borderwidth=0)
+FF_button.place(x= 420,y = 30)
+
+FF_input = Entry(FF, bg='white', font=22)
+FF_input.place(width=300, height=40, x=100, y=25)
 
 
 ###################################################################################################################
