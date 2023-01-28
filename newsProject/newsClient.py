@@ -148,7 +148,7 @@ def updateInputBox(title):
     elif g_age != '나이순' and g_gen =='성별순':
         mainLabel.configure(text='"' + g_age + '대"의 키워드 ' + '"' + title + '"')
     elif g_age == '나이순' and g_gen == '성별순':
-        mainLabel.configure(text='')
+        mainLabel.configure(text='"'+ loginId + '"님의 키워드' +'"'+title+'"')
 
 def login():
     global loginId
@@ -246,7 +246,7 @@ def ageGen_news():
 
     json_data = json.loads(client_socket.recv(92236))
     print(json_data["content"])
-    # json_data["selectTitle"]
+
     updateInputBox(json_data["selectTitle"])
 
 

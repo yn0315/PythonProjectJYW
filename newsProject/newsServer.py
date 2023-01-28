@@ -350,50 +350,64 @@ class User:  # 사용자관리 및 채팅 메세지 전송을 담당하는 클�
         global tempGen
         global limitTempAge
         global key
+        global g_searchTitle
         key = ''
         print(userGen)
         tempGen = ''
-        limitTempAge = str(int(userAge) + 9)
+        if userAge !='나이순':
+            limitTempAge = str(int(userAge) + 9)
+            print(limitTempAge, "나이!!!!!!!!!!!!!!!!!!")
 
-        if userGen == '성별순' and userAge != '나이순':
-            sql5 = 'SELECT MAX(distinct title) FROM waching_data WHERE mem_age BETWEEN '+ f'{userAge} AND {limitTempAge}'
-            cur.execute(sql5)
-            # con.commit()
-            data2 = cur.fetchall()
-            print(sql5, "sql!!!!!!!!!!!!!!!!!!!")
-            key = data2[0][0]
-            print(key, "key!!!!!!!")
+            if userGen == '성별순' and userAge != '나이순':
+                sql5 = 'SELECT MAX(distinct title) FROM waching_data WHERE mem_age BETWEEN '+ f'{userAge} AND {limitTempAge}'
+                cur.execute(sql5)
+                print(sql5)
+                con.commit()
+                data2 = cur.fetchall()
+                print(sql5, "sql!!!!!!!!!!!!!!!!!!!")
+                key = data2[0][0]
+                print(key, "key!!!!!!!")
+                return newsUrl(key)
 
-        elif userGen == '남' and userAge != '나이순':
-            tempGen = 'm'
-            sql5 = 'SELECT MAX(distinct title) FROM waching_data WHERE mem_gender =' + f'"{tempGen}" AND "{userAge}" <= mem_age <= "{limitTempAge}"'
+            elif userGen == '남' and userAge != '나이순':
+                tempGen = 'm'
+                sql5 = 'SELECT MAX(distinct title) FROM waching_data WHERE mem_gender =' + f'"{tempGen}" AND mem_age between "{userAge}" and "{limitTempAge}"'
 
-            cur.execute(sql5)
-            # con.commit()
-            data2 = cur.fetchall()
-            key = data2[0][0]
-            print(key, "key!!!!!!!")
+                cur.execute(sql5)
+                print(sql5)
+                con.commit()
+                data2 = cur.fetchall()
+                key = data2[0][0]
+                print(data2, "key!!!!!!!")
+                return newsUrl(key)
 
-        elif userGen == '여' and userAge != '나이순':
-            tempGen = 'f'
-            sql5 = 'SELECT MAX(distinct title) FROM waching_data WHERE mem_gender =' + f'"{tempGen}" AND "{userAge}" <= mem_age <= "{limitTempAge}"'
+            elif userGen == '여' and userAge != '나이순':
+                tempGen = 'f'
+                sql5 = 'SELECT MAX(distinct title) FROM waching_data WHERE mem_gender =' + f'"{tempGen}" AND mem_age between "{userAge}" and "{limitTempAge}"'
 
-            cur.execute(sql5)
-            # con.commit()
-            data2 = cur.fetchall()
-            key = data2[0][0]
-            print(key, "key!!!!!!!")
+                cur.execute(sql5)
+                print(sql5)
+                con.commit()
+                data2 = cur.fetchall()
+                key = data2[0][0]
+                print(key, "key!!!!!!!")
+                return newsUrl(key)
 
         elif userAge == '나이순' and userGen != '성별순':
             sql5 = 'SELECT MAX(distinct title) FROM waching_data WHERE mem_gender =' + f'"{tempGen}"'
 
             cur.execute(sql5)
-            # con.commit()
+            print(sql5)
+            con.commit()
             data2 = cur.fetchall()
             key = data2[0][0]
             print(key, "key!!!!!!!")
+            return newsUrl(key)
 
-        return newsUrl(key)
+        else:
+            return newsUrl(g_searchTitle)
+
+        # return newsUrl(key)
 
     def getNumber(self, newsTi):
         print(newsTi, "newsTi########################################################################")
