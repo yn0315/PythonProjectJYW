@@ -33,7 +33,7 @@ searchTitle = ''
 
 g_age = 0
 g_gen = ''
-g_replyList = []
+# g_replyList = []
 
 g_labelX = 100
 g_labelY = 100
@@ -72,23 +72,24 @@ class replyBox():
             print(g_labelY)
             titleLabel1.place(x=g_titleLabelX, y=g_titleLabelY)
             g_titleLabelY = g_titleLabelY + 110
-
-class Reply:
-    replyList = []
-
-    def __init__(self, newsNum,newsLength):
-
-        tempNews = list(0 for i in range(newsLength))
-        Reply.replyList = tempNews
-
-
-    # def createReply(self):
-        tempNews[newsNum] = {"writer": "", "reply": ""}
-        for i in range(len(Reply.replyList)):
-            Reply.replyList[i] = tempNews[i]
+#
+# class Reply:
+#     replyList = []
+#
+#     def __init__(self, newsNum,newsLength):
+#
+#         tempNews = list(0 for i in range(newsLength))
+#         Reply.replyList = tempNews
+#
+#
+#     # def createReply(self):
+#         tempNews[newsNum] = {"writer": "", "reply": ""}
+#         for i in range(len(Reply.replyList)):
+#             Reply.replyList[i] = tempNews[i]
 
 def registerComment():
     global g_replyInput
+
     g_replyInput = FF_input.get()
     replyBox(FF_input.get(), loginId)
     FF_input.delete(0, len(FF_input.get()))
@@ -148,7 +149,7 @@ def updateInputBox(title):
     elif g_age != '나이순' and g_gen =='성별순':
         mainLabel.configure(text='"' + g_age + '대"의 키워드 ' + '"' + title + '"')
     elif g_age == '나이순' and g_gen == '성별순':
-        mainLabel.configure(text='"'+ loginId + '"님의 키워드' +'"'+title+'"')
+        mainLabel.configure(text='"'+ loginId + '"님의 키워드 ' +'"'+title+'"')
 
 def login():
     global loginId
@@ -279,7 +280,7 @@ def readNews1():
 
     concArr = []
 
-    Reply(json_data["newsNum"], json_data["newsLength"])
+    # Reply(json_data["newsNum"], json_data["newsLength"])
     # client_socket.sendall(bytes('replyContent'.encode('utf-8')))
     # client_socket.sendall(bytes(FF_input.get().encode('utf-8')))
     # print(bytes(FF_input.get().encode('utf-8')))
@@ -307,12 +308,12 @@ def readNews2():
     client_socket.sendall(bytes('read2'.encode('utf-8')))
 
     json_data = json.loads(client_socket.recv(92236))
-    client_socket.sendall(bytes('replyContent'.encode('utf-8')))
-    client_socket.sendall(bytes(FF_input.get().encode('utf-8')))
+    # client_socket.sendall(bytes('replyContent'.encode('utf-8')))
+    # client_socket.sendall(bytes(FF_input.get().encode('utf-8')))
 
     conc1 = ''
     concArr1 = []
-    Reply(json_data["newsNum"], json_data["newsLength"])
+    # Reply(json_data["newsNum"], json_data["newsLength"])
     for i in range(len(json_data["content"]) - 1):
         concArr1.append(json_data["content"][i])
 
@@ -335,13 +336,13 @@ def readNews3():
     client_socket.sendall(bytes('read3'.encode('utf-8')))
 
     json_data = json.loads(client_socket.recv(92236))
-    client_socket.sendall(bytes('replyContent'.encode('utf-8')))
-    client_socket.sendall(bytes(FF_input.get().encode('utf-8')))
+    # client_socket.sendall(bytes('replyContent'.encode('utf-8')))
+    # client_socket.sendall(bytes(FF_input.get().encode('utf-8')))
 
     conc2 = ''
 
     concArr2 = []
-    Reply(json_data["newsNum"], json_data["newsLength"])
+    # Reply(json_data["newsNum"], json_data["newsLength"])
     for i in range(len(json_data["content"]) - 1):
         concArr2.append(json_data["content"][i])
 
@@ -368,9 +369,9 @@ def readNews4():
     conc3 = ''
 
     concArr3 = []
-    Reply(json_data["newsNum"], json_data["newsLength"])
-    client_socket.sendall(bytes('replyContent'.encode('utf-8')))
-    client_socket.sendall(bytes(FF_input.get().encode('utf-8')))
+    # Reply(json_data["newsNum"], json_data["newsLength"])
+    # client_socket.sendall(bytes('replyContent'.encode('utf-8')))
+    # client_socket.sendall(bytes(FF_input.get().encode('utf-8')))
 
     for i in range(len(json_data["content"]) - 1):
         concArr3.append(json_data["content"][i])
@@ -397,9 +398,9 @@ def readNews5():
 
     conc4 = ''
     concArr4 = []
-    Reply(json_data["newsNum"], json_data["newsLength"])
-    client_socket.sendall(bytes('replyContent'.encode('utf-8')))
-    client_socket.sendall(bytes(FF_input.get().encode('utf-8')))
+    # Reply(json_data["newsNum"], json_data["newsLength"])
+    # client_socket.sendall(bytes('replyContent'.encode('utf-8')))
+    # client_socket.sendall(bytes(FF_input.get().encode('utf-8')))
 
     for i in range(len(json_data["content"]) - 1):
 
@@ -414,11 +415,15 @@ def readNews5():
 
     del conc4
 
+# 댓글 넘어가는 함수
 def readReply():
     newsContent.pack_forget()
     FF.pack(side='left', fill='both', expand=True)
+    client_socket.sendall(bytes('readReply'.encode('utf-8')))
+    data = json.loads(client_socket.recv(16184))
+    for i in range(len(data["memId"])):
+        replyBox(data["replyContent"][i], data["memId"][i])
 
-    pass
 
 
 def sign_member():

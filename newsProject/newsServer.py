@@ -438,9 +438,36 @@ class User:  # 사용자관리 및 채팅 메세지 전송을 담당하는 클�
             cur.execute(sql2)
             con.commit()
             data1 = cur.fetchall()
+            print(data1, "makeReply!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
 
         except Exception as e:
             print("makeReply", type(e), e)
+
+    def matchReply(self, id):
+        idData= []
+        replyData=[]
+        try:
+            print(newsId,"뉴스아이디!!!!!!!!!!!!!!!!!!!!!")
+            sql1 = f'SELECT mem_id, reply_content FROM news_reply WHERE news_id = "{id}"'
+
+            cur.execute(sql1)
+            con.commit()
+            data1 = cur.fetchall()
+
+            if len(data1) == 0:
+                return "", ""
+            else:
+                print(data1,"data1!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+                for i in range(len(data1)):
+                    idData.append(data1[i][0])
+                    replyData.append(data1[i][1])
+                return idData,replyData
+
+
+        except Exception as e:
+            print("matchReply", type(e), e)
+
+
 
 
 
@@ -589,9 +616,16 @@ class MyTcpHandler(socketserver.BaseRequestHandler):
 
                                 if bytes(result4).decode() == 'back':
                                     break
-                                elif bytes(result4).decode() == 'replyContent':
-                                    result5 = self.request.recv(92236)
-                                    self.user.makeReply(newsId, bytes(result5).decode())
+
+                                elif bytes(result4).decode() == 'readReply':
+
+                                    self.user.matchReply(newsId)
+                                    self.request.sendall(bytes())
+
+                                    result5 = self.request.recv(16184)
+                                    if bytes(result5).decode() == 'replyContent':
+                                        result6 = self.request.recv(92236)
+                                        self.user.makeReply(newsId, bytes(result6).decode())
 
                             except Exception as e:
                                 print(type(e), e)
@@ -644,9 +678,15 @@ class MyTcpHandler(socketserver.BaseRequestHandler):
                             result4 = self.request.recv(16184)
                             if bytes(result4).decode() == 'back':
                                 break
-                            elif bytes(result4).decode() == 'replyContent':
-                                result5 = self.request.recv(92236)
-                                self.user.makeReply(newsId, bytes(result5).decode())
+                            elif bytes(result4).decode() == 'readReply':
+
+                                self.user.matchReply(newsId)
+                                self.request.sendall(bytes())
+
+                                result5 = self.request.recv(16184)
+                                if bytes(result5).decode() == 'replyContent':
+                                    result6 = self.request.recv(92236)
+                                    self.user.makeReply(newsId, bytes(result6).decode())
 
                         elif bytes(result2).decode() == 'read4':
 
@@ -670,9 +710,15 @@ class MyTcpHandler(socketserver.BaseRequestHandler):
                             result4 = self.request.recv(16184)
                             if bytes(result4).decode() == 'back':
                                 break
-                            elif bytes(result4).decode() == 'replyContent':
-                                result5 = self.request.recv(92236)
-                                self.user.makeReply(newsId, bytes(result5).decode())
+                            elif bytes(result4).decode() == 'readReply':
+
+                                self.user.matchReply(newsId)
+                                self.request.sendall(bytes())
+
+                                result5 = self.request.recv(16184)
+                                if bytes(result5).decode() == 'replyContent':
+                                    result6 = self.request.recv(92236)
+                                    self.user.makeReply(newsId, bytes(result6).decode())
 
                         elif bytes(result2).decode() == 'read5':
 
@@ -696,9 +742,15 @@ class MyTcpHandler(socketserver.BaseRequestHandler):
                             result4 = self.request.recv(16184)
                             if bytes(result4).decode() == 'back':
                                 break
-                            elif bytes(result4).decode() == 'replyContent':
-                                result5 = self.request.recv(92236)
-                                self.user.makeReply(newsId, bytes(result5).decode())
+                            elif bytes(result4).decode() == 'readReply':
+
+                                self.user.matchReply(newsId)
+                                self.request.sendall(bytes())
+
+                                result5 = self.request.recv(16184)
+                                if bytes(result5).decode() == 'replyContent':
+                                    result6 = self.request.recv(92236)
+                                    self.user.makeReply(newsId, bytes(result6).decode())
 
                 elif bytes(data).decode() == 'login':  # 로그인
 
@@ -826,7 +878,6 @@ class MyTcpHandler(socketserver.BaseRequestHandler):
                                         g_newsDict = NewsDict.newsList[m]
                                         newsTi = NewsDict.newsList[m]["title"]
                                         newsId= self.user.getNumber(newsTi)
-                                        print(newsTi,"@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
 
                                 values2 = json.dumps({
 
@@ -840,11 +891,26 @@ class MyTcpHandler(socketserver.BaseRequestHandler):
                                 result4 = self.request.recv(16184)
                                 if bytes(result4).decode() == 'back':
                                     break
-                                elif bytes(result4).decode() == 'replyContent':
-                                    print(bytes(result4).decode(), "받은 데이터!!!!!!!!!!!!!!!!!!!!!!!!!!")
-                                    result5 = bytes(self.request.recv(92236)).decode()
-                                    print(result5, "result5!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
-                                    self.user.makeReply(newsId, result5)
+
+                                elif bytes(result4).decode() == 'readReply':
+
+                                    memId, replyContent= self.user.matchReply(newsId)
+                                    replyValues = json.dumps({
+
+                                        "memId": memId,
+                                        "replyContent": replyContent,
+
+                                    }).encode('utf-8')
+
+                                    self.request.sendall(bytes(replyValues))
+
+                                    result5 = self.request.recv(16184)
+                                    if bytes(result5).decode() == 'replyContent':
+                                        print(bytes(result5).decode(), "받은 데이터!!!!!!!!!!!!!!!!!!!!!!!!!!")
+                                        result6 = bytes(self.request.recv(92236)).decode()
+                                        print(result6, "result6!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+                                        self.user.makeReply(newsId, result6)
+
                             except Exception as e:
                                 print(type(e), e)
 
@@ -858,6 +924,7 @@ class MyTcpHandler(socketserver.BaseRequestHandler):
                                     newsTi = NewsDict.newsList[m]["title"]
                                     newsId= self.user.getNumber(newsTi)
 
+
                             values3 = json.dumps({
 
                                 "content": con2,
@@ -867,12 +934,35 @@ class MyTcpHandler(socketserver.BaseRequestHandler):
                             }).encode('utf-8')
 
                             self.request.sendall(bytes(values3))
+
                             result4 = self.request.recv(16184)
-                            if bytes(result4).decode() == 'back':
+                            print(bytes(result4).decode(), "??????????????????????????????")
+                            if bytes(result4).decode() == 'readReply':
+
+
+                                memId, replyContent = self.user.matchReply(newsId)
+
+                                replyValues = json.dumps({
+
+                                    "memId": memId,
+                                    "replyContent": replyContent,
+
+                                }).encode('utf-8')
+
+                                self.request.sendall(bytes(replyValues))
+
+                                result5 = self.request.recv(16184)
+
+                                if bytes(result5).decode() == 'replyContent':
+                                    print(bytes(result5).decode(), "받은 데이터!!!!!!!!!!!!!!!!!!!!!!!!!!")
+
+                                    result6 = bytes(self.request.recv(92236)).decode()
+
+                                    print(result6, "result6!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+
+                                    self.user.makeReply(newsId, result6)
+                            elif bytes(result4).decode() == 'back':
                                 break
-                            elif bytes(result4).decode() == 'replyContent':
-                                result5 = self.request.recv(92236)
-                                self.user.makeReply(newsId, bytes(result5).decode())
 
                         elif bytes(result2).decode() == 'read3':
 
@@ -895,9 +985,15 @@ class MyTcpHandler(socketserver.BaseRequestHandler):
                             result4 = self.request.recv(16184)
                             if bytes(result4).decode() == 'back':
                                 break
-                            elif bytes(result4).decode() == 'replyContent':
-                                result5 = self.request.recv(92236)
-                                self.user.makeReply(newsId, bytes(result5).decode())
+                            elif bytes(result4).decode() == 'readReply':
+
+                                self.user.matchReply(newsId)
+                                self.request.sendall(bytes())
+
+                                result5 = self.request.recv(16184)
+                                if bytes(result5).decode() == 'replyContent':
+                                    result6 = self.request.recv(92236)
+                                    self.user.makeReply(newsId, bytes(result6).decode())
 
                         elif bytes(result2).decode() == 'read4':
 
@@ -921,9 +1017,15 @@ class MyTcpHandler(socketserver.BaseRequestHandler):
                             result4 = self.request.recv(16184)
                             if bytes(result4).decode() == 'back':
                                 break
-                            elif bytes(result4).decode() == 'replyContent':
-                                result5 = self.request.recv(92236)
-                                self.user.makeReply(newsId, bytes(result5).decode())
+                            elif bytes(result4).decode() == 'readReply':
+
+                                self.user.matchReply(newsId)
+                                self.request.sendall(bytes())
+
+                                result5 = self.request.recv(16184)
+                                if bytes(result5).decode() == 'replyContent':
+                                    result6 = self.request.recv(92236)
+                                    self.user.makeReply(newsId, bytes(result6).decode())
 
                         elif bytes(result2).decode() == 'read5':
 
@@ -947,9 +1049,16 @@ class MyTcpHandler(socketserver.BaseRequestHandler):
                             result4 = self.request.recv(16184)
                             if bytes(result4).decode() == 'back':
                                 break
-                            elif bytes(result4).decode() == 'replyContent':
-                                result5 = self.request.recv(92236)
-                                self.user.makeReply(newsId, bytes(result5).decode())
+                            elif bytes(result4).decode() == 'readReply':
+
+                                self.user.matchReply(newsId)
+                                self.request.sendall(bytes())
+
+                                result5 = self.request.recv(16184)
+                                if bytes(result5).decode() == 'replyContent':
+                                    result6 = self.request.recv(92236)
+                                    self.user.makeReply(newsId, bytes(result6).decode())
+
         except Exception as e:
             print("handle", e)
 
@@ -959,6 +1068,7 @@ def runServer():
 
     try:
         server = ChatingServer((HOST, PORT), MyTcpHandler)  # 서버 객체 생성
+
         # 인스턴스 = 클래스명(생성자)
         server.serve_forever()  # 클라이언트의 접속요청 수락 및 handle() 메소드 호출하는 역할
     except KeyboardInterrupt:
