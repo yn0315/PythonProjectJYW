@@ -47,9 +47,13 @@ g_newsDict = {}
 g_newsDict_length = 0
 g_newsList = []
 
+g_dictList = []
+
 g_newsTitleList = [] # 뉴스 제목 리스트
 newsId= '' # 뉴스 고유번호
 g_selectTitle = '' # 성별, 나이 조회할 때 나오는 검색어 변수
+
+
 def insertNews(newsList):
     global g_newsTitleList
     sql = 'SELECT news_title FROM news_info'
@@ -92,6 +96,7 @@ def newsUrl(keyword):
     global a_link
     global l
     global g_selectTitle
+    global g_dictList
     l = []
     g_selectTitle = keyword
     keywordIn = parse.quote(keyword)
@@ -128,9 +133,8 @@ def newsUrl(keyword):
         ##################################################
 
         # # 해당하는 딕셔너리 불러오기
-        # for m in range(len(NewsDict.newsList)):
-        #     if NewsDict.newsList[m]["newsNum"] == 2:
-        #         print(NewsDict.newsList[m],"NewsDict!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+        for m in range(len(NewsDict.newsList)):
+            print(NewsDict.newsList[m],"NewsDict!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
 
         g_content.append(news_content1[0].get_text())
         g_content.append(news_content1[2].get_text())
@@ -197,11 +201,11 @@ class NewsDict: # 댓글 기능을 위한 뉴스 정보 클래스
     newsList = []
     newsNum = 1
     def __init__(self, searchTitle, title):
-        global g_newsDict_length
+
         for i in range(5):
             NewsDict.newsList.append({"search": searchTitle, "newsNum": NewsDict.newsNum, "title": title[i]})
             NewsDict.newsNum += 1
-        g_newsDict_length = NewsDict.newsNum - 1
+
 
 
 class News:
@@ -356,7 +360,6 @@ class User:  # 사용자관리 및 채팅 메세지 전송을 담당하는 클�
         tempGen = ''
         if userAge !='나이순':
             limitTempAge = str(int(userAge) + 9)
-            print(limitTempAge, "나이!!!!!!!!!!!!!!!!!!")
 
             if userGen == '성별순' and userAge != '나이순':
                 sql5 = 'SELECT MAX(distinct title) FROM waching_data WHERE mem_age BETWEEN '+ f'{userAge} AND {limitTempAge}'
@@ -364,9 +367,9 @@ class User:  # 사용자관리 및 채팅 메세지 전송을 담당하는 클�
                 print(sql5)
                 con.commit()
                 data2 = cur.fetchall()
-                print(sql5, "sql!!!!!!!!!!!!!!!!!!!")
+
                 key = data2[0][0]
-                print(key, "key!!!!!!!")
+
                 return newsUrl(key)
 
             elif userGen == '남' and userAge != '나이순':
@@ -410,7 +413,7 @@ class User:  # 사용자관리 및 채팅 메세지 전송을 담당하는 클�
         # return newsUrl(key)
 
     def getNumber(self, newsTi):
-        print(newsTi, "newsTi########################################################################")
+
         global g_newsTitleList
         sql = 'SELECT news_title FROM news_info'
         cur.execute(sql)
@@ -424,30 +427,28 @@ class User:  # 사용자관리 및 채팅 메세지 전송을 담당하는 클�
                 sql1 = f'SELECT news_id FROM news_info WHERE news_title = "{newsTi}"'
                 cur.execute(sql1)
                 data1 = cur.fetchall()
-                print(data1[0][0], "newsNumber!!!!!!!!!!!!!!!!!!!!!!")
+
                 return data1[0][0]
 
         except Exception as e:
             print("getNumber", type(e), e)
 
+    # 댓글 등록하는 함수
     def makeReply(self, newsId, replyContent):
         try:
-            print(newsId,"뉴스아이디!!!!!!!!!!!!!!!!!!!!!")
             sql2 = f'INSERT INTO news_reply VALUES ("{newsId}", "{g_loginId}","{replyContent}")'
 
             cur.execute(sql2)
             con.commit()
             data1 = cur.fetchall()
-            print(data1, "makeReply!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
-
         except Exception as e:
             print("makeReply", type(e), e)
 
+    # 뉴스 제목과 댓글 연결함수
     def matchReply(self, id):
         idData= []
         replyData=[]
         try:
-            print(newsId,"뉴스아이디!!!!!!!!!!!!!!!!!!!!!")
             sql1 = f'SELECT mem_id, reply_content FROM news_reply WHERE news_id = "{id}"'
 
             cur.execute(sql1)
@@ -469,8 +470,6 @@ class User:  # 사용자관리 및 채팅 메세지 전송을 담당하는 클�
 
 
 
-
-
 class MyTcpHandler(socketserver.BaseRequestHandler):
     user = User()
 
@@ -479,16 +478,193 @@ class MyTcpHandler(socketserver.BaseRequestHandler):
         # 서버와 클라이언트가  데이터를 주고 받는 메소드로 재정의해서 사용,
         # BaseRequestHandler클래스 안에 속해있는 메소드
 
-        try:
+        #본문 보내주기
+        def readContent(num1,num2):
+            global g_newsDict
+            global g_newsList
+            global newsId
+
+            # 본문내용 보내기
+            con1 = readNews(a_link[num1])
+            # 해당하는 딕셔너리 불러오기
+            for m in range(len(NewsDict.newsList)):
+                if NewsDict.newsList[m]["newsNum"] == num2:
+                    g_newsDict = NewsDict.newsList[m]
+                    newsTi = NewsDict.newsList[m]["title"]
+
+                    newsId = self.user.getNumber(newsTi)
+
+            values2 = json.dumps({
+
+                "content": con1,
+                "newsNum": g_newsDict["newsNum"],
+
+            }).encode('utf-8')
+
+            self.request.sendall(bytes(values2))
+
+        # 댓글 끌어오기
+        def readR():
+            global newsId
+
+            memId, replyContent = self.user.matchReply(newsId)
+            replyValues = json.dumps({
+
+                "memId": memId,
+                "replyContent": replyContent,
+
+            }).encode('utf-8')
+
+            self.request.sendall(bytes(replyValues))
+
+            result5 = self.request.recv(16184)
+            if result5.decode() == 'replyContent':
+
+                result6 = self.request.recv(92236).decode()
+
+                self.user.makeReply(newsId, result6)
+            newsId = []
+
+        # 메인 안쪽 반복문
+        def logic():
+            global g_searchTitle
+            global g_title
+            global g_content
+            global a_link
+            global g_loginId
+            global g_loginPw
+            global newsId
+            global g_selectTitle
+
             while True:
+
+                result2 = self.request.recv(16184)
+
+                if result2.decode() == '':
+                    break
+                
+                # 나이순, 성별순 조회
+                elif result2.decode() == 'select':
+                    print(result2.decode())
+                    json_age_gen = json.loads(self.request.recv(16184))
+
+                    selectTitle, selectContent = self.user.selectAgeGenSearch(json_age_gen["userAge"],
+                                                                              json_age_gen["userGen"])
+                    selectValues = json.dumps({
+
+                        "title": selectTitle,
+                        "content": selectContent,
+                        "selectTitle": g_selectTitle
+
+                    }).encode('utf-8')
+
+                    # 회원정보 저장
+
+                    self.request.sendall(bytes(selectValues))
+                    g_title = []
+                    g_content = []
+
+                # 검색
+                elif result2.decode() == 'search':
+
+                    # 검색어
+                    result3 = self.request.recv(16184)
+                    print(result3.decode())
+                    # 검색어 저장
+                    self.user.addTitle(g_loginId, result3.decode())
+
+                    # driver.get(newsUrl(bytes(result3).decode()))
+
+                    g_searchTitle = result3.decode()
+
+                    title1, content1 = newsUrl(result3.decode())
+                    values1 = json.dumps({
+
+                        "title": title1,
+                        "content": content1,
+
+                    }).encode('utf-8')
+
+                    print(values1.decode())
+
+                    News(g_searchTitle, g_title, g_content)
+                    insertNews(g_newsList)
+
+                    self.request.sendall(bytes(values1))
+                    break
+
+                elif result2.decode() == 'main':
+                    g_loginId = []
+                    g_loginPw = []
+                    break
+
+                elif result2.decode() == 'read1':
+                    readContent(0, 1)
+                    result4 = self.request.recv(16184)
+                    if result4.decode() == 'back':
+                        main()
+
+                    elif result4.decode() == 'readReply':
+                        readR()
+
+                elif result2.decode() == 'read2':
+                    readContent(1, 2)
+                    result4 = self.request.recv(16184)
+                    if result4.decode() == 'back':
+                        main()
+
+                    elif result4.decode() == 'readReply':
+                        readR()
+
+                elif result2.decode() == 'read3':
+                    readContent(2, 3)
+                    result4 = self.request.recv(16184)
+                    if result4.decode() == 'back':
+                        main()
+
+                    elif result4.decode() == 'readReply':
+                        readR()
+
+                elif result2.decode() == 'read4':
+                    readContent(3, 4)
+                    result4 = self.request.recv(16184)
+                    if result4.decode() == 'back':
+                        main()
+
+                    elif result4.decode() == 'readReply':
+                        readR()
+
+                elif result2.decode() == 'read5':
+                    readContent(4, 5)
+                    result4 = self.request.recv(16184)
+                    if result4.decode() == 'back':
+                        main()
+
+                    elif result4.decode() == 'readReply':
+                        readR()
+        
+        # 메인함수
+        def main():
+            while True:
+                global g_searchTitle
+                global g_title
+                global g_content
+                global a_link
+                global g_loginId
+                global g_loginPw
+                global g_selectTitle
+
                 # json데이터의 내용에 따라 실행하는 함수가 갈라져야 함
                 data = self.request.recv(16184)
 
-                if bytes(data).decode() == '':
+                if data.decode() == '':
                     break
 
-                elif bytes(data).decode() == 'sign':  # 회원가입
-                    print(bytes(data).decode())
+                # elif bytes(data).decode() =='login2':
+                #     continue
+
+                elif data.decode() == 'sign':  # 회원가입
+
                     json_dict = json.loads(self.request.recv(16184))
 
                     result = self.user.addUser(json_dict["userId"], json_dict["userPw"], json_dict["userName"],
@@ -496,274 +672,7 @@ class MyTcpHandler(socketserver.BaseRequestHandler):
 
                     self.request.send(result.encode())
 
-                elif bytes(data).decode() == 'login2':  # 본문에서 뒤로가기 실행시
-                    global g_searchTitle
-                    global g_title
-                    global g_content
-                    global a_link
-                    global g_loginId
-                    global g_loginPw
-                    global g_newsDict
-                    global g_newsDict_length
-                    global g_newsList
-                    global newsId
-                    global g_selectTitle
-
-
-                    # 클라이언트로부터 로그인정보 id,pw받아옴
-                    result = self.user.loginUser(g_loginId, g_loginPw)
-
-                    title0, cont0 = newsUrl(result["title"])
-                    g_searchTitle = result["title"]
-
-                    values0 = json.dumps({
-
-                        "title": title0,
-                        "content": cont0,
-
-                    }).encode('utf-8')
-
-                    # 회원정보 저장
-
-                    self.request.sendall(bytes(values0))
-
-                    News(g_searchTitle, g_title, g_content)
-
-                    insertNews(g_newsList)
-
-                    g_title = []
-                    g_content = []
-
-                    while True:
-
-                        result2 = self.request.recv(16184)
-                        if bytes(result2).decode() == '':
-                            break
-
-                        elif bytes(result2).decode() == 'select':
-                            print(bytes(result2).decode())
-                            json_age_gen = json.loads(self.request.recv(16184))
-
-                            selectTitle, selectContent = self.user.selectAgeGenSearch(json_age_gen["userAge"], json_age_gen["userGen"])
-                            selectValues = json.dumps({
-
-                                "title": selectTitle,
-                                "content": selectContent,
-                                "selectTitle": g_selectTitle
-
-                            }).encode('utf-8')
-
-                            # 회원정보 저장
-
-                            self.request.sendall(bytes(selectValues))
-                            g_title = []
-                            g_content = []
-
-                        elif bytes(result2).decode() == 'search':
-
-                            # 검색어
-                            result3 = self.request.recv(16184)
-                            print(bytes(result3).decode())
-                            # 검색어 저장
-                            self.user.addTitle(g_loginId, bytes(result3).decode())
-
-                            # driver.get(newsUrl(bytes(result3).decode()))
-
-                            title1, content1 = newsUrl(bytes(result3).decode())
-
-                            g_searchTitle = bytes(result3).decode()
-                            News(g_searchTitle, g_title, g_content)
-                            insertNews(g_newsList)
-
-                            values1 = json.dumps({
-
-                                "title": title1,
-                                "content": content1,
-
-                            }).encode('utf-8')
-
-                            print(bytes(values1).decode())
-                            self.request.sendall(bytes(values1))
-                            # 검색 및 출력
-
-                        elif bytes(result2).decode() == 'main':
-                            g_loginId = []
-                            g_loginPw = []
-                            break
-
-                        elif bytes(result2).decode() == 'read1':
-                            print(bytes(result2).decode())
-                            try:
-                                # 본문내용 보내기
-                                con1 = readNews(a_link[0])
-                                for m in range(len(NewsDict.newsList)):
-                                    if NewsDict.newsList[m]["newsNum"] == 1:
-                                        g_newsDict = NewsDict.newsList[m]
-                                        newsId = self.user.getNumber(newsTi)
-
-                                values2 = json.dumps({
-
-                                    "content": con1,
-                                    "newsNum": g_newsDict["newsNum"],
-                                    "newsLength": g_newsDict_length,
-
-
-                                }).encode('utf-8')
-
-                                self.request.sendall(bytes(values2))
-
-                                result4 = self.request.recv(16184)
-
-                                if bytes(result4).decode() == 'back':
-                                    break
-
-                                elif bytes(result4).decode() == 'readReply':
-
-                                    self.user.matchReply(newsId)
-                                    self.request.sendall(bytes())
-
-                                    result5 = self.request.recv(16184)
-                                    if bytes(result5).decode() == 'replyContent':
-                                        result6 = self.request.recv(92236)
-                                        self.user.makeReply(newsId, bytes(result6).decode())
-
-                            except Exception as e:
-                                print(type(e), e)
-
-                        elif bytes(result2).decode() == 'read2':
-
-                            # 본문내용 보내기
-                            con2 = readNews(a_link[1])
-                            for m in range(len(NewsDict.newsList)):
-                                if NewsDict.newsList[m]["newsNum"] == 2:
-                                    g_newsDict = NewsDict.newsList[m]
-                                    newsId = self.user.getNumber(newsTi)
-
-
-                            values3 = json.dumps({
-
-                                "content": con2,
-                                "newsNum": g_newsDict["newsNum"],
-
-
-                            }).encode('utf-8')
-
-                            self.request.sendall(bytes(values3))
-                            result4 = self.request.recv(16184)
-                            if bytes(result4).decode() == 'back':
-                                break
-                            elif bytes(result4).decode() == 'replyContent':
-                                result5 = self.request.recv(92236)
-                                self.user.makeReply(newsId, bytes(result5).decode())
-
-                        elif bytes(result2).decode() == 'read3':
-
-                            # 본문내용 보내기
-                            con3 = readNews(a_link[2])
-                            for m in range(len(NewsDict.newsList)):
-                                if NewsDict.newsList[m]["newsNum"] == 3:
-                                    g_newsDict = NewsDict.newsList[m]
-                                    newsId = self.user.getNumber(newsTi)
-
-                            values4 = json.dumps({
-
-                                "content": con3,
-                                "newsNum": g_newsDict["newsNum"],
-                                "newsLength": g_newsDict_length,
-
-
-                            }).encode('utf-8')
-
-                            self.request.sendall(bytes(values4))
-                            result4 = self.request.recv(16184)
-                            if bytes(result4).decode() == 'back':
-                                break
-                            elif bytes(result4).decode() == 'readReply':
-
-                                self.user.matchReply(newsId)
-                                self.request.sendall(bytes())
-
-                                result5 = self.request.recv(16184)
-                                if bytes(result5).decode() == 'replyContent':
-                                    result6 = self.request.recv(92236)
-                                    self.user.makeReply(newsId, bytes(result6).decode())
-
-                        elif bytes(result2).decode() == 'read4':
-
-                            # 본문내용 보내기
-                            con4 = readNews(a_link[3])
-                            for m in range(len(NewsDict.newsList)):
-                                if NewsDict.newsList[m]["newsNum"] == 4:
-                                    g_newsDict = NewsDict.newsList[m]
-                                    newsId = self.user.getNumber(newsTi)
-
-                            values5 = json.dumps({
-
-                                "content": con4,
-                                "newsNum": g_newsDict["newsNum"],
-                                "newsLength": g_newsDict_length,
-
-
-                            }).encode('utf-8')
-
-                            self.request.sendall(bytes(values5))
-                            result4 = self.request.recv(16184)
-                            if bytes(result4).decode() == 'back':
-                                break
-                            elif bytes(result4).decode() == 'readReply':
-
-                                self.user.matchReply(newsId)
-                                self.request.sendall(bytes())
-
-                                result5 = self.request.recv(16184)
-                                if bytes(result5).decode() == 'replyContent':
-                                    result6 = self.request.recv(92236)
-                                    self.user.makeReply(newsId, bytes(result6).decode())
-
-                        elif bytes(result2).decode() == 'read5':
-
-                            # 본문내용 보내기
-                            con5 = readNews(a_link[4])
-                            for m in range(len(NewsDict.newsList)):
-                                if NewsDict.newsList[m]["newsNum"] == 5:
-                                    g_newsDict = NewsDict.newsList[m]
-                                    newsId = self.user.getNumber(newsTi)
-
-                            values6 = json.dumps({
-
-                                "content": con5,
-                                "newsNum": g_newsDict["newsNum"],
-                                "newsLength": g_newsDict_length,
-
-
-                            }).encode('utf-8')
-
-                            self.request.sendall(bytes(values6))
-                            result4 = self.request.recv(16184)
-                            if bytes(result4).decode() == 'back':
-                                break
-                            elif bytes(result4).decode() == 'readReply':
-
-                                self.user.matchReply(newsId)
-                                self.request.sendall(bytes())
-
-                                result5 = self.request.recv(16184)
-                                if bytes(result5).decode() == 'replyContent':
-                                    result6 = self.request.recv(92236)
-                                    self.user.makeReply(newsId, bytes(result6).decode())
-
-                elif bytes(data).decode() == 'login':  # 로그인
-
-                    # global g_searchTitle
-                    # global g_title
-                    # global g_content
-                    # global a_link
-                    # global g_loginId
-                    # global g_loginPw
-                    # global g_newsDict
-                    # global g_newsDict_length
-                    # global g_newsList
-                    # 클라이언트로부터 로그인정보 id,pw받아옴
+                elif data.decode() == 'login':  # 로그인
 
                     json_dict = json.loads(self.request.recv(16184))
                     g_loginId = json_dict["userId"]
@@ -773,291 +682,29 @@ class MyTcpHandler(socketserver.BaseRequestHandler):
 
                     title, cont = newsUrl(result["title"])
                     g_searchTitle = result["title"]
-
                     values = json.dumps({
 
-                        "title": title,
+                        "titleList": title,
                         "content": cont,
 
                     }).encode('utf-8')
                     # 회원정보 저장
+
                     self.request.send(json.dumps(result).encode('utf-8'))
 
                     self.request.sendall(bytes(values))
-                    print("###############################################")
-                    print(g_title)
-                    print(g_content)
                     News(g_searchTitle, g_title, g_content)
                     insertNews(g_newsList)
 
                     g_title = []
                     g_content = []
 
-                    while True:
+                    logic()
 
-                        result2 = self.request.recv(16184)
 
-                        if bytes(result2).decode() == '':
-                            break
+        try:
 
-                        elif bytes(result2).decode() == 'select':
-                            print(bytes(result2).decode())
-                            json_age_gen = json.loads(self.request.recv(16184))
-
-                            selectTitle, selectContent = self.user.selectAgeGenSearch(json_age_gen["userAge"], json_age_gen["userGen"])
-                            selectValues = json.dumps({
-
-                                "title": selectTitle,
-                                "content": selectContent,
-                                "selectTitle": g_selectTitle
-
-                            }).encode('utf-8')
-
-                            # 회원정보 저장
-
-                            self.request.sendall(bytes(selectValues))
-                            g_title = []
-                            g_content = []
-
-
-                        elif bytes(result2).decode() == 'search':
-
-                            # 검색어
-                            result3 = self.request.recv(16184)
-                            print(bytes(result3).decode())
-                            # 검색어 저장
-                            self.user.addTitle(g_loginId, bytes(result3).decode())
-
-                            # driver.get(newsUrl(bytes(result3).decode()))
-
-                            g_searchTitle = bytes(result3).decode()
-
-                            print(g_title,"타이틀!!!!!!!!!!!!!!")
-                            print(g_content,"컨텐츠!!!!!!!!!!!!!!!")
-
-                            ##################################################
-                            # News(g_searchTitle, g_title, g_content)
-                            # insertNews(g_newsList)
-                            ##################################################
-                            print("검색--------------------------------------")
-
-                            title1, content1 = newsUrl(bytes(result3).decode())
-                            print(bytes(result3).decode(), "받은 데이터--------------------")
-
-                            values1 = json.dumps({
-
-                                "title": title1,
-                                "content": content1,
-
-                            }).encode('utf-8')
-
-                            print(bytes(values1).decode())
-
-                            News(g_searchTitle, g_title, g_content)
-                            insertNews(g_newsList)
-
-                            self.request.sendall(bytes(values1))
-                            print('데이터 보내기-------------------------------------------')
-                            break
-
-                            # 검색 및 출력
-
-                        elif bytes(result2).decode() == 'main':
-                            g_loginId = []
-                            g_loginPw = []
-                            break
-
-                        elif bytes(result2).decode() == 'read1':
-                            print(bytes(result2).decode())
-                            try:
-                                # 본문내용 보내기
-                                con1 = readNews(a_link[0])
-                                # 해당하는 딕셔너리 불러오기
-                                for m in range(len(NewsDict.newsList)):
-                                    if NewsDict.newsList[m]["newsNum"] == 1:
-                                        g_newsDict = NewsDict.newsList[m]
-                                        newsTi = NewsDict.newsList[m]["title"]
-                                        newsId= self.user.getNumber(newsTi)
-
-                                values2 = json.dumps({
-
-                                    "content": con1,
-                                    "newsNum": g_newsDict["newsNum"],
-                                    "newsLength": g_newsDict_length,
-
-                                }).encode('utf-8')
-
-                                self.request.sendall(bytes(values2))
-                                result4 = self.request.recv(16184)
-                                if bytes(result4).decode() == 'back':
-                                    break
-
-                                elif bytes(result4).decode() == 'readReply':
-
-                                    memId, replyContent= self.user.matchReply(newsId)
-                                    replyValues = json.dumps({
-
-                                        "memId": memId,
-                                        "replyContent": replyContent,
-
-                                    }).encode('utf-8')
-
-                                    self.request.sendall(bytes(replyValues))
-
-                                    result5 = self.request.recv(16184)
-                                    if bytes(result5).decode() == 'replyContent':
-                                        print(bytes(result5).decode(), "받은 데이터!!!!!!!!!!!!!!!!!!!!!!!!!!")
-                                        result6 = bytes(self.request.recv(92236)).decode()
-                                        print(result6, "result6!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
-                                        self.user.makeReply(newsId, result6)
-
-                            except Exception as e:
-                                print(type(e), e)
-
-                        elif bytes(result2).decode() == 'read2':
-
-                            # 본문내용 보내기
-                            con2 = readNews(a_link[1])
-                            for m in range(len(NewsDict.newsList)):
-                                if NewsDict.newsList[m]["newsNum"] == 2:
-                                    g_newsDict = NewsDict.newsList[m]
-                                    newsTi = NewsDict.newsList[m]["title"]
-                                    newsId= self.user.getNumber(newsTi)
-
-
-                            values3 = json.dumps({
-
-                                "content": con2,
-                                "newsNum": g_newsDict["newsNum"],
-                                "newsLength": g_newsDict_length,
-
-                            }).encode('utf-8')
-
-                            self.request.sendall(bytes(values3))
-
-                            result4 = self.request.recv(16184)
-                            print(bytes(result4).decode(), "??????????????????????????????")
-                            if bytes(result4).decode() == 'readReply':
-
-
-                                memId, replyContent = self.user.matchReply(newsId)
-
-                                replyValues = json.dumps({
-
-                                    "memId": memId,
-                                    "replyContent": replyContent,
-
-                                }).encode('utf-8')
-
-                                self.request.sendall(bytes(replyValues))
-
-                                result5 = self.request.recv(16184)
-
-                                if bytes(result5).decode() == 'replyContent':
-                                    print(bytes(result5).decode(), "받은 데이터!!!!!!!!!!!!!!!!!!!!!!!!!!")
-
-                                    result6 = bytes(self.request.recv(92236)).decode()
-
-                                    print(result6, "result6!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
-
-                                    self.user.makeReply(newsId, result6)
-                            elif bytes(result4).decode() == 'back':
-                                break
-
-                        elif bytes(result2).decode() == 'read3':
-
-                            # 본문내용 보내기
-                            con3 = readNews(a_link[2])
-                            for m in range(len(NewsDict.newsList)):
-                                if NewsDict.newsList[m]["newsNum"] == 3:
-                                    g_newsDict = NewsDict.newsList[m]
-                                    newsId = self.user.getNumber(newsTi)
-
-                            values4 = json.dumps({
-
-                                "content": con3,
-                                "newsNum": g_newsDict["newsNum"],
-                                "newsLength": g_newsDict_length,
-
-                            }).encode('utf-8')
-
-                            self.request.sendall(bytes(values4))
-                            result4 = self.request.recv(16184)
-                            if bytes(result4).decode() == 'back':
-                                break
-                            elif bytes(result4).decode() == 'readReply':
-
-                                self.user.matchReply(newsId)
-                                self.request.sendall(bytes())
-
-                                result5 = self.request.recv(16184)
-                                if bytes(result5).decode() == 'replyContent':
-                                    result6 = self.request.recv(92236)
-                                    self.user.makeReply(newsId, bytes(result6).decode())
-
-                        elif bytes(result2).decode() == 'read4':
-
-                            # 본문내용 보내기
-                            con4 = readNews(a_link[3])
-                            for m in range(len(NewsDict.newsList)):
-                                if NewsDict.newsList[m]["newsNum"] == 4:
-                                    g_newsDict = NewsDict.newsList[m]
-                                    newsId = self.user.getNumber(newsTi)
-
-                            values5 = json.dumps({
-
-                                "content": con4,
-                                "newsNum": g_newsDict["newsNum"],
-                                "newsLength": g_newsDict_length,
-
-
-                            }).encode('utf-8')
-
-                            self.request.sendall(bytes(values5))
-                            result4 = self.request.recv(16184)
-                            if bytes(result4).decode() == 'back':
-                                break
-                            elif bytes(result4).decode() == 'readReply':
-
-                                self.user.matchReply(newsId)
-                                self.request.sendall(bytes())
-
-                                result5 = self.request.recv(16184)
-                                if bytes(result5).decode() == 'replyContent':
-                                    result6 = self.request.recv(92236)
-                                    self.user.makeReply(newsId, bytes(result6).decode())
-
-                        elif bytes(result2).decode() == 'read5':
-
-                            # 본문내용 보내기
-                            con5 = readNews(a_link[4])
-                            for m in range(len(NewsDict.newsList)):
-                                if NewsDict.newsList[m]["newsNum"] == 5:
-                                    g_newsDict = NewsDict.newsList[m]
-                                    newsId = self.user.getNumber(newsTi)
-
-                            values6 = json.dumps({
-
-                                "content": con5,
-                                "newsNum": g_newsDict["newsNum"],
-                                "newsLength": g_newsDict_length,
-
-
-                            }).encode('utf-8')
-
-                            self.request.sendall(bytes(values6))
-                            result4 = self.request.recv(16184)
-                            if bytes(result4).decode() == 'back':
-                                break
-                            elif bytes(result4).decode() == 'readReply':
-
-                                self.user.matchReply(newsId)
-                                self.request.sendall(bytes())
-
-                                result5 = self.request.recv(16184)
-                                if bytes(result5).decode() == 'replyContent':
-                                    result6 = self.request.recv(92236)
-                                    self.user.makeReply(newsId, bytes(result6).decode())
+            main()
 
         except Exception as e:
             print("handle", e)

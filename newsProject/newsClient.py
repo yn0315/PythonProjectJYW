@@ -72,20 +72,6 @@ class replyBox():
             print(g_labelY)
             titleLabel1.place(x=g_titleLabelX, y=g_titleLabelY)
             g_titleLabelY = g_titleLabelY + 110
-#
-# class Reply:
-#     replyList = []
-#
-#     def __init__(self, newsNum,newsLength):
-#
-#         tempNews = list(0 for i in range(newsLength))
-#         Reply.replyList = tempNews
-#
-#
-#     # def createReply(self):
-#         tempNews[newsNum] = {"writer": "", "reply": ""}
-#         for i in range(len(Reply.replyList)):
-#             Reply.replyList[i] = tempNews[i]
 
 def registerComment():
     global g_replyInput
@@ -122,25 +108,44 @@ def newsContent_exit():
 
     client_socket.sendall(bytes('back'.encode('utf-8')))
 
-    client_socket.sendall(bytes('login2'.encode('utf-8')))
+    values = json.dumps({
+        "userId": loginId,
+        "userPw": loginPw
 
-    data = json.loads(client_socket.recv(92236))
-    print(data["title"][0])
+    }).encode('utf-8')
+    # 서버로 id,pw값 전송
+
+    client_socket.sendall(bytes('login'.encode('utf-8')))
+    client_socket.sendall(bytes(values))
 
     # searchTitle = data["title"]
+    data = json.loads(client_socket.recv(92236))
+    searchTitle = data["title"]
 
-    titleLabel1.configure(text=data["title"][0])
-    titleLabel2.configure(text=data["title"][1])
-    titleLabel3.configure(text=data["title"][2])
-    titleLabel4.configure(text=data["title"][3])
-    titleLabel5.configure(text=data["title"][4])
+    if data["logIn"] == "1":
+        # container.pack(side='left', fill='both', expand=True)
+        news.pack(side='left', fill='both', expand=True)
+        # news.pack()
+        # scrollbar.pack(side="right", fill="y")
 
-    contentLabel1.configure(text=str(data["content"][0]).strip())
-    contentLabel2.configure(text=str(data["content"][1]).strip())
-    contentLabel3.configure(text=str(data["content"][2]).strip())
-    contentLabel4.configure(text=str(data["content"][3]).strip())
-    contentLabel5.configure(text=str(data["content"][4]).strip())
+        json_data = json.loads(client_socket.recv(92236))
 
+        # upd(json_data["g_title"])
+
+        titleLabel1.configure(text=json_data["titleList"][0])
+        titleLabel2.configure(text=json_data["titleList"][1])
+        titleLabel3.configure(text=json_data["titleList"][2])
+        titleLabel4.configure(text=json_data["titleList"][3])
+        titleLabel5.configure(text=json_data["titleList"][4])
+
+        contentLabel1.configure(text=str(json_data["content"][0]).strip())
+        contentLabel2.configure(text=str(json_data["content"][1]).strip())
+        contentLabel3.configure(text=str(json_data["content"][2]).strip())
+        contentLabel4.configure(text=str(json_data["content"][3]).strip())
+        contentLabel5.configure(text=str(json_data["content"][4]).strip())
+
+    elif data["logIn"] == "0":
+        tkinter.messagebox.showinfo("메세지", "정보가 맞지 않습니다.")
 def updateInputBox(title):
     if g_age != '나이순' and g_gen != '성별순':
         mainLabel.configure(text='"' + g_age+'대", ' +'"'+ g_gen+'성"의 키워드 '+ '"'+title+'"')
@@ -185,11 +190,11 @@ def login():
 
         #upd(json_data["g_title"])
 
-        titleLabel1.configure(text=json_data["title"][0])
-        titleLabel2.configure(text=json_data["title"][1])
-        titleLabel3.configure(text=json_data["title"][2])
-        titleLabel4.configure(text=json_data["title"][3])
-        titleLabel5.configure(text=json_data["title"][4])
+        titleLabel1.configure(text=json_data["titleList"][0])
+        titleLabel2.configure(text=json_data["titleList"][1])
+        titleLabel3.configure(text=json_data["titleList"][2])
+        titleLabel4.configure(text=json_data["titleList"][3])
+        titleLabel5.configure(text=json_data["titleList"][4])
 
 
         contentLabel1.configure(text=str(json_data["content"][0]).strip())
@@ -274,8 +279,6 @@ def readNews1():
     client_socket.sendall(bytes('read1'.encode('utf-8')))
 
     json_data = json.loads(client_socket.recv(92236))
-
-
     conc = ''
 
     concArr = []
